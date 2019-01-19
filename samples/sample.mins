@@ -1,53 +1,57 @@
+// This is a work in progress sample
+
 using System;
 import amazon.DynamoDb; // External services + repositorues
 
-// Data Structs as a first class citizens
-public datastruct Article {
-  DateTime date;
-  String Title
-  String? Content;  // Nullables are explicit
-  Boolean Publish;
-  Number NumberOfWords;
-}
+namespace EvilCatSociety.BlogService {
+   // Data Structs as a first class citizens
+   public datastruct Article {
+   DateTime date;
+   String Title
+   String? Content;  // Nullables are explicit
+   Boolean Publish;
+   Number NumberOfWords;
+   }
 
-public interface IFeedEngine
-{
-   async void Post(Article article);
-   async Enumerable<Article> ListArticles()
-}
-
-public module FeedEngine: IFeedEngine 
-{
-   using IDynamodDB dynamodb; // Automatic IoC
-   using WordCounter wordCounter;
-
-   async void Post(Article article) // modules only receive Data structures in calls
+   public interface IFeedEngine
    {
-      if (article.Content != null)
+      async void Post(Article article);
+      async Enumerable<Article> ListArticles()
+   }
+
+   public module FeedEngine: IFeedEngine 
+   {
+      using IDynamodDB dynamodb; // Automatic IoC
+      using WordCounter wordCounter;
+
+      async void Post(Article article) // modules only receive Data structures in calls
       {
-        article.NumberOfWord = wordCounter.countWords(article.Content);
+         if (article.Content != null)
+         {
+         article.NumberOfWord = wordCounter.countWords(article.Content);
+         }
+         await dynamodb.save<Article>();
       }
-      await dynamodb.save<Article>();
+
+      async Enumerable<Article> ListArticles()
+      {
+         dynamoDb db = new dynamoDB();
+         return await try db.ReadAll() 
+                     else return Array<Article>(1){  // Arrays are just generics
+                                                   {Date = DateTime.Now, 
+                                                      Title ="Evil Cat 3000"
+                                                      Content = "",
+                                                      NumberOfWords =0,
+                                                      Publish = false
+                                                      }};
+      }
    }
 
-   async Enumerable<Article> ListArticles()
+   private class WordCounter
    {
-       dynamoDb db = new dynamoDB();
-       return await try db.ReadAll() 
-                    else return Array<Article>(1){  // Arrays are just generics
-                                                  {Date = DateTime.Now, 
-                                                   Title ="Evil Cat 3000"
-                                                    Content = "",
-                                                    NumberOfWords =0,
-                                                    Publish = false
-                                                    }};
-   }
-}
-
-private class WordCounter
-{
-   int CountWords(String s)
-   {
-     return s.Chars.Sum( => $ == " ");
+      int CountWords(String s)
+      {
+      return s.Chars.Sum( => $ == " ");
+      }
    }
 }
