@@ -14,7 +14,7 @@ What not to do and expect:
    * Complex language 
        * The C# Spec is is 516 page long: https://www.ecma-international.org/publications/files/ECMA-ST/ECMA-334.pdf 
        * the C== Spec is 1605 pages long :S https://www.iso.org/standard/68564.html
-   *
+   * Large folowup, this compiler is exprimental and for fun
    
 Architectural/Features Ideas
    * AOT (ahead of time) compiler
