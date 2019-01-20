@@ -9,14 +9,16 @@ namespace EvilCatSociety.BlogService {
    DateTime date;
    String Title
    String? Content;  // Nullables are explicit
-   Boolean Publish;
+   Boolean Published;
    Number NumberOfWords;
    }
 
    public interface IFeedEngine
    {
-      async void Post(Article article);
-      async Enumerable<Article> ListArticles()
+      AsyncAction<Article> Post;
+      AsyncFunction<IEnumerable<Article>> ListAllArticles;
+      AsyncFunction<IEnumerable<Article>> ListPublishedArticles;
+      AsyncFunction<Article,Number> RemoveArticle;
    }
 
    public module FeedEngine: IFeedEngine 
@@ -24,32 +26,43 @@ namespace EvilCatSociety.BlogService {
       using IDynamodDB dynamodb; // Automatic IoC
       using WordCounter wordCounter;
 
-      async void Post(Article article) // modules only receive Data structures in calls
+      Function<int> p => DateTime.Now.Ticks;
+      AsyncFunction<bool,Archive> clearArticles => db
+      
+      AsyncAction<Article> Post(Article article) => // modules only receive Data structures in calls
       {
          if (article.Content != null)
          {
-         article.NumberOfWord = wordCounter.countWords(article.Content);
+            article.NumberOfWord = wordCounter.countWords(article.Content);
          }
          await dynamodb.save<Article>();
       }
 
-      async Enumerable<Article> ListArticles()
+      AsyncFunction<Enumerable<Article>> ListAllArticles() => try db.ReadAll<Article>();
+
+      AsyncFunction<Enumerable<Article>> ListPublishedArticles() =>
       {
-         dynamoDb db = new dynamoDB();
-         return await try db.ReadAll() 
-                     else return Array<Article>(1){  // Arrays are just generics
+         return await try { db.ReadAll().Where(=> $.Published == true); }
+                     else {
+                           return Array<Article>(1){  // Arrays are just generics
                                                    {Date = DateTime.Now, 
                                                       Title ="Evil Cat 3000"
                                                       Content = "",
                                                       NumberOfWords =0,
-                                                      Publish = false
+                                                      Published = false
                                                       }};
+                           }
       }
+
+       AsyncFunction<Article,Number> RemoveArticle => (Number index)
+       {
+          await db.Delete(index);
+       }
    }
 
    private class WordCounter
    {
-      int CountWords(String s)
+      int CountWords (String s) =>
       {
       return s.Chars.Sum( => $ == " ");
       }
