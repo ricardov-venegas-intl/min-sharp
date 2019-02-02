@@ -6,11 +6,11 @@ import amazon.DynamoDb; // External services + repositorues
 namespace EvilCatSociety.BlogService {
    // Data Structs as a first class citizens
    public datastruct Article {
-   DateTime date;
-   String Title
-   String? Content;  // Nullables are explicit
-   Boolean Published;
-   Number NumberOfWords;
+      DateTime date;
+      String Title
+      String? Content;  // Nullables are explicit
+      Boolean Published;
+      Number NumberOfWords;
    }
 
    public interface IFeedEngine
@@ -26,10 +26,10 @@ namespace EvilCatSociety.BlogService {
       using IDynamodDB dynamodb; // Automatic IoC
       using WordCounter wordCounter;
 
-      Function<int> p => DateTime.Now.Ticks;
-      AsyncFunction<bool,Archive> clearArticles => db
+      function p = () => DateTime.Now.Ticks;
+      async function clearArticles =  ()=> db.clear();
       
-      AsyncAction<Article> Post(Article article) => // modules only receive Data structures in calls
+      async function Post = (Article article) => // modules only receive Data structures in calls
       {
          if (article.Content != null)
          {
@@ -38,9 +38,9 @@ namespace EvilCatSociety.BlogService {
          await dynamodb.save<Article>();
       }
 
-      AsyncFunction<Enumerable<Article>> ListAllArticles() => try db.ReadAll<Article>();
+      async function ListAllArticles = () => try db.ReadAll<Article>();
 
-      AsyncFunction<Enumerable<Article>> ListPublishedArticles() =>
+      async function ListPublishedArticles = () =>
       {
          return await try { db.ReadAll().Where(=> $.Published == true); }
                      else {
@@ -54,7 +54,7 @@ namespace EvilCatSociety.BlogService {
                            }
       }
 
-       AsyncFunction<Article,Number> RemoveArticle => (Number index)
+       async function RemoveArticle = (Number index) =>
        {
           await db.Delete(index);
        }
@@ -62,9 +62,6 @@ namespace EvilCatSociety.BlogService {
 
    private class WordCounter
    {
-      int CountWords (String s) =>
-      {
-      return s.Chars.Sum( => $ == " ");
-      }
+      function int CountWords =  (String s) => s.Chars.Sum( => $ == " ");      
    }
 }
