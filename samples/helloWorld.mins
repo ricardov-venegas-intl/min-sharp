@@ -1,0 +1,22 @@
+// This is a work in progress sample
+
+using System;
+import System.Console; 
+
+namespace HelloWorldSample 
+{
+
+   /// <summary>
+   /// IMplements a simple COnsole Service
+   /// </summary>
+   public module HelloWorld: IConsoleApp 
+   {
+      using IConsole console; // Automatic IoC
+
+      IConsoleApp.StartUp = async () => // modules only receive Data structures in calls
+      {
+         await console.WriteLine("Hello World!");
+      }
+
+   }
+}

@@ -15,21 +15,21 @@ namespace EvilCatSociety.BlogService {
 
    public interface IFeedEngine
    {
-      AsyncAction<Article> Post;
-      AsyncFunction<IEnumerable<Article>> ListAllArticles;
-      AsyncFunction<IEnumerable<Article>> ListPublishedArticles;
-      AsyncFunction<Article,Number> RemoveArticle;
+      async function void Post(Article article) ;
+      async function IEnumerable<Article> ListAllArticles();
+      async function IEnumerable<Article> ListPublishedArticles();
+      async function Article RemoveArticle(Number index);
    }
 
+   /// <summary>
+   /// Feed engine module implements IFeedEngine
+   /// </summary>
    public module FeedEngine: IFeedEngine 
    {
       using IDynamodDB dynamodb; // Automatic IoC
       using WordCounter wordCounter;
 
-      function p = () => DateTime.Now.Ticks;
-      async function clearArticles =  ()=> db.clear();
-      
-      async function Post = (Article article) => // modules only receive Data structures in calls
+      IFeedEngine.Post = async (Article article) => // modules only receive Data structures in calls
       {
          if (article.Content != null)
          {
@@ -38,9 +38,9 @@ namespace EvilCatSociety.BlogService {
          await dynamodb.save<Article>();
       }
 
-      async function ListAllArticles = () => try db.ReadAll<Article>();
+      IFeedEngine.ListAllArticles = () => try db.ReadAll<Article>();
 
-      async function ListPublishedArticles = () =>
+      IFeedEngine.ListPublishedArticles = () =>
       {
          return await try { db.ReadAll().Where(=> $.Published == true); }
                      else {
@@ -54,14 +54,20 @@ namespace EvilCatSociety.BlogService {
                            }
       }
 
-       async function RemoveArticle = (Number index) =>
+      IFeedEngine.RemoveArticle = (Number index) =>
        {
           await db.Delete(index);
        }
+
+       // private function
+      const function p = () => DateTime.Now.Ticks;
+
+      // Virtual function
+      async function clearArticles =  ()=> db.clear(); 
    }
 
    private class WordCounter
    {
-      function int CountWords =  (String s) => s.Chars.Sum( => $ == " ");      
+      function CountWords =  (String s) => s.Chars.Sum( => $ == " ");      
    }
 }
