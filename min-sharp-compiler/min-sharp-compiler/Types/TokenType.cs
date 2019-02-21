@@ -17,7 +17,7 @@ namespace min_sharp_compiler.Types
         /// <summary>
         /// White space
         /// </summary>
-        WhileSpace=11,
+        WhiteSpace=11,
 
         /// <summary>
         /// Coment
@@ -60,6 +60,16 @@ namespace min_sharp_compiler.Types
         KeywordAwait = 205,
 
         /// <summary>
+        /// Keyword public
+        /// </summary>
+        KeywordPublic = 206,
+
+        /// <summary>
+        /// Keyword public
+        /// </summary>
+        KeywordModule = 207,
+
+        /// <summary>
         /// Number literal
         /// </summary>
         NumberLiteral = 300,
@@ -75,19 +85,49 @@ namespace min_sharp_compiler.Types
         Operator=400,
 
         /// <summary>
+        /// Operator assign =
+        /// </summary>
+        OperatorAssign = 401,
+
+        /// <summary>
+        /// Operator Lambda Declaration
+        /// </summary>
+        OperatorLambdaDeclaration = 402,
+
+        /// <summary>
         /// Colon
         /// </summary>
-        Colon=410,
+        Colon = 501,
 
         /// <summary>
         /// Semicolon
         /// </summary>
-        SemiColon=420,
+        SemiColon=502,
+
+        /// <summary>
+        /// Block Start {
+        /// </summary>
+        BlockStart = 503,
+
+        /// <summary>
+        /// Block End }
+        /// </summary>
+        BlockEnd = 504,
+
+        /// <summary>
+        /// Block Start (
+        /// </summary>
+        ParentesisStart = 505,
+
+        /// <summary>
+        /// Block End )
+        /// </summary>
+        ParentesisEnd = 506,
 
         /// <summary>
         /// Lexical Error
         /// </summary>
-        Error=3000,
+        Error = 3000,
 
         /// <summary>
         /// Lexical Error: String not complete

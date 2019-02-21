@@ -10,6 +10,15 @@ namespace min_sharp_compiler.Tokenizer
     /// </summary>
     public class Tokenizer : ITokenizer
     {
+        static Dictionary<string, TokenType> keywords = new Dictionary<string, TokenType> {
+            { "async", TokenType.KeywordAsync },
+            { "await", TokenType.KeywordAwait },
+            { "import", TokenType.KeywordImport },
+            { "module", TokenType.KeywordModule },
+            { "namespace", TokenType.KeywordNamespace },
+            { "public", TokenType.KeywordPublic },
+            { "using", TokenType.KeywordUsing }
+        };
         /// <summary>
         /// Parses a string into Tokens
         /// </summary>
@@ -46,8 +55,50 @@ namespace min_sharp_compiler.Tokenizer
                         {
                             parserState.MoveToNextChar();
                         }
-                        yield return parserState.BuildToken(TokenType.WhileSpace);
+                        yield return parserState.BuildToken(TokenType.WhiteSpace);
                         break;
+
+                    //Block Start
+                    case char c when c == '{':
+                        yield return parserState.BuildToken(TokenType.BlockStart);
+                        break;
+
+                    //Block End
+                    case char c when c == '}':
+                        yield return parserState.BuildToken(TokenType.BlockEnd);
+                        break;
+
+                    //Parentesis Start
+                    case char c when c == '(':
+                        yield return parserState.BuildToken(TokenType.ParentesisStart);
+                        break;
+
+                    //Parentesis End
+                    case char c when c == ')':
+                        yield return parserState.BuildToken(TokenType.ParentesisEnd);
+                        break;
+
+                    //Colon
+                    case char c when c == ':':
+                        yield return parserState.BuildToken(TokenType.Colon);
+                        break;
+
+                    // Semi Colon
+                    case char c when c == ';':
+                        yield return parserState.BuildToken(TokenType.SemiColon);
+                        break;
+
+                    // Process comment
+                    case char c when c == '=' && parserState.NextChar == '>':
+                        parserState.MoveToNextChar();
+                        yield return parserState.BuildToken(TokenType.OperatorLambdaDeclaration);
+                        break;
+
+                    //Operator Assign
+                    case char c when c == '=':
+                        yield return parserState.BuildToken(TokenType.OperatorAssign);
+                        break;
+
                     // Process comment
                     case char c when c == '/' && parserState.NextChar == '/':
                         parserState.MoveToNextChar();
@@ -57,6 +108,8 @@ namespace min_sharp_compiler.Tokenizer
                         }
                         yield return parserState.BuildToken(TokenType.Comment);
                         break;
+
+                    // Process String Literal
                     case '"':
                         parserState.MoveToNextChar();
                         while (parserState.CurrentChar != '"' && parserState.CurrentChar != '\0')
@@ -78,32 +131,21 @@ namespace min_sharp_compiler.Tokenizer
                         break;
                     // Process identifiers and keywords
                     case char c when c == '@' || c == '_' || char.IsLetterOrDigit(c):
-                        parserState.MoveToNextChar();
-                        while (parserState.CurrentChar == '_' || char.IsLetterOrDigit(parserState.CurrentChar))
+                        while (parserState.NextChar == '_' || char.IsLetterOrDigit(parserState.NextChar) || parserState.NextChar == '.')
                         {
                             parserState.MoveToNextChar();
                         }
-                        if (MemoryExtensions.Equals(parserState.CurrentTokenValue.Span, "using", StringComparison.InvariantCulture) == true)
+                        var isKeyword = false;
+                        foreach(var keyword in keywords.Keys)
                         {
-                            yield return parserState.BuildToken(TokenType.KeywordUsing);
+                            if (MemoryExtensions.Equals(parserState.CurrentTokenValue.Span, keyword, StringComparison.InvariantCulture) == true)
+                            {
+                                isKeyword = true;
+                                yield return parserState.BuildToken(keywords[keyword]);
+                                break;
+                            }
                         }
-                        else if (MemoryExtensions.Equals(parserState.CurrentTokenValue.Span, "async", StringComparison.InvariantCulture) == true)
-                        {
-                            yield return parserState.BuildToken(TokenType.KeywordAsync);
-                        }
-                        else if (MemoryExtensions.Equals(parserState.CurrentTokenValue.Span, "await", StringComparison.InvariantCulture) == true)
-                        {
-                            yield return parserState.BuildToken(TokenType.KeywordAwait);
-                        }
-                        else if (MemoryExtensions.Equals(parserState.CurrentTokenValue.Span, "import", StringComparison.InvariantCulture) == true)
-                        {
-                            yield return parserState.BuildToken(TokenType.KeywordImport);
-                        }
-                        else if (MemoryExtensions.Equals(parserState.CurrentTokenValue.Span, "namespace", StringComparison.InvariantCulture) == true)
-                        {
-                            yield return parserState.BuildToken(TokenType.KeywordNamespace);
-                        }
-                        else 
+                        if (isKeyword == false)
                         {
                             yield return parserState.BuildToken(TokenType.Identifier);
                         }
