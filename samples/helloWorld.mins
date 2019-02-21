@@ -7,7 +7,7 @@ namespace HelloWorldSample
 {
 
    /// <summary>
-   /// IMplements a simple COnsole Service
+   /// Implements a simple Console Service
    /// </summary>
    public module HelloWorld: IConsoleApp 
    {

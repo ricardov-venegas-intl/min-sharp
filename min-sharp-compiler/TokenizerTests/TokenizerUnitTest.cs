@@ -19,14 +19,15 @@ namespace TokenizerTests
         [TestMethod]
         public void CarriageReturnLineFeed()
         {
+            var source = "\r\n";
             ITokenizer tokenizer = new Tokenizer();
-            var tokens =  tokenizer.Parse("\r\n").ToArray();
+            var tokens =  tokenizer.Parse(source).ToArray();
             Assert.AreEqual(1, tokens.Length);
             Assert.AreEqual(TokenType.LineTerminator, tokens[0].TokenType);
             Assert.AreEqual(0, tokens[0].AbsolutePosition);
             Assert.AreEqual(1, tokens[0].ColumnNumber);
             Assert.AreEqual(1, tokens[0].LineNumber);
-            Assert.IsTrue(MemoryExtensions.Equals(tokens[0].Value.Span, "\r\n", StringComparison.Ordinal));
+            Assert.IsTrue(MemoryExtensions.Equals(tokens[0].Value.Span, source, StringComparison.Ordinal));
         }
 
         /// <summary>
@@ -35,14 +36,15 @@ namespace TokenizerTests
         [TestMethod]
         public void LineFeed()
         {
+            var source = "\n";
             ITokenizer tokenizer = new Tokenizer();
-            var tokens = tokenizer.Parse("\n").ToArray();
+            var tokens = tokenizer.Parse(source).ToArray();
             Assert.AreEqual(1, tokens.Length);
             Assert.AreEqual(TokenType.LineTerminator, tokens[0].TokenType);
             Assert.AreEqual(0, tokens[0].AbsolutePosition);
             Assert.AreEqual(1, tokens[0].ColumnNumber);
             Assert.AreEqual(1, tokens[0].LineNumber);
-            Assert.IsTrue(MemoryExtensions.Equals(tokens[0].Value.Span, "\n", StringComparison.Ordinal));
+            Assert.IsTrue(MemoryExtensions.Equals(tokens[0].Value.Span, source, StringComparison.Ordinal));
         }
 
         /// <summary>
@@ -75,14 +77,15 @@ namespace TokenizerTests
         [TestMethod]
         public void SingleWhiteSpace()
         {
+            var source = " ";
             ITokenizer tokenizer = new Tokenizer();
-            var tokens = tokenizer.Parse(" ").ToArray();
+            var tokens = tokenizer.Parse(source).ToArray();
             Assert.AreEqual(1, tokens.Length);
             Assert.AreEqual(TokenType.WhileSpace, tokens[0].TokenType);
             Assert.AreEqual(0, tokens[0].AbsolutePosition);
             Assert.AreEqual(1, tokens[0].ColumnNumber);
             Assert.AreEqual(1, tokens[0].LineNumber);
-            Assert.IsTrue(MemoryExtensions.Equals(tokens[0].Value.Span, " ", StringComparison.Ordinal));
+            Assert.IsTrue(MemoryExtensions.Equals(tokens[0].Value.Span, source, StringComparison.Ordinal));
         }
 
         /// <summary>
@@ -91,14 +94,15 @@ namespace TokenizerTests
         [TestMethod]
         public void MultipleWhiteSpacesAndTabs()
         {
+            var source = "  \t  \t";
             ITokenizer tokenizer = new Tokenizer();
-            var tokens = tokenizer.Parse("  \t  \t").ToArray();
+            var tokens = tokenizer.Parse(source).ToArray();
             Assert.AreEqual(1, tokens.Length);
             Assert.AreEqual(TokenType.WhileSpace, tokens[0].TokenType);
             Assert.AreEqual(0, tokens[0].AbsolutePosition);
             Assert.AreEqual(1, tokens[0].ColumnNumber);
             Assert.AreEqual(1, tokens[0].LineNumber);
-            Assert.IsTrue(MemoryExtensions.Equals(tokens[0].Value.Span, "  \t  \t", StringComparison.Ordinal));
+            Assert.IsTrue(MemoryExtensions.Equals(tokens[0].Value.Span, source, StringComparison.Ordinal));
         }
 
         /// <summary>
@@ -107,15 +111,136 @@ namespace TokenizerTests
         [TestMethod]
         public void SingleLineComment()
         {
+            var source = "// This is a Single Line Comment";
             ITokenizer tokenizer = new Tokenizer();
-            var tokens = tokenizer.Parse("// This is a Single Line Coment").ToArray();
+            var tokens = tokenizer.Parse(source).ToArray();
             Assert.AreEqual(1, tokens.Length);
             Assert.AreEqual(TokenType.Comment, tokens[0].TokenType);
             Assert.AreEqual(0, tokens[0].AbsolutePosition);
             Assert.AreEqual(1, tokens[0].ColumnNumber);
             Assert.AreEqual(1, tokens[0].LineNumber);
-            Assert.IsTrue(MemoryExtensions.Equals(tokens[0].Value.Span, "// This is a Single Line Coment", StringComparison.Ordinal));
+            Assert.IsTrue(MemoryExtensions.Equals(tokens[0].Value.Span, source, StringComparison.Ordinal));
         }
 
+
+        /// <summary>
+        /// Test a single white space
+        /// </summary>
+        [TestMethod]
+        public void StringLiteral()
+        {
+            var source = "\"Hello World\"";
+            ITokenizer tokenizer = new Tokenizer();
+            var tokens = tokenizer.Parse(source).ToArray();
+            Assert.AreEqual(1, tokens.Length);
+            Assert.AreEqual(TokenType.StringLiteral, tokens[0].TokenType);
+            Assert.AreEqual(0, tokens[0].AbsolutePosition);
+            Assert.AreEqual(1, tokens[0].ColumnNumber);
+            Assert.AreEqual(1, tokens[0].LineNumber);
+            Assert.IsTrue(MemoryExtensions.Equals(tokens[0].Value.Span, source, StringComparison.Ordinal));
+        }
+
+        /// <summary>
+        /// Test a single white space
+        /// </summary>
+        [TestMethod]
+        public void StringLiteralWithEscape()
+        {
+            var source = "\"Hello \\ \\nWorld\"";
+            ITokenizer tokenizer = new Tokenizer();
+            var tokens = tokenizer.Parse(source).ToArray();
+            Assert.AreEqual(1, tokens.Length);
+            Assert.AreEqual(TokenType.StringLiteral, tokens[0].TokenType);
+            Assert.AreEqual(0, tokens[0].AbsolutePosition);
+            Assert.AreEqual(1, tokens[0].ColumnNumber);
+            Assert.AreEqual(1, tokens[0].LineNumber);
+            Assert.IsTrue(MemoryExtensions.Equals(tokens[0].Value.Span, source, StringComparison.Ordinal));
+        }
+
+        /// <summary>
+        /// Test Keyword async
+        /// </summary>
+        [TestMethod]
+        public void KeywordAsync()
+        {
+            var source = "async";
+            ITokenizer tokenizer = new Tokenizer();
+            var tokens = tokenizer.Parse(source).ToArray();
+            Assert.AreEqual(1, tokens.Length);
+            Assert.AreEqual(TokenType.KeywordAsync, tokens[0].TokenType);
+            Assert.AreEqual(0, tokens[0].AbsolutePosition);
+            Assert.AreEqual(1, tokens[0].ColumnNumber);
+            Assert.AreEqual(1, tokens[0].LineNumber);
+            Assert.IsTrue(MemoryExtensions.Equals(tokens[0].Value.Span, source, StringComparison.Ordinal));
+        }
+
+        /// <summary>
+        /// Test Keyword await
+        /// </summary>
+        [TestMethod]
+        public void KeywordAwait()
+        {
+            var source = "await";
+            ITokenizer tokenizer = new Tokenizer();
+            var tokens = tokenizer.Parse(source).ToArray();
+            Assert.AreEqual(1, tokens.Length);
+            Assert.AreEqual(TokenType.KeywordAwait, tokens[0].TokenType);
+            Assert.AreEqual(0, tokens[0].AbsolutePosition);
+            Assert.AreEqual(1, tokens[0].ColumnNumber);
+            Assert.AreEqual(1, tokens[0].LineNumber);
+            Assert.IsTrue(MemoryExtensions.Equals(tokens[0].Value.Span, source, StringComparison.Ordinal));
+        }
+
+        /// <summary>
+        /// Test Keyword import
+        /// </summary>
+        [TestMethod]
+        public void KeywordImport()
+        {
+            var source = "import";
+            ITokenizer tokenizer = new Tokenizer();
+            var tokens = tokenizer.Parse(source).ToArray();
+            Assert.AreEqual(1, tokens.Length);
+            Assert.AreEqual(TokenType.KeywordImport, tokens[0].TokenType);
+            Assert.AreEqual(0, tokens[0].AbsolutePosition);
+            Assert.AreEqual(1, tokens[0].ColumnNumber);
+            Assert.AreEqual(1, tokens[0].LineNumber);
+            Assert.IsTrue(MemoryExtensions.Equals(tokens[0].Value.Span, source, StringComparison.Ordinal));
+        }
+
+        /// <summary>
+        /// Test Keyword import
+        /// </summary>
+        [TestMethod]
+        public void KeywordNamespace()
+        {
+            var source = "namespace";
+            ITokenizer tokenizer = new Tokenizer();
+            var tokens = tokenizer.Parse(source).ToArray();
+            Assert.AreEqual(1, tokens.Length);
+            Assert.AreEqual(TokenType.KeywordNamespace, tokens[0].TokenType);
+            Assert.AreEqual(0, tokens[0].AbsolutePosition);
+            Assert.AreEqual(1, tokens[0].ColumnNumber);
+            Assert.AreEqual(1, tokens[0].LineNumber);
+            Assert.IsTrue(MemoryExtensions.Equals(tokens[0].Value.Span, source, StringComparison.Ordinal));
+        }
+
+
+        /// <summary>
+        /// Test Keyword import
+        /// </summary>
+        [TestMethod]
+        public void KeywordUsing()
+        {
+            var source = "using";
+            ITokenizer tokenizer = new Tokenizer();
+            var tokens = tokenizer.Parse(source).ToArray();
+            Assert.AreEqual(1, tokens.Length);
+            Assert.AreEqual(TokenType.KeywordUsing, tokens[0].TokenType);
+            Assert.AreEqual(0, tokens[0].AbsolutePosition);
+            Assert.AreEqual(1, tokens[0].ColumnNumber);
+            Assert.AreEqual(1, tokens[0].LineNumber);
+            Assert.IsTrue(MemoryExtensions.Equals(tokens[0].Value.Span, source, StringComparison.Ordinal));
+        }
     }
 }

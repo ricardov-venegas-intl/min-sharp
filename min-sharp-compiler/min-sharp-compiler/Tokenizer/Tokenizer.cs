@@ -57,6 +57,57 @@ namespace min_sharp_compiler.Tokenizer
                         }
                         yield return parserState.BuildToken(TokenType.Comment);
                         break;
+                    case '"':
+                        parserState.MoveToNextChar();
+                        while (parserState.CurrentChar != '"' && parserState.CurrentChar != '\0')
+                        {
+                            parserState.MoveToNextChar();
+                            if (parserState.CurrentChar == '\\')
+                            {
+                                parserState.MoveToNextChar();
+                            }
+                        }
+                        if (parserState.CurrentChar == '\0')
+                        {
+                            yield return parserState.BuildToken(TokenType.ErrorStringNotClosed);
+                        }
+                        else
+                        {
+                            yield return parserState.BuildToken(TokenType.StringLiteral);
+                        }
+                        break;
+                    // Process identifiers and keywords
+                    case char c when c == '@' || c == '_' || char.IsLetterOrDigit(c):
+                        parserState.MoveToNextChar();
+                        while (parserState.CurrentChar == '_' || char.IsLetterOrDigit(parserState.CurrentChar))
+                        {
+                            parserState.MoveToNextChar();
+                        }
+                        if (MemoryExtensions.Equals(parserState.CurrentTokenValue.Span, "using", StringComparison.InvariantCulture) == true)
+                        {
+                            yield return parserState.BuildToken(TokenType.KeywordUsing);
+                        }
+                        else if (MemoryExtensions.Equals(parserState.CurrentTokenValue.Span, "async", StringComparison.InvariantCulture) == true)
+                        {
+                            yield return parserState.BuildToken(TokenType.KeywordAsync);
+                        }
+                        else if (MemoryExtensions.Equals(parserState.CurrentTokenValue.Span, "await", StringComparison.InvariantCulture) == true)
+                        {
+                            yield return parserState.BuildToken(TokenType.KeywordAwait);
+                        }
+                        else if (MemoryExtensions.Equals(parserState.CurrentTokenValue.Span, "import", StringComparison.InvariantCulture) == true)
+                        {
+                            yield return parserState.BuildToken(TokenType.KeywordImport);
+                        }
+                        else if (MemoryExtensions.Equals(parserState.CurrentTokenValue.Span, "namespace", StringComparison.InvariantCulture) == true)
+                        {
+                            yield return parserState.BuildToken(TokenType.KeywordNamespace);
+                        }
+                        else 
+                        {
+                            yield return parserState.BuildToken(TokenType.Identifier);
+                        }
+                        break;
                     default:
                         break;
 
@@ -125,6 +176,14 @@ namespace min_sharp_compiler.Tokenizer
             /// </summary>
             public int CurrentTokenStartLine { get; set; }
 
+            public ReadOnlyMemory<char> CurrentTokenValue
+            {
+                get
+                {
+                    return this.Source.Slice(this.CurrentTokenStart, this.CurrentPosition - this.CurrentTokenStart + 1);
+                }
+            }
+
             /// <summary>
             /// Move index to process nect character
             /// </summary>
@@ -139,6 +198,8 @@ namespace min_sharp_compiler.Tokenizer
                     this.NextChar = (this.CurrentPosition + 1 < this.Source.Length) ? this.Source.Span[this.CurrentPosition + 1] : '\0';
                     return true;
                 }
+                this.CurrentChar = '\0';
+                this.NextChar = '\0';
                 return false;
             }
 

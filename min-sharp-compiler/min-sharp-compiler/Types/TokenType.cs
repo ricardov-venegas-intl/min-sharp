@@ -35,9 +35,34 @@ namespace min_sharp_compiler.Types
         Keyword=200,
 
         /// <summary>
+        /// Keyword using
+        /// </summary>
+        KeywordUsing = 201,
+
+        /// <summary>
+        /// Keyword import
+        /// </summary>
+        KeywordImport = 202,
+
+        /// <summary>
+        /// Keyword namespace
+        /// </summary>
+        KeywordNamespace = 203,
+
+        /// <summary>
+        /// Keyword async 
+        /// </summary>
+        KeywordAsync = 204,
+
+        /// <summary>
+        /// Keyword await
+        /// </summary>
+        KeywordAwait = 205,
+
+        /// <summary>
         /// Number literal
         /// </summary>
-        NumberLiteral =300,
+        NumberLiteral = 300,
 
         /// <summary>
         /// String Literal
@@ -62,6 +87,11 @@ namespace min_sharp_compiler.Types
         /// <summary>
         /// Lexical Error
         /// </summary>
-        Error=3000
+        Error=3000,
+
+        /// <summary>
+        /// Lexical Error: String not complete
+        /// </summary>
+        ErrorStringNotClosed  = 3001
     }
 }
