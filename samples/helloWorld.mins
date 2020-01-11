@@ -1,22 +1,18 @@
-// This is a work in progress sample
 
-using System;
-import System.Console; 
+//System Interface
+interface Runtime.IConsoleApp : IModule
+{
+   IEnumerable<string> Execute(Array<String> args, IEnumerable<String> stdin);
+}
 
 namespace HelloWorldSample 
 {
 
-   /// <summary>
-   /// Implements a simple Console Service
-   /// </summary>
-   public module HelloWorld: IConsoleApp 
+   factory<IConsoleApp> HelloWorld (module)
    {
-      using IConsole console; // Automatic IoC
-
-      IConsoleApp.StartUp = async () => // modules only receive Data structures in calls
+      module.Execute = (args, stdin)
       {
-         await console.WriteLine("Hello World!");
+         return [ "Hello World" ]
       }
-
-   }
+   }   
 }
