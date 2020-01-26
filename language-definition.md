@@ -27,3 +27,4 @@ Language defined interfaces:
 * IModule.
 * IService.
 * IObject.
+* IRuntime.
