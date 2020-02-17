@@ -1,6 +1,6 @@
 namesapace MinSharp.Compiler.Tokenizer 
 {
-    public datatype ITokenizer
+    public datatype Token
     {
         string Type;
         string Value;

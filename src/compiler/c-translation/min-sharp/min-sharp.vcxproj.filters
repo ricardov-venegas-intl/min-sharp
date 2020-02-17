@@ -13,8 +13,14 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\System">
-      <UniqueIdentifier>{05dd9ad7-08fe-45ac-a80f-cf2e5a58948e}</UniqueIdentifier>
+    <Filter Include="Header Files\Runtime">
+      <UniqueIdentifier>{1ff69e65-416d-40ad-9ff7-e70f0b4a990a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Runtime\TypeSystem">
+      <UniqueIdentifier>{85f9eaa3-078c-458a-ba90-fba762649cdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tokenizer">
+      <UniqueIdentifier>{8779a1d4-b850-498d-a4fc-d3e17a8b2dd2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -26,20 +32,17 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Tokenizer\Tokenizer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Runtime\TypeSystem\TypeInternals.h">
+      <Filter>Header Files\Runtime\TypeSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\InternalRuntime.h">
+      <Filter>Header Files\Runtime</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Runtime.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Runtime</Filter>
     </ClInclude>
-    <ClInclude Include="Runtime\System\String.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Runtime\System\Number.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Runtime\System\Object.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Tokenizer\Tokenizer.h">
+      <Filter>Header Files\Tokenizer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
