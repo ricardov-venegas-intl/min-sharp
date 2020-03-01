@@ -11,7 +11,7 @@
 # =============================================================================
 
 # =============================================================================
-# Project: min-sharp-runtime
+# Project: Project
 # Configuration: Debug
 # =============================================================================
 
@@ -30,40 +30,80 @@ ninja_required_version = 1.5
 include rules.ninja
 
 # =============================================================================
-# Object build statements for EXECUTABLE target min-sharp-runtime
+# Object build statements for STATIC_LIBRARY target Project_lib
 
 
 #############################################
-# Order-only phony target for min-sharp-runtime
+# Order-only phony target for Project_lib
 
-build cmake_object_order_depends_target_min-sharp-runtime: phony || CMakeFiles\min-sharp-runtime.dir
+build cmake_object_order_depends_target_Project_lib: phony || CMakeFiles\Project_lib.dir
 
-build CMakeFiles\min-sharp-runtime.dir\min-sharp-runtime.cpp.obj: CXX_COMPILER__min-sharp-runtime ..\..\..\min-sharp-runtime.cpp || cmake_object_order_depends_target_min-sharp-runtime
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
-  OBJECT_DIR = CMakeFiles\min-sharp-runtime.dir
-  OBJECT_FILE_DIR = CMakeFiles\min-sharp-runtime.dir
-  TARGET_COMPILE_PDB = CMakeFiles\min-sharp-runtime.dir\
-  TARGET_PDB = min-sharp-runtime.pdb
+build CMakeFiles\Project_lib.dir\internal_runtime.c.obj: C_COMPILER__Project_lib ..\..\..\internal_runtime.c || cmake_object_order_depends_target_Project_lib
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1
+  OBJECT_DIR = CMakeFiles\Project_lib.dir
+  OBJECT_FILE_DIR = CMakeFiles\Project_lib.dir
+  TARGET_COMPILE_PDB = CMakeFiles\Project_lib.dir\Project_lib.pdb
+  TARGET_PDB = Project_lib.pdb
+
+build CMakeFiles\Project_lib.dir\CMakeFiles\3.15.19101501-MSVC_2\CompilerIdC\CMakeCCompilerId.c.obj: C_COMPILER__Project_lib CMakeFiles\3.15.19101501-MSVC_2\CompilerIdC\CMakeCCompilerId.c || cmake_object_order_depends_target_Project_lib
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1
+  OBJECT_DIR = CMakeFiles\Project_lib.dir
+  OBJECT_FILE_DIR = CMakeFiles\Project_lib.dir\CMakeFiles\3.15.19101501-MSVC_2\CompilerIdC
+  TARGET_COMPILE_PDB = CMakeFiles\Project_lib.dir\Project_lib.pdb
+  TARGET_PDB = Project_lib.pdb
+
+build CMakeFiles\Project_lib.dir\CMakeFiles\ShowIncludes\main.c.obj: C_COMPILER__Project_lib CMakeFiles\ShowIncludes\main.c || cmake_object_order_depends_target_Project_lib
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1
+  OBJECT_DIR = CMakeFiles\Project_lib.dir
+  OBJECT_FILE_DIR = CMakeFiles\Project_lib.dir\CMakeFiles\ShowIncludes
+  TARGET_COMPILE_PDB = CMakeFiles\Project_lib.dir\Project_lib.pdb
+  TARGET_PDB = Project_lib.pdb
+
+build CMakeFiles\Project_lib.dir\pch.c.obj: C_COMPILER__Project_lib ..\..\..\pch.c || cmake_object_order_depends_target_Project_lib
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1
+  OBJECT_DIR = CMakeFiles\Project_lib.dir
+  OBJECT_FILE_DIR = CMakeFiles\Project_lib.dir
+  TARGET_COMPILE_PDB = CMakeFiles\Project_lib.dir\Project_lib.pdb
+  TARGET_PDB = Project_lib.pdb
+
+build CMakeFiles\Project_lib.dir\services\system_list.c.obj: C_COMPILER__Project_lib ..\..\..\services\system_list.c || cmake_object_order_depends_target_Project_lib
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1
+  OBJECT_DIR = CMakeFiles\Project_lib.dir
+  OBJECT_FILE_DIR = CMakeFiles\Project_lib.dir\services
+  TARGET_COMPILE_PDB = CMakeFiles\Project_lib.dir\Project_lib.pdb
+  TARGET_PDB = Project_lib.pdb
+
+build CMakeFiles\Project_lib.dir\services\system_services.c.obj: C_COMPILER__Project_lib ..\..\..\services\system_services.c || cmake_object_order_depends_target_Project_lib
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1
+  OBJECT_DIR = CMakeFiles\Project_lib.dir
+  OBJECT_FILE_DIR = CMakeFiles\Project_lib.dir\services
+  TARGET_COMPILE_PDB = CMakeFiles\Project_lib.dir\Project_lib.pdb
+  TARGET_PDB = Project_lib.pdb
+
+build CMakeFiles\Project_lib.dir\services\system_types_repository.c.obj: C_COMPILER__Project_lib ..\..\..\services\system_types_repository.c || cmake_object_order_depends_target_Project_lib
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1
+  OBJECT_DIR = CMakeFiles\Project_lib.dir
+  OBJECT_FILE_DIR = CMakeFiles\Project_lib.dir\services
+  TARGET_COMPILE_PDB = CMakeFiles\Project_lib.dir\Project_lib.pdb
+  TARGET_PDB = Project_lib.pdb
 
 
 # =============================================================================
-# Link build statements for EXECUTABLE target min-sharp-runtime
+# Link build statements for STATIC_LIBRARY target Project_lib
 
 
 #############################################
-# Link the executable min-sharp-runtime.exe
+# Link the static library Project_lib.lib
 
-build min-sharp-runtime.exe: CXX_EXECUTABLE_LINKER__min-sharp-runtime CMakeFiles\min-sharp-runtime.dir\min-sharp-runtime.cpp.obj
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
-  LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
-  LINK_LIBRARIES = kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
-  OBJECT_DIR = CMakeFiles\min-sharp-runtime.dir
+build Project_lib.lib: C_STATIC_LIBRARY_LINKER__Project_lib CMakeFiles\Project_lib.dir\internal_runtime.c.obj CMakeFiles\Project_lib.dir\CMakeFiles\3.15.19101501-MSVC_2\CompilerIdC\CMakeCCompilerId.c.obj CMakeFiles\Project_lib.dir\CMakeFiles\ShowIncludes\main.c.obj CMakeFiles\Project_lib.dir\pch.c.obj CMakeFiles\Project_lib.dir\services\system_list.c.obj CMakeFiles\Project_lib.dir\services\system_services.c.obj CMakeFiles\Project_lib.dir\services\system_types_repository.c.obj
+  LANGUAGE_COMPILE_FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1
+  LINK_FLAGS = /machine:x64
+  OBJECT_DIR = CMakeFiles\Project_lib.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
-  TARGET_COMPILE_PDB = CMakeFiles\min-sharp-runtime.dir\
-  TARGET_FILE = min-sharp-runtime.exe
-  TARGET_IMPLIB = min-sharp-runtime.lib
-  TARGET_PDB = min-sharp-runtime.pdb
+  TARGET_COMPILE_PDB = CMakeFiles\Project_lib.dir\Project_lib.pdb
+  TARGET_FILE = Project_lib.lib
+  TARGET_PDB = Project_lib.pdb
 
 
 #############################################
@@ -91,7 +131,7 @@ build rebuild_cache: phony CMakeFiles\rebuild_cache.util
 # =============================================================================
 # Target aliases.
 
-build min-sharp-runtime: phony min-sharp-runtime.exe
+build Project_lib: phony Project_lib.lib
 
 # =============================================================================
 # Folder targets.
@@ -103,7 +143,7 @@ build min-sharp-runtime: phony min-sharp-runtime.exe
 #############################################
 # The main all target.
 
-build all: phony min-sharp-runtime.exe
+build all: phony Project_lib.lib
 
 
 #############################################

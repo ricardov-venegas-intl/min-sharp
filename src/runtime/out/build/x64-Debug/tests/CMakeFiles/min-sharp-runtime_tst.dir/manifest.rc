@@ -1,0 +1,2 @@
+#pragma code_page(65001)
+1 /* CREATEPROCESS_MANIFEST_RESOURCE_ID */ 24 /* RT_MANIFEST */ "E:/Code/min-sharp/src/runtime/out/build/x64-Debug/tests/CMakeFiles/min-sharp-runtime_tst.dir/embed.manifest"

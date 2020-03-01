@@ -1,0 +1,8 @@
+E:/Code/min-sharp/src/runtime/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+E:/Code/min-sharp/src/runtime/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir
+E:/Code/min-sharp/src/runtime/out/build/x64-Debug/min-sharp-runtime/CMakeFiles/min-sharp-runtime_lib.dir
+E:/Code/min-sharp/src/runtime/out/build/x64-Debug/min-sharp-runtime/CMakeFiles/edit_cache.dir
+E:/Code/min-sharp/src/runtime/out/build/x64-Debug/min-sharp-runtime/CMakeFiles/rebuild_cache.dir
+E:/Code/min-sharp/src/runtime/out/build/x64-Debug/tests/CMakeFiles/min-sharp-runtime_tst.dir
+E:/Code/min-sharp/src/runtime/out/build/x64-Debug/tests/CMakeFiles/edit_cache.dir
+E:/Code/min-sharp/src/runtime/out/build/x64-Debug/tests/CMakeFiles/rebuild_cache.dir

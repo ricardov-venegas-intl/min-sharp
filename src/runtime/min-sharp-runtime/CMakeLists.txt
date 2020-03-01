@@ -3,9 +3,13 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
-project ("min-sharp-runtime")
+set(BINARY ${CMAKE_PROJECT_NAME})
+
+file(GLOB_RECURSE SOURCES LIST_DIRECTORIES true *.h *.c)
+
+set(SOURCES ${SOURCES})
 
 # Add source to this project's executable.
-add_library (min-sharp-runtime "min-sharp-runtime.cpp" "min-sharp-runtime.h")
+add_library(${BINARY}_lib STATIC ${SOURCES})
 
-# TODO: Add tests and install targets if needed.
+
