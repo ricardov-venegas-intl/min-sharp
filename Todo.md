@@ -2,11 +2,10 @@
 
 ## Current
 
-* Change types respository to use lists.
+* Runtime: Restructure minsharp object to be a collection of interfaces
 
 ## Pending
 
-* Runtime: Restructure minsharp object to be a collection of interfaces
 * Runtime: Exceptions
 * Runtime: Basic System managed objects (string, boolean, number, object)
 * Runtime: Lists
