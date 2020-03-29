@@ -1,6 +1,7 @@
 #pragma once
 #include "min-sharp-runtime.h"
 #include "system_services.h"
+#include "system_unmanaged_data_manager.h"
 
 static const internal_string object_type_name = "Object";
 static const internal_string string_type_name = "String";
@@ -23,4 +24,4 @@ typedef struct system_types_repository_struct
 } system_types_repository;
 
 
-extern function_call_result system_repository_factory(system_types_repository** repository, system_services* system_services_instance);
+extern function_call_result system_repository_factory(system_types_repository** repository, system_services* system_services_instance, system_unmanaged_data_manager * unmanaged_data_manager);

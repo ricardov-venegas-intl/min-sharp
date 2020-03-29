@@ -5,3 +5,4 @@
 * Completed un managed list.
 * Slow progress but this is a long term project, so no hurries.
 * Still thinking the best way to implement services.
+* completed Change types respository to use lists.

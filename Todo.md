@@ -20,5 +20,6 @@
 
 ## Complete
 
-* Structure: Runtime and tests
-* Runtime: Create unmanaged data module
+* Structure: Runtime and tests.
+* Runtime: Create unmanaged data module.
+* Change types respository to use lists.
