@@ -41,7 +41,7 @@ void test_assertion(int assertion_result, char* assertion_description)
 		current_test_case_result = 0;
 		if (NULL != assertion_description)
 		{
-			printf("\n ASSERTION FAILED: %s", assertion_description);
+			printf("\n ASSERTION FAILED while testing :%s", assertion_description);
 		}
 		else
 		{

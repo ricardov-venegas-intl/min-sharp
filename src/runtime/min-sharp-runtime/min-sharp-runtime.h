@@ -16,7 +16,7 @@ typedef const char* internal_string;
 typedef unsigned char min_sharp_boolean;
 static const min_sharp_boolean min_sharp_true = 1;
 static const min_sharp_boolean min_sharp_false = 0;
-static const void* min_sharp_null = 0;
+static const void* min_sharp_null = (void*) 0;
 
 // # MinSharp object definitions
 typedef struct min_sharp_object_struct min_sharp_object;
