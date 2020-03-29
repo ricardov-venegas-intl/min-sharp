@@ -2,7 +2,7 @@
 
 ## Current
 
-* Runtime: Create unmanaged data module
+* Change types respository to use lists.
 
 ## Pending
 
@@ -21,3 +21,4 @@
 ## Complete
 
 * Structure: Runtime and tests
+* Runtime: Create unmanaged data module
