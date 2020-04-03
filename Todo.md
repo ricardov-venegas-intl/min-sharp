@@ -2,6 +2,7 @@
 
 ## Current
 
+* Up date design for object hierachy
 * Runtime: Restructure minsharp object to be a collection of interfaces
 
 ## Pending

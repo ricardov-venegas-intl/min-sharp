@@ -1,4 +1,16 @@
-# Noles and log
+# Notes and log
+
+## 2020-04-03
+  * Update Runtime Type System Notes
+
+## 2020-04-02
+
+* About interfaces, objects, datatypes, modules, and services.
+  * An interface can inherit from multiple interfaces.
+  * Only interfaces with Object can be contructed in a factory.
+  * No mudules, they will only be objects.
+  * Data types are a collection on serializable data values.
+  * Services can only have datatypes as method parameters.  
 
 ## 2020-01-29
 
