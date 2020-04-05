@@ -1,5 +1,9 @@
 # Runtime Notes
 
+## Implementation notes
+
+* Internally in runtime <T> is always an object
+
 ## Language related Interfaces
 
 ### Runtime.AdditionOperator<T>
@@ -36,7 +40,6 @@ Parents: None
 
 Methods:
     T Remainder(T rightOperand)
-
 
 ## Runtime.EqualityOperator<T>
 
@@ -77,14 +80,6 @@ Methods:
 * T GetInterface<T>()
 * Boolean ImplementsInterface<T>()
 
-### String
-
-A representation of a Utf value
-
-Parents:
-
-* Comparable<String>
-
 ### DataType
 
 Parents:
@@ -94,28 +89,42 @@ Parents:
 Methods:
 
 * T GetMemberValue<T>(member-id)
-* void SetMemberValue<T>(member-id, Tvalue)
+* void SetMemberValue<T>(member-id, T value)
 * Boolean HasMember(memberid)
 
-Object <- ComparableObject <- String
-Object <- ComparableObject <- Number
-Object <- ComparableObject <- Boolean
-Object <- Function
+### String
 
-### Comparable<T>
-Reprsents an entity that could be compare
+A representation of a Utf value
 
 Parents:
 
-* None
+* Object
+* Runtime.EqualityOperator<String>
+* Runtime.AdditionOperator<String>
+* Runtime.RelationalOperator<String>
 
-Methods:
+### Number
 
-* IsBiggerThan<T>(T b)
-* IsLessThan<T>(T b)
-* IsEqual<T> (T b)
+A representation of a numeric value (bcd)
 
+Parents:
 
-## Implementation notes
+* Object
+* Runtime.EqualityOperator<Number>
+* Runtime.RelationalOperator<Number>
+* Runtime.AdditionOperator<Number>
+* Runtime.SubstractionOperator<Number>
+* Runtime.RelationalOperator<Number>
+* Runtime.MultiplicationOperator<Number>
+* Runtime.DivisionOperator<Number>
+* Runtime.RemainderOperator<Number>
 
-* Internally in runtime T is always an object
+### boolean
+
+A representation of a boolean value
+
+Parents:
+
+* Object
+* Runtime.EqualityOperator<boolean>
+* Runtime.BooleanOperator<boolean>

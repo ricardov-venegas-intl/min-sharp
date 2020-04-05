@@ -1,7 +1,19 @@
 # Notes and log
 
+## 2020-04-05
+
+* Thinking about the function call convention
+  1. Just replicate C
+  2. The function sugnatures are always the same fn_call_result (RuntimeContext ctx).
+* Should I define the IR code first? Should it becode PCode?
+
+## 2020-04-04
+
+* Update Runtime Type System Notes
+
 ## 2020-04-03
-  * Update Runtime Type System Notes
+
+* Update Runtime Type System Notes
 
 ## 2020-04-02
 
