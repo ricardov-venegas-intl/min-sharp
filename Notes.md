@@ -1,11 +1,28 @@
 # Notes and log
 
+## 2020-04-12
+
+* For calling convention, I just use c.
+* The first parameter is a pointer to the runtime.
+* The runtime tracks the stack (Localvariables).
+* Each function allocates it's captures, and local on the first call.
+* Operations
+  * Allocate Interface
+  * AllocateLocalVariables
+  * DeallocateLocalVariables
+* Each interface structure contains the member of all the parents
+* The first member is always $$GetInterface()
+* Question: What should we iuse for interface ID?
+
 ## 2020-04-05
 
 * Thinking about the function call convention
   1. Just replicate C
   2. The function sugnatures are always the same fn_call_result (RuntimeContext ctx).
+  3. Do something similar to c# Task, and make everithing async by default?
+
 * Should I define the IR code first? Should it becode PCode?
+   * Well If I am using the LLVM there is no need to 
 
 ## 2020-04-04
 
