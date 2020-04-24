@@ -2,6 +2,11 @@
 
 ## 2020-04-12
 
+* Design runtime object
+* TODO: Define hot to manage multiple factories for an interface. 
+
+## 2020-04-12
+
 * For calling convention, I just use c.
 * The first parameter is a pointer to the runtime.
 * The runtime tracks the stack (Localvariables).

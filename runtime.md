@@ -2,7 +2,10 @@
 
 ## Implementation notes
 
-* Internally in runtime <T> is always an object
+* Internally in runtime, <T> is always an object, the compiler does the validations.
+* All Members with names that start with the character "$" are invisible to the compiler
+* The first method of all interfaces is: * T $GetInterface<T>()
+
 
 ## Language related Interfaces
 
@@ -77,7 +80,6 @@ Parents:
 
 Methods:
 
-* T GetInterface<T>()
 * Boolean ImplementsInterface<T>()
 
 ### DataType
@@ -128,3 +130,21 @@ Parents:
 * Object
 * Runtime.EqualityOperator<boolean>
 * Runtime.BooleanOperator<boolean>
+
+## Runtime Object
+
+Provides the runtime operations needed for all functions
+
+Parents:
+
+* None
+
+Members:
+
+* $PushScope( Arrays of Local variables Address)
+* $PopScope
+* $Clone
+* $CollectGarbage
+* BuildObject<T>()
+* BuildObject<T>(factoryFn)
+* RegisterFactory<T>(factory)
