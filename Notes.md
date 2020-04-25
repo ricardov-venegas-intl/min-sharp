@@ -1,5 +1,9 @@
 # Notes and log
 
+## 2020-04-25
+
+* Only one factoly is allowed by the compiler. No parameters are allowed.
+
 ## 2020-04-12
 
 * Design runtime object

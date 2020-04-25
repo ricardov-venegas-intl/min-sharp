@@ -6,7 +6,6 @@
 * All Members with names that start with the character "$" are invisible to the compiler
 * The first method of all interfaces is: * T $GetInterface<T>()
 
-
 ## Language related Interfaces
 
 ### Runtime.AdditionOperator<T>
@@ -148,3 +147,7 @@ Members:
 * BuildObject<T>()
 * BuildObject<T>(factoryFn)
 * RegisterFactory<T>(factory)
+
+Notes:
+
+* Only one factory per interface will be allowed by the compiler.
