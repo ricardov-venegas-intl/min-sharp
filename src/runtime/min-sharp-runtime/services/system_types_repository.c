@@ -11,6 +11,7 @@ typedef struct system_repository_data_struct
 	system_services* system_services_instance;
 } system_repository_data;
 
+function_call_result find_type(system_unmanaged_data_structure* this_instance, void* element, void* data_context, min_sharp_boolean* found);
 
 const internal_string operator_add_name = "$OperatorAdd";
 const internal_string property_message_name = "Message";
@@ -38,7 +39,7 @@ fail:
 
 }
 
-//
+#pragma warning(disable:4305 4293 4305)
 // Gives a unique member id
 // Replace with a atom table 
 static min_sharp_memberid calculate_member_id(internal_string member_name)
@@ -50,6 +51,33 @@ static min_sharp_memberid calculate_member_id(internal_string member_name)
 		h ^= h >> 47u;
 	}
 	return h;
+}
+#pragma warning(default:4305 4293 4305)
+
+static function_call_result register_type_info(system_types_repository* this_instance, min_sharp_type_info* type_info, internal_string type_name)
+{
+	if (min_sharp_null == this_instance || min_sharp_null == type_info || min_sharp_null == type_name)
+		goto fail;
+
+	function_call_result fcr;
+	min_sharp_boolean found = min_sharp_false;
+	min_sharp_type_info* previous_type_info;
+	//Verify that the type doen't exist already
+	fcr = this_instance->data->system_types_list->find_first(this_instance->data->system_types_list, find_type, type_name, &previous_type_info, &found);
+	if (function_call_result_fail == fcr)
+		goto fail;
+
+	if (min_sharp_true == found)
+		goto fail;
+
+	fcr = this_instance->data->system_types_list->add_element(this_instance->data->system_types_list, type_info);
+	if (function_call_result_fail == fcr)
+		goto fail;
+
+	return function_call_result_success;
+
+fail:
+	return function_call_result_fail;
 }
 
 
@@ -151,8 +179,8 @@ static function_call_result find_type(system_unmanaged_data_structure* this_inst
 	if (min_sharp_null == this_instance || min_sharp_null == element || min_sharp_null == data_context || min_sharp_null == found)
 		goto fail;
 
-	min_sharp_type_info* current = (int*)element;
-	internal_string type_name = (int*)data_context;
+	min_sharp_type_info* current = (min_sharp_type_info*)element;
+	internal_string type_name = (internal_string)data_context;
 
 	*found = (_strcmpi(current->interface_name, type_name) == 0);
 	return function_call_result_success;
@@ -251,6 +279,7 @@ function_call_result system_repository_factory(system_types_repository** reposit
 
 	// Set Struct members
 	result->get_type_info = &get_type_info;
+	result->register_type_info = &register_type_info;
 	result->release = &release_system_repository;
 	result->data->system_services_instance = system_services_instance;
 

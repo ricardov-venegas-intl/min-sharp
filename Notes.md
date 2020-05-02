@@ -1,10 +1,18 @@
 # Notes and log
 
+## 2020-05-02
+
+* Need to resolve how to work with managed memories and an object that is the sum of interfaces
+
+## 2020-04-26
+
+* Now only object has $GetInterface()
+
 ## 2020-04-25
 
 * Only one factoly is allowed by the compiler. No parameters are allowed.
 
-## 2020-04-12
+## 2020-04-24
 
 * Design runtime object
 * TODO: Define hot to manage multiple factories for an interface. 
@@ -31,6 +39,7 @@
   3. Do something similar to c# Task, and make everithing async by default?
 
 * Should I define the IR code first? Should it becode PCode?
+
    * Well If I am using the LLVM there is no need to 
 
 ## 2020-04-04

@@ -4,7 +4,7 @@
 
 * Internally in runtime, <T> is always an object, the compiler does the validations.
 * All Members with names that start with the character "$" are invisible to the compiler
-* The first method of all interfaces is: * T $GetInterface<T>()
+* The object has a single member * T $GetInterface<T>()
 
 ## Language related Interfaces
 
@@ -130,7 +130,7 @@ Parents:
 * Runtime.EqualityOperator<boolean>
 * Runtime.BooleanOperator<boolean>
 
-## Runtime Object
+## Runtime Services Object
 
 Provides the runtime operations needed for all functions
 

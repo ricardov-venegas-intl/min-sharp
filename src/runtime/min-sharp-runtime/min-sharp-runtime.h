@@ -16,7 +16,12 @@ typedef const char* internal_string;
 typedef unsigned char min_sharp_boolean;
 static const min_sharp_boolean min_sharp_true = 1;
 static const min_sharp_boolean min_sharp_false = 0;
-static const void* min_sharp_null = (void*) 0;
+#define min_sharp_null ((void*) 0)
+
+// standard return values & standard Function pointer
+typedef unsigned_int_32 function_call_result;
+#define function_call_result_success (0)
+#define function_call_result_fail (-1)
 
 // # MinSharp object definitions
 typedef struct min_sharp_object_struct min_sharp_object;
@@ -47,7 +52,6 @@ typedef struct
 {
 	unsigned_int_16 object_flags;
 	unsigned_int_16 allocated_memory;
-	min_sharp_type_info* type_info;
 } min_sharp_object_internals;
 
 // Object member
@@ -57,13 +61,16 @@ typedef struct
 	min_sharp_object* value;
 } min_sharp_object_member;
 
+typedef struct min_sharp_interface_struct {
+	min_sharp_type_info* type_info;
+	min_sharp_object_member members[1];
+} min_sharp_interface;
+
+
 typedef struct min_sharp_object_struct {
 	min_sharp_object_internals objectInternals;
-	min_sharp_object_member members[1];
+	function_call_result (*__GetInterface)(min_sharp_object** exception, min_sharp_interface** result, internal_string interfaceName);
+	min_sharp_interface interfaces[1];
 } min_sharp_object;
 
-// standard return values & standard Function pointer
-typedef unsigned_int_32 function_call_result;
-static const int function_call_result_success = 0;
-static const int function_call_result_fail = -1;
-typedef function_call_result(*min_sharp_function_prototype)(min_sharp_object** exception);
+typedef function_call_result(*min_sharp_function_prototype)(min_sharp_object** exception, min_sharp_object targetObject);

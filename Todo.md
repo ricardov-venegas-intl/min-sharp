@@ -2,8 +2,9 @@
 
 ## Current
 
-* Up date design for object hierachy
-* Runtime: Restructure minsharp object to be a collection of interfaces
+* Runtime Serivces: release
+* Runtime Services: Factory
+* Move initialize_types_repository to a new class
 
 ## Pending
 
@@ -20,6 +21,8 @@
 
 ## Complete
 
+* Up date design for object hierachy
+* Runtime: Restructure minsharp object to be a collection of interfaces
 * Structure: Runtime and tests.
 * Runtime: Create unmanaged data module.
 * Change types respository to use lists.

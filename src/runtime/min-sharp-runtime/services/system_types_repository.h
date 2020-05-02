@@ -18,7 +18,8 @@ typedef struct system_repository_data_struct system_repository_data;
 
 typedef struct system_types_repository_struct
 {
-	function_call_result (*get_type_info)(system_types_repository* this_instance, min_sharp_type_info** type_info, internal_string type_name);
+	function_call_result(*register_type_info)(system_types_repository* this_instance, min_sharp_type_info* type_info, internal_string type_name);
+	function_call_result(*get_type_info)(system_types_repository* this_instance, min_sharp_type_info** type_info, internal_string type_name);
 	function_call_result (*release)(system_types_repository *this_instance);
 	system_repository_data *data;
 } system_types_repository;

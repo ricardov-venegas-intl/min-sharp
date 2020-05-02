@@ -4,3 +4,4 @@
 extern void system_types_respository_tests();
 extern void system_services_tests();
 extern void system_list_tests();
+extern void runtime_services_tests();

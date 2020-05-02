@@ -22,22 +22,22 @@ void minsharp_init_runtime()
 	}
 }
 
-// Allocates an internal object
-min_sharp_object* internal_allocate_object(min_sharp_type_info *typeinfo, int extra_data)
-{
-	min_sharp_object* result;
-	int object_size = sizeof(min_sharp_object) + sizeof(min_sharp_object_member) * typeinfo->number_of_members + extra_data;
-	result = malloc(object_size);
-	if (NULL == result)
-	{
-		return NULL;
-	}
-	result->objectInternals.object_flags = 0;
-	result->objectInternals.allocated_memory = object_size;
-	result->objectInternals.type_info = typeinfo;
-	memset(result->members, 0, sizeof(min_sharp_object_member) * typeinfo->number_of_members + extra_data);
-	return result;
-}
+//// Allocates an internal object
+//min_sharp_object* internal_allocate_object(min_sharp_type_info *typeinfo, int extra_data)
+//{
+//	min_sharp_object* result;
+//	int object_size = sizeof(min_sharp_object) + sizeof(min_sharp_object_member) * typeinfo->number_of_members + extra_data;
+//	result = malloc(object_size);
+//	if (NULL == result)
+//	{
+//		return NULL;
+//	}
+//	result->objectInternals.object_flags = 0;
+//	result->objectInternals.allocated_memory = object_size;
+//	result->objectInternals.type_info = typeinfo;
+//	memset(result->members, 0, sizeof(min_sharp_object_member) * typeinfo->number_of_members + extra_data);
+//	return result;
+//}
 
 
 function_call_result fill_function_with_no_captures(min_sharp_function *function,

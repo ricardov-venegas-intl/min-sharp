@@ -11,4 +11,5 @@ int main()
 	system_services_tests();
 	system_list_tests();
 	system_types_respository_tests();
+	runtime_services_tests();
 }
