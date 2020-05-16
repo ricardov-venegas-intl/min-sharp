@@ -40,19 +40,12 @@ typedef struct
 // type info
 typedef struct
 {
-	unsigned_int_16 number_of_members;
 	internal_string interface_name;
 	internal_string parent_interface_name;
+	unsigned_int_16 number_of_members;
 	min_sharp_member_info members[1];
 } min_sharp_type_info;
 
-// min_sharp_object_internals: Used for garbage collection, allocation, and reflection.
-// It if the first member on all object
-typedef struct
-{
-	unsigned_int_16 object_flags;
-	unsigned_int_16 allocated_memory;
-} min_sharp_object_internals;
 
 // Object member
 typedef struct
@@ -63,14 +56,21 @@ typedef struct
 
 typedef struct min_sharp_interface_struct {
 	min_sharp_type_info* type_info;
-	min_sharp_object_member members[1];
+	unsigned_int_16 number_of_members;
+	min_sharp_object_member *members_list_head;
 } min_sharp_interface;
 
+typedef struct min_sharp_object_header_struct {
+	unsigned_int_16 number_of_interfaces;
+	min_sharp_interface* interfaces_list_head;
+} min_sharp_object_header;
 
 typedef struct min_sharp_object_struct {
-	min_sharp_object_internals objectInternals;
-	function_call_result (*__GetInterface)(min_sharp_object** exception, min_sharp_interface** result, internal_string interfaceName);
-	min_sharp_interface interfaces[1];
+	function_call_result (*__GetInterface)(min_sharp_object** exception, min_sharp_interface** result, internal_string interfaceName);	
+	union {
+		min_sharp_object_header* object_header;
+		void* primitive_object_internal_data;
+	};
 } min_sharp_object;
 
 typedef function_call_result(*min_sharp_function_prototype)(min_sharp_object** exception, min_sharp_object targetObject);

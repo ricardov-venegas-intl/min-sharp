@@ -25,8 +25,11 @@ void test_system_unmanaged_data_manager_factory()
 			test_assertion(min_sharp_null != unmanaged_data_manager->create_list, "create_list not null");
 			test_assertion(min_sharp_null != unmanaged_data_manager->release, "release not null");
 			test_assertion(min_sharp_null != unmanaged_data_manager->release_list, "release_list not null");
-			fcr = unmanaged_data_manager->release(unmanaged_data_manager);
-			test_assertion(fcr == function_call_result_success, "unmanaged_data_manager->release");
+			if (min_sharp_null != unmanaged_data_manager->release)
+			{
+				fcr = unmanaged_data_manager->release(unmanaged_data_manager);
+				test_assertion(fcr == function_call_result_success, "unmanaged_data_manager->release");
+			}
 		}
 	}
 	end_test();

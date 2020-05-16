@@ -72,6 +72,7 @@ Methods:
 ### Object
 
 Any entity that cen be instantiated.
+Internally is a sequence of interfaces.
 
 Parents:
 

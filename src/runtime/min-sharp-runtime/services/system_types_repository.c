@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "system_types_repository.h"
-#include "internal_runtime.h"
 #include "type_internals.h"
 #include <assert.h>
 #include <string.h>
@@ -56,14 +55,15 @@ static min_sharp_memberid calculate_member_id(internal_string member_name)
 
 static function_call_result register_type_info(system_types_repository* this_instance, min_sharp_type_info* type_info, internal_string type_name)
 {
-	if (min_sharp_null == this_instance || min_sharp_null == type_info || min_sharp_null == type_name)
-		goto fail;
-
 	function_call_result fcr;
 	min_sharp_boolean found = min_sharp_false;
 	min_sharp_type_info* previous_type_info;
+
+	if (min_sharp_null == this_instance || min_sharp_null == type_info || min_sharp_null == type_name)
+		goto fail;
+
 	//Verify that the type doen't exist already
-	fcr = this_instance->data->system_types_list->find_first(this_instance->data->system_types_list, find_type, type_name, &previous_type_info, &found);
+	fcr = this_instance->data->system_types_list->find_first(this_instance->data->system_types_list, find_type, (void *) type_name, (void **) &previous_type_info, &found);
 	if (function_call_result_fail == fcr)
 		goto fail;
 
@@ -199,7 +199,7 @@ static function_call_result get_type_info(system_types_repository* this_instance
 	*type_info = min_sharp_null;
 	min_sharp_boolean found = min_sharp_false;
 
-	fcr = this_instance->data->system_types_list->find_first(this_instance->data->system_types_list, find_type, type_name, type_info, &found);
+	fcr = this_instance->data->system_types_list->find_first(this_instance->data->system_types_list, find_type, (void *)type_name, (void **) type_info, &found);
 	if (function_call_result_fail == fcr)
 		goto fail;
 

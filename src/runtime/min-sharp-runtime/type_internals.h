@@ -8,7 +8,6 @@ static const object_flags constant_object = 4;
 // Function instance object
 typedef struct
 {
-	min_sharp_object_internals object_internals;
 	min_sharp_boolean has_return_value;
 	unsigned_int_16 number_of_parameters;
 	min_sharp_object* captures;
@@ -24,7 +23,6 @@ typedef struct
 
 // String Value object
 typedef struct {
-	min_sharp_object_internals object_internals;
 	union
 	{
 		min_sharp_object_member members_array[1];
@@ -38,7 +36,6 @@ typedef struct {
 
 // Number value object
 typedef struct {
-	min_sharp_object_internals object_internals;
 	min_sharp_object_member members[1];
 	struct
 	{
@@ -48,7 +45,6 @@ typedef struct {
 
 // boolean value object
 typedef struct min_sharp_boolean_struct {
-	min_sharp_object_internals object_internals;
 	min_sharp_object_member members[1];
 	struct
 	{
@@ -57,7 +53,6 @@ typedef struct min_sharp_boolean_struct {
 } min_sharp_boolean_object;
 
 typedef struct {
-	min_sharp_object_internals object_internals;
 	union
 	{
 		min_sharp_object_member members_array[1];

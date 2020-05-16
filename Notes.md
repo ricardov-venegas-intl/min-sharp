@@ -1,5 +1,18 @@
 # Notes and log
 
+## 2020-05-16
+
+* Separate allocation from complex objects and primitive types.
+* Consider DateTime as primitive
+
+## 2020-05-03
+
+* To resolve the issue with how to allocate object, we will define:
+  * An object as a sequence of interfaces.
+  * Interfaces are a header plus a sequence of members.
+  * A member is an Identifier + a pointer to an object.
+* We will try to allocate everything in a single block to reduce memory fragmentation.
+
 ## 2020-05-02
 
 * Need to resolve how to work with managed memories and an object that is the sum of interfaces

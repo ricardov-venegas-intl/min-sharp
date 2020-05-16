@@ -2,6 +2,7 @@
 
 ## Current
 
+* Managed Memory Services
 * Runtime Serivces: release
 * Runtime Services: Factory
 * Move initialize_types_repository to a new class
@@ -18,6 +19,7 @@
 * Lexical Parser
 * Syntax Parser
 * Semantic Analisys: Type inferance
+* Optimize managed memory allocation by removing pointers
 
 ## Complete
 
