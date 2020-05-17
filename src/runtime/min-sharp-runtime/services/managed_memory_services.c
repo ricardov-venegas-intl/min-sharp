@@ -392,11 +392,14 @@ static function_call_result collect_garbage(managed_memory_services* this_instan
 		current_scope = next_scope;
 	}
 
-	//scan all objects
-	fcr = scall_all_object_nodes(this_instance->data->object_list_head);
-	if (function_call_result_fail == fcr)
+	//scan all objects if there are objects allocated
+	if (min_sharp_null != this_instance->data->object_list_head)
 	{
-		goto fail;
+		fcr = scall_all_object_nodes(this_instance->data->object_list_head);
+		if (function_call_result_fail == fcr)
+		{
+			goto fail;
+		}
 	}
 
 	// free unmarked objects
