@@ -1,5 +1,24 @@
 # Notes and log
 
+## 2020-05-23
+
+* Before implementing any primitive type I need a resolver/buider for internal types:
+  * Number
+  * String
+  * Boolean
+  * Exception
+  * Function
+
+## 2020-05-22
+
+* I decided that there will be only one type of exception with 2 string fields Code & message.
+* I'm thinking about Interfaces having functions only and datataypes having data only.
+
+## 2020-05-19
+
+* What should We do with exceptions?
+* I'm considering a single class with 2 string fields: code and message
+
 ## 2020-05-16
 
 * Separate allocation from complex objects and primitive types.
@@ -52,8 +71,7 @@
   3. Do something similar to c# Task, and make everithing async by default?
 
 * Should I define the IR code first? Should it becode PCode?
-
-   * Well If I am using the LLVM there is no need to 
+  * Well If I am using the LLVM there is no need to use pcode.
 
 ## 2020-04-04
 

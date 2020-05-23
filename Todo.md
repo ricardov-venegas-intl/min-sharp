@@ -2,9 +2,9 @@
 
 ## Current
 
-* Managed Memory Services
-* Runtime Serivces: release
+* Runtime Services: release
 * Runtime Services: Factory
+* Runtime Services: internal builder
 * Move initialize_types_repository to a new class
 
 ## Pending
@@ -23,6 +23,7 @@
 
 ## Complete
 
+* Managed Memory Services
 * Up date design for object hierachy
 * Runtime: Restructure minsharp object to be a collection of interfaces
 * Structure: Runtime and tests.
