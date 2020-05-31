@@ -57,20 +57,14 @@ typedef struct
 typedef struct min_sharp_interface_struct {
 	min_sharp_type_info* type_info;
 	unsigned_int_16 number_of_members;
-	min_sharp_object_member *members_list_head;
 } min_sharp_interface;
 
 typedef struct min_sharp_object_header_struct {
 	unsigned_int_16 number_of_interfaces;
-	min_sharp_interface* interfaces_list_head;
 } min_sharp_object_header;
 
 typedef struct min_sharp_object_struct {
 	function_call_result (*__GetInterface)(min_sharp_object** exception, min_sharp_interface** result, internal_string interfaceName);	
-	union {
-		min_sharp_object_header* object_header;
-		void* primitive_object_internal_data;
-	};
 } min_sharp_object;
 
 typedef function_call_result(*min_sharp_function_prototype)(min_sharp_object** exception, min_sharp_object targetObject);

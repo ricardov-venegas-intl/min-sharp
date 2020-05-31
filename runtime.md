@@ -67,6 +67,20 @@ Methods:
     T And (T rightOperator)
     T Not ()
 
+## Runtime.ReadOnlyProperty<T>
+
+Parents: None
+
+Methods:
+    T GetValue
+
+## Runtime.Property<T>
+
+Parents: Runtime.ReadOnlyProperty<T>
+
+Methods:
+    T SetValue
+
 ## Type Hiearchy
 
 ### Object

@@ -84,7 +84,6 @@ typedef struct
 {
 	min_sharp_type_info* type_info;
 	unsigned_int_16 number_of_members;
-	min_sharp_object_member* members_list_head;
 	min_sharp_object_member member1;
 } sample_interface1;
 
@@ -92,7 +91,6 @@ typedef struct
 {
 	min_sharp_type_info* type_info;
 	unsigned_int_16 number_of_members;
-	min_sharp_object_member* members_list_head;
 	min_sharp_object_member member1;
 	min_sharp_object_member member2;
 	min_sharp_object_member member3;
@@ -102,7 +100,6 @@ typedef struct
 {
 	min_sharp_type_info* type_info;
 	unsigned_int_16 number_of_members;
-	min_sharp_object_member* members_list_head;
 	min_sharp_object_member member1;
 	min_sharp_object_member member2;
 } sample_interface2;
@@ -110,9 +107,7 @@ typedef struct
 typedef struct
 {
 	function_call_result(*__GetInterface)(min_sharp_object** exception, min_sharp_interface** result, internal_string interfaceName);
-	min_sharp_object_header* object_header;
 	unsigned_int_16 number_of_interfaces;
-	min_sharp_interface* interfaces_list_head;
 	sample_interface3 interface3;
 	sample_interface1 interface1;
 	sample_interface2 interface2;
@@ -122,8 +117,6 @@ static void validate_object(object1* mapped_object)
 {
 	test_assertion(mapped_object->number_of_interfaces == 3, "mapped_object->number_of_interfaces is 3");
 	test_assertion(min_sharp_null == mapped_object->__GetInterface, "__GetInterfaceis null");
-	test_assertion(((void*)mapped_object->interfaces_list_head) == (void*)&(mapped_object->interface3),
-		"mapped_object->interfaces_list_head == &(mapped_object->interface3");
 	test_assertion(min_sharp_null == mapped_object->interface3.member1.value,
 		"mapped_object->interface3.member1.value is null");
 	test_assertion(0 == mapped_object->interface3.member1.member_id,
@@ -275,9 +268,6 @@ static void managed_memory_services_gc_on_empty()
 {
 	function_call_result fcr;
 	managed_memory_services* managed_memory_services_instance;
-	min_sharp_object* scope1[3];
-	min_sharp_object* scope2[2];
-	unsigned_int_16 object1_interfaces_sized[3];
 
 	start_test("managed_memory_services_gc_on_empty");
 	build_managed_memory_services(&managed_memory_services_instance);

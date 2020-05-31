@@ -32,6 +32,24 @@ typedef struct managed_memory_services_data_struct {
 } managed_memory_services_data;
 
 
+
+typedef struct min_sharp_interface_struct_mapped {
+	min_sharp_type_info* type_info;
+	unsigned_int_16 number_of_members;
+	min_sharp_object_member members[1];
+} min_sharp_interface_mapped;
+
+typedef struct min_sharp_object_header_struct_mapped {
+	unsigned_int_16 number_of_interfaces;
+	min_sharp_interface interfaces[1];
+} min_sharp_object_header_mapped;
+
+typedef struct min_sharp_object_struct_mapped {
+	function_call_result(*__GetInterface)(min_sharp_object** exception, min_sharp_interface** result, internal_string interfaceName);
+	min_sharp_object_header_mapped header;
+} min_sharp_object_mapped;
+
+
 static function_call_result push_scope(managed_memory_services* this_instance, unsigned_int_16 number_of_elements, min_sharp_object* scope_variables[])
 {
 	function_call_result fcr;
@@ -136,17 +154,16 @@ static function_call_result allocate_object(managed_memory_services* this_instan
 
 	// Initialize object allocation variables
 	//Calculate the start of the object header
-	min_sharp_object_header* object_header = (min_sharp_object_header*)(&(new_object_node->object) + 1);
+	min_sharp_object_mapped* current_object = (min_sharp_object_mapped*)&(new_object_node->object);
+	min_sharp_object_header* object_header = (min_sharp_object_header*)&(current_object->header);
 
 	//Calculate the start of the  first interface
-	min_sharp_interface* current_interface = (min_sharp_interface*)(object_header + 1);
+	min_sharp_object_header_mapped* mappedHeader = (min_sharp_object_header_mapped*)object_header;
+	min_sharp_interface* current_interface = &(mappedHeader->interfaces[0]);
 
 	//Initialize object
 	new_object_node->object.__GetInterface = min_sharp_null;
-	new_object_node->object.object_header = object_header;
-
-	new_object_node->object.object_header->interfaces_list_head = current_interface;
-	new_object_node->object.object_header->number_of_interfaces = number_of_interfaces;
+	object_header->number_of_interfaces = number_of_interfaces;
 
 	// initialize the interfaces
 	for (int interface_index = 0; interface_index < number_of_interfaces; interface_index++)
@@ -157,14 +174,15 @@ static function_call_result allocate_object(managed_memory_services* this_instan
 			goto fail;
 		}
 
-		// Calculate the start of the members (where the next inteface starts if it were an array
-		min_sharp_object_member* current_member = (min_sharp_object_member*)(current_interface +1);
-
 		// initialize the current interface fields
 		current_interface->number_of_members = interfaces_sizes[interface_index];
-		current_interface->members_list_head = current_member;
+		current_interface->type_info = min_sharp_null;
 
 		// Initialize the members
+		min_sharp_interface_mapped* mapped_interface = (min_sharp_interface_mapped*)current_interface;
+		// Calculate the start of the members (where the next inteface starts if it were an array
+		min_sharp_object_member* current_member = (min_sharp_object_member*)&(mapped_interface->members[0]);
+
 		for (int member_index = 0; member_index < interfaces_sizes[interface_index]; member_index++)
 		{
 			// This would not happen, but the compiler throws a warning
@@ -228,7 +246,6 @@ static function_call_result allocate__primitive_object(managed_memory_services* 
 
 	//Initialize object
 	new_object_node->object.__GetInterface = min_sharp_null;
-	new_object_node->object.primitive_object_internal_data = data_start;
 	return function_call_result_success;
 
 fail:
@@ -270,20 +287,24 @@ fail:
 
 static function_call_result get_interface_by_index(min_sharp_interface **result, min_sharp_object* object, unsigned_int_16 interface_index)
 {
+	min_sharp_object_mapped* mapped_object = (min_sharp_object_mapped*)object;
 	// verify null and than the index in les than the number of interfaces
 	if (min_sharp_null == object 
-		|| min_sharp_null == object->object_header->interfaces_list_head
-		|| object->object_header->number_of_interfaces <= interface_index)
+		|| mapped_object->header.number_of_interfaces <= interface_index)
 	{
 		goto fail;
 	}
 
-	min_sharp_interface* current = object->object_header->interfaces_list_head;
+
+	// The current interface starts after the object_header
+	min_sharp_object_header_mapped* mapped_header = (min_sharp_object_header_mapped*)&(mapped_object->header);
+	min_sharp_interface* current = &(mapped_header->interfaces[0]);
 	unsigned_int_16 current_index = 0;
 	while (current_index < interface_index)
 	{
+		min_sharp_interface_mapped* mapped_interface = (min_sharp_interface_mapped*)current;
 		// The next inteface starts after the last member (current->number_of_members -1)
-		current = (min_sharp_interface*)&(current->members_list_head[current->number_of_members]);
+		current = (min_sharp_interface*)&(mapped_interface->members[current->number_of_members]);
 		current_index++;
 	}
 
@@ -315,8 +336,9 @@ static function_call_result scall_all_object_nodes(object_node* object_list_head
 			{
 				if (allocation_flags_regular_object == current->allocation_flags)
 				{
+					min_sharp_object_mapped* mapped_object = (min_sharp_object_mapped*)&(current->object);
 					for (int interface_index = 0;
-						interface_index < current->object.object_header->number_of_interfaces;
+						interface_index < mapped_object->header.number_of_interfaces;
 						interface_index++)
 					{
 						min_sharp_interface* current_interface;
@@ -329,7 +351,11 @@ static function_call_result scall_all_object_nodes(object_node* object_list_head
 							member_index < current_interface->number_of_members; 
 							member_index++)
 						{
-							min_sharp_object *object = current_interface->members_list_head[member_index].value;
+
+							// The members_list_head start where the current interface ends 
+							min_sharp_object_member* members_list_head = (min_sharp_object_member*)(current_interface + 1);
+
+							min_sharp_object *object = members_list_head[member_index].value;
 							if (min_sharp_null !=  object)
 							{
 								object_node* reached_object_node;
