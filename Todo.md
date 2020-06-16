@@ -2,6 +2,7 @@
 
 ## Current
 
+* Types
 * Runtime Services: release
 * Runtime Services: Factory
 * Runtime Services: internal builder

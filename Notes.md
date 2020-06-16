@@ -1,5 +1,17 @@
 # Notes and log
 
+## 2020-06-14
+
+* Still thinking about a way to conceptualize the function a as an object.
+* The function cannot be an interface because the interface is a collection of functions.
+* At this moment I thinking the the fucntion will be an interface with no menthods. A black box.
+* Later we can add methods for reflection.
+
+## 2020-06-07
+
+* if a function is an object what is the interface?
+* Will start with a function that returns something andf a context that contains parameters and the parent captures.
+
 ## 2020-05-23
 
 * Before implementing any primitive type I need a resolver/buider for internal types:
