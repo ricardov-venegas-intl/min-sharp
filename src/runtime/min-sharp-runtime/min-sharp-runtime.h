@@ -1,7 +1,8 @@
-﻿// min-sharp-runtime.h : Include file for standard system include files,
-// or project specific include files.
+﻿#pragma once
 
-#pragma once
+//
+// Internal runtime intefaces.
+//
 
 // # Standard types
 typedef long int_64;
@@ -23,48 +24,51 @@ typedef unsigned_int_32 function_call_result;
 #define function_call_result_success (0)
 #define function_call_result_fail (-1)
 
-// # MinSharp object definitions
+// MinSharp forward object definitions
 typedef struct min_sharp_object_struct min_sharp_object;
-
 typedef unsigned short object_flags;
 typedef unsigned_int_64 min_sharp_memberid;
+typedef struct min_sharp_object_struct min_sharp_object;
+typedef struct runtime_iterator_struct runtime_iterator;
+typedef struct min_sharp_interface_struct min_sharp_interface;
 
-// member info
-typedef struct
+// Iterator
+typedef struct runtime_iterator_data_struct runtime_iterator_data;
+typedef struct runtime_iterator_struct
 {
-	min_sharp_memberid member_id;
-	internal_string member_name;
-	internal_string member_type;
-} min_sharp_member_info;
+	function_call_result(*HasNext)(runtime_iterator* this_instance, min_sharp_boolean* hasNext);
+	function_call_result(*Next)(runtime_iterator* this_instance, void** next);
+	function_call_result(*Release)(runtime_iterator* this_instance);
+	runtime_iterator_data* runtime_iterator_data;
+} runtime_iterator;
 
-// type info
-typedef struct
+typedef function_call_result(*runtime_iterator_function)(void* target, void* context);
+
+// Esential interfaces
+typedef struct min_sharp_interface_intrinsicts_struct
 {
-	internal_string interface_name;
-	internal_string parent_interface_name;
-	unsigned_int_16 number_of_members;
-	min_sharp_member_info members[1];
-} min_sharp_type_info;
+	function_call_result(*GetNumberOfMembers)(min_sharp_interface* this_instance, unsigned_int_32* numberOfMembers);
+	function_call_result(*GetInterfaceName)(min_sharp_interface* this_instance, internal_string *interfaceName);
+	function_call_result(*GetMemberIterator)(min_sharp_interface* this_instance, runtime_iterator** iterator);
+} min_sharp_interface_intrinsicts;
 
-
-// Object member
-typedef struct
+typedef struct min_sharp_object_intrinsicts_struct
 {
-	min_sharp_memberid member_id;
-	min_sharp_object* value;
-} min_sharp_object_member;
+	function_call_result(*GetInterface)(min_sharp_object* this_instance, min_sharp_interface** result, internal_string interfaceName);
+	function_call_result(*ImplementsInterface)(min_sharp_object* this_instance, min_sharp_boolean* result, internal_string interfaceName);
+	function_call_result(*GarbagoCollectionGetFlags)(min_sharp_object* this_instance, object_flags* objectFlag);
+	function_call_result(*GarbagoCollectionSetFlags)(min_sharp_object* this_instance, object_flags objectFlag);
+	function_call_result(*IterateReferencedObjects)(min_sharp_object* this_instance, runtime_iterator_function iteration_function, void *context);
+} min_sharp_object_intrinsicts;
 
-typedef struct min_sharp_interface_struct {
-	min_sharp_type_info* type_info;
-	unsigned_int_16 number_of_members;
+typedef struct min_sharp_interface_struct
+{
+	min_sharp_interface_intrinsicts* min_sharp_interface_intrinsicts;
+	// other members here;
 } min_sharp_interface;
 
-typedef struct min_sharp_object_header_struct {
-	unsigned_int_16 number_of_interfaces;
-} min_sharp_object_header;
-
-typedef struct min_sharp_object_struct {
-	function_call_result (*__GetInterface)(min_sharp_object** exception, min_sharp_interface** result, internal_string interfaceName);	
+typedef struct min_sharp_object_struct
+{
+	min_sharp_object_intrinsicts *object_intrinsicts;
 } min_sharp_object;
 
-typedef function_call_result(*min_sharp_function_prototype)(min_sharp_object** exception, min_sharp_object targetObject);

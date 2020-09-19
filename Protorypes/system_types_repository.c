@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "system_types_repository.h"
-#include "type_internals.h"
 #include <assert.h>
 #include <string.h>
 

@@ -16,6 +16,23 @@ static const internal_string null_reference_exception_type_name = "NullReference
 typedef struct system_types_repository_struct system_types_repository;
 typedef struct system_repository_data_struct system_repository_data;
 
+// member info
+typedef struct
+{
+	min_sharp_memberid member_id;
+	internal_string member_name;
+	internal_string member_type;
+} min_sharp_member_info;
+
+// type info
+typedef struct
+{
+	internal_string interface_name;
+	internal_string parent_interface_name;
+	unsigned_int_16 number_of_members;
+	min_sharp_member_info members[1];
+} min_sharp_type_info;
+
 typedef struct system_types_repository_struct
 {
 	function_call_result(*register_type_info)(system_types_repository* this_instance, min_sharp_type_info* type_info, internal_string type_name);

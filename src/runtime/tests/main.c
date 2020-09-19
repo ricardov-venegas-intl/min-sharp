@@ -10,7 +10,6 @@ int main()
 {
 	system_services_tests();
 	system_list_tests();
-	system_types_respository_tests();
 	managed_memory_services_tests();
 	//runtime_services_tests();
 }

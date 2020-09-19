@@ -1,5 +1,15 @@
 # Notes and log
 
+## 2020-07-21
+
+* I will keep it simple and use the regular function pointer.
+* the function interface is empty
+
+## 2020-06-20
+
+* Still thinking... I like something similar with the concept to commandlets in powershell.
+* I'll write a samll prototype to see how it looks.
+
 ## 2020-06-14
 
 * Still thinking about a way to conceptualize the function a as an object.
