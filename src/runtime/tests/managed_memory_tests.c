@@ -150,37 +150,58 @@ function_call_result IterateReferencedObjects(min_sharp_object* this_instance, r
 	function_call_result fcr;
 	test_object* current_object = (test_object*) this_instance;
 
-	fcr = iteration_function((void*)(current_object->interface3.member1), context);
-	if (function_call_result_fail == fcr)
+	if (min_sharp_null != current_object->interface3.member1)
 	{
-		goto fail;
-	}
-	fcr = iteration_function((void*)(current_object->interface3.member2), context);
-	if (function_call_result_fail == fcr)
-	{
-		goto fail;
-	}
-	fcr = iteration_function((void*)(current_object->interface3.member3), context);
-	if (function_call_result_fail == fcr)
-	{
-		goto fail;
-	}
-	fcr = iteration_function((void*)(current_object->interface1.member1), context);
-	if (function_call_result_fail == fcr)
-	{
-		goto fail;
-	}
-	fcr = iteration_function((void*)(current_object->interface2.member1), context);
-	if (function_call_result_fail == fcr)
-	{
-		goto fail;
-	}
-	fcr = iteration_function((void*)(current_object->interface2.member2), context);
-	if (function_call_result_fail == fcr)
-	{
-		goto fail;
+		fcr = iteration_function((void*)(current_object->interface3.member1), context);
+		if (function_call_result_fail == fcr)
+		{
+			goto fail;
+		}
 	}
 
+	if (min_sharp_null != current_object->interface3.member2)
+	{
+		fcr = iteration_function((void*)(current_object->interface3.member2), context);
+		if (function_call_result_fail == fcr)
+		{
+			goto fail;
+		}
+	}
+
+	if (min_sharp_null != current_object->interface3.member3)
+	{
+		fcr = iteration_function((void*)(current_object->interface3.member3), context);
+		if (function_call_result_fail == fcr)
+		{
+			goto fail;
+		}
+	}
+	if (min_sharp_null != current_object->interface1.member1)
+	{
+		fcr = iteration_function((void*)(current_object->interface1.member1), context);
+		if (function_call_result_fail == fcr)
+		{
+			goto fail;
+		}
+	}
+
+	if (min_sharp_null != current_object->interface2.member1)
+	{
+		fcr = iteration_function((void*)(current_object->interface2.member1), context);
+		if (function_call_result_fail == fcr)
+		{
+			goto fail;
+		}
+	}
+
+	if (min_sharp_null != current_object->interface2.member2)
+	{
+		fcr = iteration_function((void*)(current_object->interface2.member2), context);
+		if (function_call_result_fail == fcr)
+		{
+			goto fail;
+		}
+	}
 	return function_call_result_success;
 
 fail:
@@ -323,7 +344,6 @@ static void managed_memory_services_happy_path()
 	managed_memory_services* managed_memory_services_instance;
 	min_sharp_object* scope1[3];
 	min_sharp_object* scope2[2];
-	unsigned_int_16 object1_interfaces_sized[3];
 	unsigned_int_64 total_allocated_memory, total_allocations, total_deallocations;
 
 	start_test("managed_memory_services_resease_test");
@@ -331,11 +351,6 @@ static void managed_memory_services_happy_path()
 	scope1[0] = scope1[1] = scope1[2] = min_sharp_null;
 	fcr =managed_memory_services_instance->push_scope(managed_memory_services_instance, 3, scope1);
 
-	object1_interfaces_sized[0] = 3;
-	object1_interfaces_sized[1] = 1;
-	object1_interfaces_sized[2] = 2;
-
-	// Reset number of allocations/deallocations 
 	// allocate object
 	fcr =managed_memory_services_instance->allocate_object(
 		managed_memory_services_instance,
@@ -359,6 +374,11 @@ static void managed_memory_services_happy_path()
 	{
 		validate_object(mapped_object);
 	}
+	else
+	{
+		test_assertion(min_sharp_null != mapped_object, "min_sharp_null != mapped_object");
+		return;
+	}
 
 	if (min_sharp_null != managed_memory_services_instance->collect_garbage) 
 	{
@@ -372,6 +392,40 @@ static void managed_memory_services_happy_path()
 		test_assertion(1 * sizeof(test_object) <= total_allocated_memory, "allocated memory 1");
 	}
 
+	// allocate object, and store reference in object
+	fcr = managed_memory_services_instance->allocate_object(
+		managed_memory_services_instance,
+		&(mapped_object->interface1.member1),
+		sizeof(test_object)
+	);
+	test_assertion(fcr == function_call_result_success, "allocate_object call");
+	test_assertion(min_sharp_null != mapped_object->interface1.member1, "scope1[1] is not null");
+	test_object_Initializer(system_services_instance, (test_object*)mapped_object->interface1.member1);
+
+	//Test allocations/deallocarions
+	fcr = managed_memory_services_instance->get_counters(managed_memory_services_instance, &total_allocated_memory, &total_allocations, &total_deallocations);
+	test_assertion(fcr == function_call_result_success, "get_counters call");
+	test_assertion(2 == total_allocations, "number_of_allocationsis 1");
+	test_assertion(0 == total_deallocations, "number_of_deallocations 0");
+	test_assertion(2 * sizeof(test_object) < total_allocated_memory, "allocated memory 1");
+
+	// test if mapping is correct
+	if (min_sharp_null != mapped_object->interface1.member1)
+	{
+		validate_object(mapped_object->interface1.member1);
+	}
+
+	if (min_sharp_null != managed_memory_services_instance->collect_garbage)
+	{
+		fcr = managed_memory_services_instance->collect_garbage(managed_memory_services_instance);
+		test_assertion(fcr == function_call_result_success, "collect_garbage call");
+
+		//Test allocations/deallocarions
+		managed_memory_services_instance->get_counters(managed_memory_services_instance, &total_allocated_memory, &total_allocations, &total_deallocations);
+		test_assertion(2 == total_allocations, "number_of_allocationsis 1");
+		test_assertion(0 == total_deallocations, "number_of_deallocations 0");
+		test_assertion(2 * sizeof(test_object) <= total_allocated_memory, "allocated memory 1");
+	}
 
 	scope2[0] = scope2[1] = min_sharp_null;
 	fcr = managed_memory_services_instance->push_scope(managed_memory_services_instance, 2, scope2);
@@ -388,19 +442,19 @@ static void managed_memory_services_happy_path()
 
 	//Test allocations/deallocations
 	managed_memory_services_instance->get_counters(managed_memory_services_instance, &total_allocated_memory, &total_allocations, &total_deallocations);
-	test_assertion(2 == total_allocations, "number_of_allocationsis 1");
+	test_assertion(3 == total_allocations, "number_of_allocationsis 1");
 	test_assertion(0 == total_deallocations, "number_of_deallocations 0");
-	test_assertion(2 * sizeof(test_object) <= total_allocated_memory, "allocated memory 1");
+	test_assertion(3 * sizeof(test_object) <= total_allocated_memory, "allocated memory 1");
 
 	// test if mapping is correct
-	mapped_object = (test_object*)scope1[1];
+	mapped_object = (test_object*)scope2[1];
 	if (min_sharp_null != mapped_object)
 	{
 		validate_object(mapped_object);
 	}
 
-	// clear reference to object1
-	scope2[1] = min_sharp_null;
+	// clear reference to object1, and with that object 2
+	scope1[1] = min_sharp_null;
 
 	if (min_sharp_null != managed_memory_services_instance->collect_garbage)
 	{
@@ -408,9 +462,9 @@ static void managed_memory_services_happy_path()
 		test_assertion(fcr == function_call_result_success, "collect_garbage call");
 		//Test allocations/deallocations
 		managed_memory_services_instance->get_counters(managed_memory_services_instance, &total_allocated_memory, &total_allocations, &total_deallocations);
-		test_assertion(2 == total_allocations, "number_of_allocationsis 1");
-		test_assertion(1 == total_deallocations, "number_of_deallocations 0");
-		test_assertion(2 * sizeof(test_object) <= total_allocated_memory, "allocated memory 1");
+		test_assertion(3 == total_allocations, "number_of_allocationsis 1");
+		test_assertion(2 == total_deallocations, "number_of_deallocations 0");
+		test_assertion(3 * sizeof(test_object) <= total_allocated_memory, "allocated memory 1");
 	}
 
 	fcr = managed_memory_services_instance->pop_scope(managed_memory_services_instance);
