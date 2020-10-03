@@ -47,9 +47,7 @@ typedef function_call_result(*runtime_iterator_function)(void* target, void* con
 // Esential interfaces
 typedef struct min_sharp_interface_intrinsicts_struct
 {
-	function_call_result(*GetNumberOfMembers)(min_sharp_interface* this_instance, unsigned_int_32* numberOfMembers);
 	function_call_result(*GetInterfaceName)(min_sharp_interface* this_instance, internal_string *interfaceName);
-	function_call_result(*GetMemberIterator)(min_sharp_interface* this_instance, runtime_iterator** iterator);
 } min_sharp_interface_intrinsicts;
 
 typedef struct min_sharp_object_intrinsicts_struct
@@ -71,4 +69,9 @@ typedef struct min_sharp_object_struct
 {
 	min_sharp_object_intrinsicts *object_intrinsicts;
 } min_sharp_object;
+
+// function definitions 
+typedef struct min_sharp_runtime_struct min_sharp_runtime;
+
+typedef struct min_sharp_function_struct min_sharp_function;
 

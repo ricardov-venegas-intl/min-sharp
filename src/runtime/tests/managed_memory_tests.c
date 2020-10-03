@@ -71,8 +71,8 @@ function_call_result member_iterator_Release(runtime_iterator* this_instance)
 	interface_iterator_data* data = (interface_iterator_data*)this_instance->runtime_iterator_data;
 	system_services* system_services_instance = data->system_services_instance;
 
-	system_services_instance->free_memory(data);
-	system_services_instance->free_memory(this_instance);
+	system_services_instance->free_memory(system_services_instance, data);
+	system_services_instance->free_memory(system_services_instance, this_instance);
 	return function_call_result_success;
 }
 
@@ -82,7 +82,7 @@ function_call_result member_iterator_factory(system_services* system_services_in
 	interface_iterator_data* data;
 	runtime_iterator *iterator;
 
-	fcr = system_services_instance->allocate_memory(&data, sizeof(data));
+	fcr = system_services_instance->allocate_memory(system_services_instance, &data, sizeof(data));
 	if (function_call_result_fail == fcr)
 	{
 		goto fail;
@@ -91,7 +91,7 @@ function_call_result member_iterator_factory(system_services* system_services_in
 	data->sample_interface_prototype = target;
 	data->system_services_instance = system_services_instance;
 
-	system_services_instance->allocate_memory(&iterator, sizeof(runtime_iterator));
+	system_services_instance->allocate_memory(system_services_instance, &iterator, sizeof(runtime_iterator));
 	if (function_call_result_fail == fcr)
 	{
 		goto fail;
@@ -228,7 +228,7 @@ function_call_result test_object_Initializer(system_services* system_services_in
 	function_call_result fcr;
 	min_sharp_object_intrinsicts* object_intrinsicts;
 
-	fcr = system_services_instance->allocate_memory(&object_intrinsicts, sizeof(min_sharp_object_intrinsicts));
+	fcr = system_services_instance->allocate_memory(system_services_instance , &object_intrinsicts, sizeof(min_sharp_object_intrinsicts));
 	if (function_call_result_fail == fcr)
 	{
 		goto fail;
@@ -243,14 +243,12 @@ function_call_result test_object_Initializer(system_services* system_services_in
 	result_object->object_intrinsicts = object_intrinsicts;
 
 	min_sharp_interface_intrinsicts*  shared_interface_intrinsicts;
-	fcr = system_services_instance->allocate_memory(&shared_interface_intrinsicts, sizeof(min_sharp_interface_intrinsicts));
+	fcr = system_services_instance->allocate_memory(system_services_instance, &shared_interface_intrinsicts, sizeof(min_sharp_interface_intrinsicts));
 	if (function_call_result_fail == fcr)
 	{
 		goto fail;
 	}
 	shared_interface_intrinsicts->GetInterfaceName = min_sharp_null;
-	shared_interface_intrinsicts->GetMemberIterator = GetMemberIterator;
-	shared_interface_intrinsicts->GetNumberOfMembers = min_sharp_null;
 
 	result_object->number_of_interfaces = 3;
 	result_object->system_services_instance = system_services_instance;

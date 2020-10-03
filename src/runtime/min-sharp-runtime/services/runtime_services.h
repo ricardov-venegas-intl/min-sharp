@@ -1,4 +1,5 @@
 #pragma once
+
 #include "../min-sharp-runtime.h"
 #include "system_services.h"
 
@@ -15,6 +16,8 @@ typedef struct runtime_services_struct
 	function_call_result(*BuildObject)(runtime_services* this_instance, internal_string* type_name, min_sharp_object **new_object);
 	function_call_result(*BuildObjectFromFactory)(runtime_services* this_instance, internal_string* type_name, min_sharp_object factory, min_sharp_object** new_object);
 	function_call_result(*RegisterFactory)(runtime_services* this_instance, internal_string* type_name, min_sharp_object factory);
+	function_call_result(*allocate_unmanaged_memory)(runtime_services* this_instance, void** result, int size);
+	function_call_result(*free_unmanaged_memory)(runtime_services* this_instance, void* memory);
 	function_call_result(*release)(runtime_services* this_instance);
 	runtime_services_data* data;
 } runtime_services;

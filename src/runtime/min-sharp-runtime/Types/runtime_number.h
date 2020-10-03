@@ -5,8 +5,7 @@
 
 typedef struct runtime_number_vtable_struct
 {
-	function_call_result(*__GetInterface)(min_sharp_object** exception, min_sharp_interface** result, internal_string interfaceName);
-	unsigned_int_16 number_of_interfaces;
+	min_sharp_object_intrinsicts object_intrinsicts;
 	Runtime_AdditionOperator runtime_AdditionOperator;
 	Runtime_SubstractionOperator runtime_SubstractionOperator;
 	Runtime_MultiplicationOperator runtime_MultiplicationOperator;
@@ -15,3 +14,5 @@ typedef struct runtime_number_vtable_struct
 	Runtime_EqualityOperator runtime_EqualityOperator;
 	Runtime_RelationalOperator runtime_RelationalOperator;
 } runtime_number_vtable;
+
+function_call_result runtime_number_initializer(runtime_services* runtime_services);

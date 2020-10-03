@@ -41,7 +41,7 @@ static function_call_result list_add_element(system_unmanaged_data_structure* th
 	system_services* system_services_instance = list_data->system_services_instance;
 
 	system_unmanaged_list_node* new_node;
-	fcr = system_services_instance->allocate_memory(&new_node, sizeof(system_unmanaged_list_node));
+	fcr = system_services_instance->allocate_memory(system_services_instance, &new_node, sizeof(system_unmanaged_list_node));
 	if (function_call_result_fail == fcr)
 		goto fail;
 
@@ -115,7 +115,7 @@ static function_call_result list_remove_element(system_unmanaged_data_structure*
 			next_node =  (min_sharp_null != current_node) ?current_node->next_node: min_sharp_null;
 
 			// delete old current
-			fcr = list_data->system_services_instance->free_memory(node_to_delete);
+			fcr = list_data->system_services_instance->free_memory(list_data->system_services_instance, node_to_delete);
 			if (function_call_result_fail == fcr)
 				goto fail;
 			
@@ -252,17 +252,17 @@ static function_call_result release_list(system_unmanaged_data_manager* this_ins
 	while (min_sharp_null != current_node)
 	{
 		next_node = current_node->next_node;
-		fcr = system_services_instance->free_memory(current_node);
+		fcr = system_services_instance->free_memory(system_services_instance, current_node);
 		if (function_call_result_fail == fcr)
 			goto fail;
 		current_node = next_node;
 	}
 
-	fcr = system_services_instance->free_memory(unmanaged_data_structure->data);
+	fcr = system_services_instance->free_memory(system_services_instance, unmanaged_data_structure->data);
 	if (function_call_result_fail == fcr)
 		goto fail;
 
-	fcr = system_services_instance->free_memory(unmanaged_data_structure);
+	fcr = system_services_instance->free_memory(system_services_instance, unmanaged_data_structure);
 	if (function_call_result_fail == fcr)
 		goto fail;
 	return function_call_result_success;
@@ -287,12 +287,12 @@ static function_call_result create_list(system_unmanaged_data_manager* this_inst
 	system_unmanaged_data_structure* result;
 	*unmanaged_data_structure = min_sharp_null;
 
-	fcr = system_services_instance->allocate_memory(&result, sizeof(system_unmanaged_data_structure));
+	fcr = system_services_instance->allocate_memory(system_services_instance, &result, sizeof(system_unmanaged_data_structure));
 	if (function_call_result_fail == fcr)
 		goto fail;
 
 	system_unmanaged_data_list_data *list_data;
-	fcr = system_services_instance->allocate_memory(&list_data, sizeof(system_unmanaged_data_list_data));
+	fcr = system_services_instance->allocate_memory(system_services_instance, &list_data, sizeof(system_unmanaged_data_list_data));
 	if (function_call_result_fail == fcr)
 		goto fail;
 
@@ -323,11 +323,11 @@ static function_call_result release(system_unmanaged_data_manager* this_instance
 	// Get the system_services_instance
 	system_services* system_services_instance = this_instance->data->system_services_instance;
 
-	fcr = system_services_instance->free_memory(this_instance->data);
+	fcr = system_services_instance->free_memory(system_services_instance, this_instance->data);
 	if (function_call_result_fail == fcr)
 		goto fail;
 
-	fcr = system_services_instance->free_memory(this_instance);
+	fcr = system_services_instance->free_memory(system_services_instance, this_instance);
 	if (function_call_result_fail == fcr)
 		goto fail;
 
@@ -349,10 +349,10 @@ function_call_result system_unmanaged_data_manager_factory(system_unmanaged_data
 	system_unmanaged_data_manager* result = min_sharp_null;
 	*unmanaged_data_manager = min_sharp_null;
 	// Allocate unmanaged memory (system_unmanaged_data_manager & system_unmanaged_data_manager_data)
-	fcr = system_services_instance->allocate_memory(&result, sizeof(system_unmanaged_data_manager));
+	fcr = system_services_instance->allocate_memory(system_services_instance, &result, sizeof(system_unmanaged_data_manager));
 	if (function_call_result_fail == fcr)
 		goto fail;
-	fcr = system_services_instance->allocate_memory(&(result->data), sizeof(system_unmanaged_data_manager_data));
+	fcr = system_services_instance->allocate_memory(system_services_instance, &(result->data), sizeof(system_unmanaged_data_manager_data));
 	if (function_call_result_fail == fcr)
 		goto fail;
 	

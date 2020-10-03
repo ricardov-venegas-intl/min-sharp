@@ -42,23 +42,23 @@ void system_services_memory_allocation_tests()
 
 	if (NULL != system_services_instance)
 	{
-		cr = system_services_instance->allocate_memory(&memory, 1);
+		cr = system_services_instance->allocate_memory(system_services_instance, &memory, 1);
 		test_assertion(function_call_result_success == cr, "system_services_instance->allocate_memory successfull");
 		test_assertion(NULL != memory, "one byte allocated");
 
-		cr = system_services_instance->free_memory(memory);
+		cr = system_services_instance->free_memory(system_services_instance, memory);
 		test_assertion(function_call_result_success == cr, "system_services_instance->free_memory Successfull");
 
-		cr = system_services_instance->allocate_memory(&memory, 0);
+		cr = system_services_instance->allocate_memory(system_services_instance, &memory, 0);
 		test_assertion(function_call_result_fail == cr, "zero byte not allocated (failed)");
 		test_assertion(NULL == memory, "zero byte not allocated");
-		cr = system_services_instance->free_memory(memory);
+		cr = system_services_instance->free_memory(system_services_instance, memory);
 		test_assertion(function_call_result_fail == cr, "system_services_instance->free_memory Successfull");
 
-		cr = system_services_instance->allocate_memory(&memory, 1024);
+		cr = system_services_instance->allocate_memory(system_services_instance, &memory, 1024);
 		test_assertion(function_call_result_success == cr, "system_services_instance->allocate_memory successfull");
 		test_assertion(NULL != memory, "one Kbyte allocated");
-		cr = system_services_instance->free_memory(memory);
+		cr = system_services_instance->free_memory(system_services_instance, memory);
 		test_assertion(function_call_result_success == cr, "system_services_instance->free_memory Successfull");
 
 		cr = system_services_instance->release(system_services_instance);

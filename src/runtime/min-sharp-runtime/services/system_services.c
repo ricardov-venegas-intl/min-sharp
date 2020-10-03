@@ -2,9 +2,9 @@
 #include <malloc.h>
 #include <memory.h>
 
-function_call_result allocate_memory(void** result, int size)
+function_call_result allocate_memory(system_services* this_instance, void** result, int size)
 {
-	if (result == min_sharp_null)
+	if (min_sharp_null == result || min_sharp_null == this_instance)
 	{
 		return function_call_result_fail;
 	}
@@ -23,9 +23,9 @@ function_call_result allocate_memory(void** result, int size)
 	return function_call_result_success;
 }
 
-function_call_result free_memory(void* memory)
+function_call_result free_memory(system_services* this_instance, void* memory)
 {
-	if (NULL == memory)
+	if (min_sharp_null == memory || min_sharp_null == this_instance)
 	{
 		return function_call_result_fail;
 	}

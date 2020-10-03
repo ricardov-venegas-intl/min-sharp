@@ -46,7 +46,7 @@ static function_call_result push_scope(managed_memory_services* this_instance, u
 
 	// Allocate memory
 	system_services_instance = this_instance->data->system_services_instance;
-	fcr = system_services_instance->allocate_memory(&new_node, sizeof(scope_variables_node));
+	fcr = system_services_instance->allocate_memory(system_services_instance, &new_node, sizeof(scope_variables_node));
 	if (function_call_result_fail == fcr)
 	{
 		goto fail;
@@ -88,7 +88,7 @@ static function_call_result pop_scope(managed_memory_services* this_instance)
 
 	// deallocate the node memory
 	system_services_instance = this_instance->data->system_services_instance;
-	fcr = system_services_instance->free_memory(old_node);
+	fcr = system_services_instance->free_memory(system_services_instance, old_node);
 	if (function_call_result_fail == fcr)
 	{
 		goto fail;
@@ -119,7 +119,7 @@ static function_call_result allocate_object(managed_memory_services* this_instan
 
 	// Allocate the object
 	system_services_instance = this_instance->data->system_services_instance;
-	fcr = system_services_instance->allocate_memory(&new_object_node, object_allocation_size);
+	fcr = system_services_instance->allocate_memory(system_services_instance , &new_object_node, object_allocation_size);
 
 	// Initialize the object node
 	new_object_node->allocated_memory = object_allocation_size;
@@ -298,7 +298,7 @@ static function_call_result collect_garbage(managed_memory_services* this_instan
 
 		if (garbage_collection_flags_clear == current_object_flags)
 		{
-			fcr = system_services_instance->free_memory(current_object_node);
+			fcr = system_services_instance->free_memory(system_services_instance, current_object_node);
 			if (function_call_result_fail == fcr)
 			{
 				goto fail;
@@ -367,7 +367,7 @@ static function_call_result release_managed_memory_services(managed_memory_servi
 	while (min_sharp_null !=  current)
 	{
 		object_node* next = current->next;
-		fcr = system_services_instance->free_memory(current);
+		fcr = system_services_instance->free_memory(system_services_instance, current);
 		if (function_call_result_fail == fcr)
 			goto fail;
 		current = next;
@@ -378,19 +378,19 @@ static function_call_result release_managed_memory_services(managed_memory_servi
 	while (min_sharp_null != current_scope)
 	{
 		scope_variables_node* next_scope = current_scope->next_scope;
-		fcr = system_services_instance->free_memory(current_scope);
+		fcr = system_services_instance->free_memory(system_services_instance, current_scope);
 		if (function_call_result_fail == fcr)
 			goto fail;
 		current_scope = next_scope;
 	}
 
 	// free this instace data
-	fcr = system_services_instance->free_memory(this_instance->data);
+	fcr = system_services_instance->free_memory(system_services_instance, this_instance->data);
 	if (function_call_result_fail == fcr)
 		goto fail;
 
 	// free this instace
-	fcr = system_services_instance->free_memory(this_instance);
+	fcr = system_services_instance->free_memory(system_services_instance, this_instance);
 	if (function_call_result_fail == fcr)
 		goto fail;
 
@@ -414,12 +414,12 @@ function_call_result managed_memory_services_factory(managed_memory_services** r
 		goto fail;
 	}
 
-	fcr = system_services_instance->allocate_memory(&this_instance, sizeof(managed_memory_services));
+	fcr = system_services_instance->allocate_memory(system_services_instance , &this_instance, sizeof(managed_memory_services));
 	if (function_call_result_fail == fcr)
 	{
 		goto fail;
 	}
-	fcr = system_services_instance->allocate_memory(&data, sizeof(managed_memory_services_data));
+	fcr = system_services_instance->allocate_memory(system_services_instance , &data, sizeof(managed_memory_services_data));
 	if (function_call_result_fail == fcr)
 	{
 		goto fail;
