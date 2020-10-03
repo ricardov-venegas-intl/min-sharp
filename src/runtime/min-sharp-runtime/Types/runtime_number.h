@@ -2,17 +2,14 @@
 #include "../min-sharp-runtime.h"
 #include "runtime_interfaces.h"
 
+typedef struct runtime_number_vtable_struct runtime_number_vtable;
+typedef struct runtime_number_factory_struct runtime_number_factory;
 
-typedef struct runtime_number_vtable_struct
+typedef struct runtime_number_factory_struct
 {
-	min_sharp_object_intrinsicts object_intrinsicts;
-	Runtime_AdditionOperator runtime_AdditionOperator;
-	Runtime_SubstractionOperator runtime_SubstractionOperator;
-	Runtime_MultiplicationOperator runtime_MultiplicationOperator;
-	Runtime_DivisionOperator runtime_DivisionOperator;
-	Runtime_RemainderOperator runtime_RemainderOperator;
-	Runtime_EqualityOperator runtime_EqualityOperator;
-	Runtime_RelationalOperator runtime_RelationalOperator;
-} runtime_number_vtable;
+	runtime_number_vtable *numbers_vtable;
+	function_call_result(*build_number)(runtime_number_factory* this_instance, runtime_services* runtime, min_sharp_object** returned_exception, min_sharp_object** returned_result);
+	function_call_result(*release)(runtime_number_factory* this_instance, runtime_services* runtime);
+} runtime_number_factory;
 
-function_call_result runtime_number_initializer(runtime_services* runtime_services);
+function_call_result runtime_number_factory_initializer(runtime_services* runtime_services, runtime_number_factory** min_sharp_number_factory_result);

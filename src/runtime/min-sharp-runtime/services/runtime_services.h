@@ -9,17 +9,20 @@ typedef struct runtime_services_data_struct runtime_services_data;
 
 typedef struct runtime_services_struct
 {
-	function_call_result(*__PushScope)(runtime_services* this_instance, int_32 number_of_element, void* local_variables[]);
-	function_call_result(*__PopScope)(runtime_services* this_instance);
-	function_call_result(*__Clone)(runtime_services* this_instance, runtime_services** cloned_instance);
-	function_call_result(*__CollectGarbage)(runtime_services* this_instance, runtime_services** cloned_instance);
-	function_call_result(*BuildObject)(runtime_services* this_instance, internal_string* type_name, min_sharp_object **new_object);
-	function_call_result(*BuildObjectFromFactory)(runtime_services* this_instance, internal_string* type_name, min_sharp_object factory, min_sharp_object** new_object);
-	function_call_result(*RegisterFactory)(runtime_services* this_instance, internal_string* type_name, min_sharp_object factory);
+	// unmanaged_memory
 	function_call_result(*allocate_unmanaged_memory)(runtime_services* this_instance, void** result, int size);
 	function_call_result(*free_unmanaged_memory)(runtime_services* this_instance, void* memory);
+
+	// runtime exeception
+	function_call_result(*system_argument_exception)(runtime_services* this_instance, min_sharp_object** returnedExcption, internal_string argument_name);
+	function_call_result(*system_argument_null_exception)(runtime_services* this_instance, min_sharp_object** returnedExcption, internal_string argument_name);
+	
+	// strings
+	function_call_result(*are_strings_equal_case_insentitive)(runtime_services* this_instance, min_sharp_boolean* result, internal_string string1, internal_string string2, int max_string_size);
+	
+	
 	function_call_result(*release)(runtime_services* this_instance);
 	runtime_services_data* data;
 } runtime_services;
 
-extern function_call_result runtime_services_factory(runtime_services **result, system_services *system_services_instance);
+extern function_call_result runtime_services_factory(system_services* system_services_instance, runtime_services** result);

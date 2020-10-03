@@ -157,7 +157,7 @@ static function_call_result mark_referenced_objects_as_reached(min_sharp_object*
 			goto fail;
 		}
 
-		fcr = child_object->object_intrinsicts->GarbagoCollectionSetFlags(child_object, garbage_collection_flags_reached);
+		fcr = child_object->object_intrinsicts->garbage_collection_set_flags(child_object, garbage_collection_flags_reached);
 		if (function_call_result_fail == fcr)
 		{
 			goto fail;
@@ -194,7 +194,7 @@ static function_call_result scall_all_object_nodes(object_node* object_list_head
 			{
 				goto fail;
 			}
-			fcr = current_object->object_intrinsicts->GarbagoCollectionGetFlags(current_object, &current_object_flags);
+			fcr = current_object->object_intrinsicts->garbage_collection_get_flags(current_object, &current_object_flags);
 			if (function_call_result_fail == fcr)
 			{
 				goto fail;
@@ -203,14 +203,14 @@ static function_call_result scall_all_object_nodes(object_node* object_list_head
 			if (garbage_collection_flags_reached == current_object_flags)
 			{
 				// Mark all members of all interfaces as reached
-				fcr = current_object->object_intrinsicts->IterateReferencedObjects(current_object, mark_referenced_objects_as_reached, min_sharp_null);
+				fcr = current_object->object_intrinsicts->iterate_referenced_objects(current_object, mark_referenced_objects_as_reached, min_sharp_null);
 				if (function_call_result_fail == fcr)
 				{
 					goto fail;
 				}
 
 				// Mark current object as scanned
-				fcr = current_object->object_intrinsicts->GarbagoCollectionSetFlags(current_object, garbage_collection_flags_scanned);
+				fcr = current_object->object_intrinsicts->garbage_collection_set_flags(current_object, garbage_collection_flags_scanned);
 				if (function_call_result_fail == fcr)
 				{
 					goto fail;
@@ -252,7 +252,7 @@ static function_call_result collect_garbage(managed_memory_services* this_instan
 					goto fail;
 				}
 
-				fcr = current_object->object_intrinsicts->GarbagoCollectionGetFlags(current_object, &current_object_flags);
+				fcr = current_object->object_intrinsicts->garbage_collection_get_flags(current_object, &current_object_flags);
 				if (function_call_result_fail == fcr)
 				{
 					goto fail;
@@ -260,7 +260,7 @@ static function_call_result collect_garbage(managed_memory_services* this_instan
 
 				if (garbage_collection_flags_clear == current_object_flags)
 				{
-					fcr = current_object->object_intrinsicts->GarbagoCollectionSetFlags(current_object, garbage_collection_flags_reached);
+					fcr = current_object->object_intrinsicts->garbage_collection_set_flags(current_object, garbage_collection_flags_reached);
 					if (function_call_result_fail == fcr)
 					{
 						goto fail;
@@ -290,7 +290,7 @@ static function_call_result collect_garbage(managed_memory_services* this_instan
 		object_node* next = current_object_node->next;
 		min_sharp_object* current_object = &(current_object_node->object);
 		object_flags current_object_flags;
-		fcr = current_object->object_intrinsicts->GarbagoCollectionGetFlags(current_object, &current_object_flags);
+		fcr = current_object->object_intrinsicts->garbage_collection_get_flags(current_object, &current_object_flags);
 		if (function_call_result_fail == fcr)
 		{
 			goto fail;
@@ -315,7 +315,7 @@ static function_call_result collect_garbage(managed_memory_services* this_instan
 		}
 		else
 		{
-			fcr = current_object->object_intrinsicts->GarbagoCollectionSetFlags(current_object, garbage_collection_flags_clear);
+			fcr = current_object->object_intrinsicts->garbage_collection_set_flags(current_object, garbage_collection_flags_clear);
 			if (function_call_result_fail == fcr)
 			{
 				goto fail;

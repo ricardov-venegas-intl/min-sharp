@@ -234,11 +234,11 @@ function_call_result test_object_Initializer(system_services* system_services_in
 		goto fail;
 	}
 
-	object_intrinsicts->GarbagoCollectionGetFlags = GarbagoCollectionGetFlags;
-	object_intrinsicts->GarbagoCollectionSetFlags = GarbagoCollectionSetFlags;
-	object_intrinsicts->IterateReferencedObjects = IterateReferencedObjects;
-	object_intrinsicts->GetInterface = min_sharp_null;
-	object_intrinsicts->ImplementsInterface = min_sharp_null;
+	object_intrinsicts->garbage_collection_get_flags = GarbagoCollectionGetFlags;
+	object_intrinsicts->garbage_collection_set_flags = GarbagoCollectionSetFlags;
+	object_intrinsicts->iterate_referenced_objects = IterateReferencedObjects;
+	object_intrinsicts->get_interface = min_sharp_null;
+	object_intrinsicts->implements_interface = min_sharp_null;
 
 	result_object->object_intrinsicts = object_intrinsicts;
 
@@ -410,7 +410,7 @@ static void managed_memory_services_happy_path()
 	// test if mapping is correct
 	if (min_sharp_null != mapped_object->interface1.member1)
 	{
-		validate_object(mapped_object->interface1.member1);
+		validate_object((test_object *)mapped_object->interface1.member1);
 	}
 
 	if (min_sharp_null != managed_memory_services_instance->collect_garbage)

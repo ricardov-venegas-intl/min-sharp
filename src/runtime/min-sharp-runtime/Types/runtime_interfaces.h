@@ -8,6 +8,7 @@ typedef struct
 	min_sharp_interface_intrinsicts* min_sharp_interface_intrinsicts;
 	min_sharp_function_2_arguments_type Add;
 } Runtime_AdditionOperator;
+const internal_string runtime_additionoperator_interface_name = "Runtime.AdditionOperator";
 
 typedef struct
 {
@@ -16,12 +17,16 @@ typedef struct
 	min_sharp_function_2_arguments_type Substract;
 } Runtime_SubstractionOperator;
 
+const internal_string runtime_substraction_operator_interface_name = "Runtime.SubstractionOperator";
+
 typedef struct
 {
 	min_sharp_interface_intrinsicts* min_sharp_interface_intrinsicts;
 	unsigned_int_16 number_of_members;
 	min_sharp_function_2_arguments_type Multiply;
 } Runtime_MultiplicationOperator;
+
+const internal_string runtime_multiplication_operator_interface_name = "Runtime.MultiplicationOperator";
 
 typedef struct
 {
