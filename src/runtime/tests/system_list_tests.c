@@ -1,6 +1,6 @@
 #include "main.h"
 #include "test.h"
-#include "../min-sharp-runtime/services/system_unmanaged_data_manager.h"
+#include "../min-sharp-runtime/services/internal/system_unmanaged_data_manager.h"
 
 
 void test_system_unmanaged_data_manager_factory()

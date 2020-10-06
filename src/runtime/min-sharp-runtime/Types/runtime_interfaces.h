@@ -35,6 +35,8 @@ typedef struct
 	min_sharp_function_2_arguments_type Divide;
 } Runtime_DivisionOperator;
 
+const internal_string runtime_division_operator_interface_name = "Runtime.DivisionOperator";
+
 typedef struct
 {
 	min_sharp_interface_intrinsicts* min_sharp_interface_intrinsicts;
@@ -42,12 +44,16 @@ typedef struct
 	min_sharp_function_2_arguments_type Remainder;
 } Runtime_RemainderOperator;
 
+const internal_string runtime_remainder_operator_interface_name = "Runtime.RemainderOperator";
+
 typedef struct
 {
 	min_sharp_interface_intrinsicts* min_sharp_interface_intrinsicts;
 	unsigned_int_16 number_of_members;
 	min_sharp_function_2_arguments_type IsEquals;
 } Runtime_EqualityOperator;
+
+const internal_string runtime_equality_operator_interface_name = "Runtime.EqualityOperator";
 
 typedef struct
 {
@@ -57,6 +63,7 @@ typedef struct
 	min_sharp_function_2_arguments_type IsLowerThan;
 } Runtime_RelationalOperator;
 
+const internal_string runtime__relational_operator_interface_name = "Runtime.RelationalOperator";
 
 typedef struct
 {
@@ -83,3 +90,10 @@ typedef struct
 	min_sharp_function_1_arguments_type SetValue;
 } Runtime_Property;
 
+typedef struct
+{
+	min_sharp_interface_intrinsicts* min_sharp_interface_intrinsicts;
+	unsigned_int_16 number_of_members;
+	Runtime_ReadOnlyProperty Code;
+	Runtime_ReadOnlyProperty Message;
+} Runtime_Exception;

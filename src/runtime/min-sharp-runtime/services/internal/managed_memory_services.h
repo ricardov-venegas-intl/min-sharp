@@ -1,5 +1,5 @@
 #pragma once
-#include "../min-sharp-runtime.h"
+#include "../../min-sharp-runtime.h"
 #include "system_services.h"
 
 typedef struct managed_memory_services_struct managed_memory_services;

@@ -22,6 +22,7 @@ __declspec(noreturn) extern void abort_with_message(char* message);
 		goto fail;\
 	}\
 }
+
 #define VALIDATE_ARGUMENT_TYPE(argument_object, argument_type, argument_name) { \
 	min_sharp_object_type argument_object_type; \
 	function_call_result fcr;\

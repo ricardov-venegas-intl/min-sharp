@@ -64,7 +64,7 @@ typedef struct min_sharp_interface_intrinsicts_struct
 typedef struct min_sharp_object_intrinsicts_struct
 {
 	function_call_result(*get_interface)(min_sharp_object* this_instance, runtime_services* runtime, min_sharp_interface** result, internal_string interfaceName);
-	function_call_result(*implements_interface)(min_sharp_object* this_instance, min_sharp_boolean* result, internal_string interfaceName);
+	function_call_result(*implements_interface)(min_sharp_object* this_instance, runtime_services* runtime,  min_sharp_boolean* result, internal_string interfaceName);
 	function_call_result(*garbage_collection_get_flags)(min_sharp_object* this_instance, object_flags* objectFlag);
 	function_call_result(*garbage_collection_set_flags)(min_sharp_object* this_instance, object_flags objectFlag);
 	function_call_result(*iterate_referenced_objects)(min_sharp_object* this_instance, runtime_iterator_function iteration_function, void *context);

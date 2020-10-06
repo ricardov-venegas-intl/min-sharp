@@ -1,5 +1,6 @@
 #include "runtime_services.h"
 #include "min_sharp-runtime-support.h"
+#include <string.h>
 
 typedef struct runtime_services_data_struct {
 	system_services* system_services_instance;
@@ -11,6 +12,7 @@ static function_call_result allocate_unmanaged_memory(runtime_services* runtime,
 	function_call_result fcr;
 
 	CRITICAL_ASSERT(min_sharp_null != runtime);
+
 	if (min_sharp_null == result)
 	{
 		goto fail;
@@ -32,6 +34,7 @@ fail:
 static function_call_result free_unmanaged_memory(runtime_services* runtime, void* memory)
 {
 	CRITICAL_ASSERT(min_sharp_null != runtime);
+
 	if (min_sharp_null == memory)
 	{
 		goto fail;
@@ -51,8 +54,12 @@ fail:
 }
 
 // runtime exceptions
-static function_call_result system_argument_exception(runtime_services* this_instance, min_sharp_object** returnedExcption, internal_string argument_name)
+static function_call_result system_argument_exception(runtime_services* runtime, min_sharp_object** returnedExcption, internal_string argument_name)
 {
+	CRITICAL_ASSERT(min_sharp_null != runtime);
+
+	goto fail;
+
 	return function_call_result_success;
 
 fail:
@@ -62,6 +69,8 @@ fail:
 
 static function_call_result system_argument_null_exception(runtime_services* this_instance, min_sharp_object** returnedExcption, internal_string argument_name)
 {
+	goto fail;
+
 	return function_call_result_success;
 
 fail:
@@ -70,8 +79,23 @@ fail:
 }
 
 // strings
-static function_call_result are_strings_equal_case_insentitive(runtime_services* this_instance, min_sharp_boolean* result, internal_string string1, internal_string string2, int max_string_size)
+static function_call_result are_strings_equal_case_insentitive(runtime_services* runtime, min_sharp_boolean* result, internal_string string1, internal_string string2, unsigned_int_32 max_string_size)
 {
+	CRITICAL_ASSERT(min_sharp_null != runtime);
+	if (min_sharp_null == result)
+	{
+		goto fail;
+	}
+
+	if (min_sharp_null == string1 || min_sharp_null == string2)
+	{
+		*result = (string1 == string2);
+		return function_call_result_success;
+	}
+
+	int are_different = _strnicmp(string1, string2, max_string_size);
+	*result = !are_different;
+
 	return function_call_result_success;
 
 fail:

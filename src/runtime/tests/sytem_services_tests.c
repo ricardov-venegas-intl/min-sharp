@@ -1,5 +1,5 @@
 #include "test.h"
-#include "../min-sharp-runtime/services/system_services.h"
+#include "../min-sharp-runtime/services/internal/system_services.h"
 #include <malloc.h>
 
 

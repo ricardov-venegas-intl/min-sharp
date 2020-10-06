@@ -1,6 +1,6 @@
 #include "main.h"
 #include "test.h"
-#include "../min-sharp-runtime/services/managed_memory_services.h"
+#include "../min-sharp-runtime/services/internal/managed_memory_services.h"
 
 
 static system_services* system_services_instance = min_sharp_null;
