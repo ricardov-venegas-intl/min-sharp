@@ -10,6 +10,6 @@ file(GLOB_RECURSE SOURCES LIST_DIRECTORIES true *.h *.c)
 set(SOURCES ${SOURCES})
 
 # Add source to this project's executable.
-add_library(${BINARY}_lib STATIC ${SOURCES})
+add_library(${BINARY}_lib STATIC ${SOURCES} )
 
 

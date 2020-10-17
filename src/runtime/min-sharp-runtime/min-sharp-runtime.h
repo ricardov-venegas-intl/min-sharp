@@ -86,3 +86,6 @@ typedef struct min_sharp_object_struct
 
 typedef struct min_sharp_function_struct min_sharp_function;
 
+
+// Global Initializer
+void intialize_runtime(runtime_services** runtime_services_instance);

@@ -16,4 +16,4 @@ typedef struct managed_memory_services_struct
 	managed_memory_services_data* data;
 } managed_memory_services;
 
-extern function_call_result managed_memory_services_factory(managed_memory_services** result, system_services* system_services_instance);
+extern function_call_result managed_memory_services_factory(system_services* system_services_instance, managed_memory_services** result);

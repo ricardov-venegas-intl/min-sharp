@@ -403,7 +403,7 @@ fail:
 
 
 
-function_call_result managed_memory_services_factory(managed_memory_services** result, system_services* system_services_instance)
+function_call_result managed_memory_services_factory(system_services* system_services_instance, managed_memory_services** result)
 {
 	function_call_result fcr;
 	managed_memory_services *this_instance;

@@ -2,12 +2,6 @@
 #include "min_sharp-runtime-support.h"
 #include "../services/runtime_services.h"
 
-typedef struct min_sharp_number_struct
-{
-	min_sharp_object_intrinsicts* object_intrinsicts;
-	object_flags object_flag;
-	double value;
-} min_sharp_number;
 
 typedef struct interface_map_struct
 {
@@ -16,6 +10,7 @@ typedef struct interface_map_struct
 } interface_map;
 
 #define number_of_interfaces 7
+
 
 typedef struct runtime_number_vtable_struct
 {
@@ -27,10 +22,17 @@ typedef struct runtime_number_vtable_struct
 	Runtime_RemainderOperator runtime_RemainderOperator;
 	Runtime_EqualityOperator runtime_EqualityOperator;
 	Runtime_RelationalOperator runtime_RelationalOperator;
+
 	interface_map interface_map[number_of_interfaces];
+
 } runtime_number_vtable;
 
-
+typedef struct min_sharp_number_struct
+{
+	min_sharp_object_intrinsicts* object_intrinsicts;
+	object_flags object_flag;
+	double value;
+} min_sharp_number;
 
 function_call_result number_object_intrinsicts_get_interface(min_sharp_object* this_instance, runtime_services* runtime, min_sharp_interface** result, internal_string interface_name)
 {
@@ -160,27 +162,19 @@ static function_call_result runtime_number_Runtime_AdditionOperator_add_fn(
 	runtime_services* runtime,
 	min_sharp_object** returned_exception,
 	min_sharp_object** returned_result,
-	min_sharp_object* argument1,
-	min_sharp_object* argument2)
+	min_sharp_object* rightOperand)
 {
-	function_call_result fcr;
 	CRITICAL_ASSERT(min_sharp_null != runtime);
 	CRITICAL_ASSERT(min_sharp_null != returned_exception);
 
 	VALIDATE_ARGUMENT_NOTNULL(this_function, "this_function");
 	VALIDATE_ARGUMENT_NOTNULL(returned_result, "returned_result");
-	VALIDATE_ARGUMENT_NOTNULL(argument1, "argument1");
-	VALIDATE_ARGUMENT_NOTNULL(argument1->object_intrinsicts, "argument1.object_intrinsicts");
-	VALIDATE_ARGUMENT_NOTNULL(argument1->object_intrinsicts->get_object_type, "argument1.object_intrinsicts.GetObjectType");
-	VALIDATE_ARGUMENT_NOTNULL(argument2, "argument2");
-	VALIDATE_ARGUMENT_NOTNULL(argument2->object_intrinsicts, "argument2.object_intrinsicts");
-	VALIDATE_ARGUMENT_NOTNULL(argument2->object_intrinsicts->get_object_type, "argument2.object_intrinsicts.GetObjectType");
+	VALIDATE_ARGUMENT_NOTNULL(rightOperand, "rightOperand");
+	VALIDATE_ARGUMENT_NOTNULL(rightOperand->object_intrinsicts, "rightOperand.object_intrinsicts");
+	VALIDATE_ARGUMENT_NOTNULL(rightOperand->object_intrinsicts->get_object_type, "rightOperand.object_intrinsicts.GetObjectType");
 
-	VALIDATE_ARGUMENT_TYPE(argument1, min_sharp_object_type_primitive_number, "argument1");
-	VALIDATE_ARGUMENT_TYPE(argument2, min_sharp_object_type_primitive_number, "argument2");
+	VALIDATE_ARGUMENT_TYPE(rightOperand, min_sharp_object_type_primitive_number, "rightOperand type");
 
-	min_sharp_number* argument1_number = (min_sharp_number*)argument1;
-	min_sharp_number* argument2_number = (min_sharp_number*)argument2;
 
 	return function_call_result_success;
 
@@ -189,51 +183,63 @@ fail:
 	return function_call_result_fail;
 }
 
-static function_call_result runtime_number_factory_release(runtime_number_factory* this_instance, runtime_services* runtime)
+static function_call_result number_initializer(min_sharp_object* new_object, void *initializer_data)
 {
-	CRITICAL_ASSERT(min_sharp_null != runtime);
-	CRITICAL_ASSERT(min_sharp_null != this_instance);
+	CRITICAL_ASSERT(min_sharp_null != new_object);
+	CRITICAL_ASSERT(min_sharp_null != initializer_data);
 
-	runtime->free_unmanaged_memory(runtime, this_instance->numbers_vtable);
-	runtime->free_unmanaged_memory(runtime, this_instance);
-
+	runtime_number_vtable *vtable = (runtime_number_vtable*)initializer_data;
+	min_sharp_number* new_number = (min_sharp_number*)new_object;
+	new_number->object_flag = 0;
+	new_number->object_intrinsicts = &(vtable->object_intrinsicts);
+	new_number->value = 0.0;
 	return function_call_result_success;
 }
 
-function_call_result runtime_number_factory_initializer(runtime_services *runtime_services, runtime_number_factory ** min_sharp_number_factory_result)
-{
-	CRITICAL_ASSERT(min_sharp_null != runtime_services);
-	CRITICAL_ASSERT(min_sharp_null != min_sharp_number_factory_result);
+function_call_result register_number_type(system_services* system_services_instance, runtime_services* runtime_services_instance) {
+	CRITICAL_ASSERT(min_sharp_null != system_services_instance);
+	CRITICAL_ASSERT(min_sharp_null != runtime_services_instance);
 
-	runtime_number_vtable* runtime_number_vtable;
-	runtime_services->allocate_unmanaged_memory(runtime_services, &runtime_number_vtable, sizeof(runtime_number_vtable));
-	runtime_number_vtable->object_intrinsicts.get_interface = number_object_intrinsicts_get_interface;
-	runtime_number_vtable->object_intrinsicts.implements_interface = number_object_intrinsicts_implements_interface;
-	runtime_number_vtable->object_intrinsicts.garbage_collection_get_flags = number_object_intrinsicts_garbage_collection_get_flags;
-	runtime_number_vtable->object_intrinsicts.garbage_collection_set_flags = number_object_intrinsicts_garbage_collection_set_flags;
-	runtime_number_vtable->object_intrinsicts.iterate_referenced_objects = number_object_intrinsicts_iterate_referenced_objects;
-	runtime_number_vtable->object_intrinsicts.get_object_type = number_object_intrinsicts_get_object_type;
+	runtime_number_vtable *runtime_number_vtable_instance;
+	function_call_result fcr;
 
-	runtime_number_vtable->interface_map[0].interface_name = runtime_additionoperator_interface_name;
-	runtime_number_vtable->interface_map[0].interface = (min_sharp_interface*)&(runtime_number_vtable->runtime_AdditionOperator);
-	runtime_number_vtable->interface_map[1].interface_name = runtime_substraction_operator_interface_name;
-	runtime_number_vtable->interface_map[1].interface = (min_sharp_interface*)&(runtime_number_vtable->runtime_SubstractionOperator);
-	runtime_number_vtable->interface_map[2].interface_name = runtime_multiplication_operator_interface_name;
-	runtime_number_vtable->interface_map[2].interface = (min_sharp_interface*)&(runtime_number_vtable->runtime_MultiplicationOperator);
-	runtime_number_vtable->interface_map[3].interface_name = runtime_division_operator_interface_name;
-	runtime_number_vtable->interface_map[3].interface = (min_sharp_interface*)&(runtime_number_vtable->runtime_DivisionOperator);
-	runtime_number_vtable->interface_map[4].interface_name = runtime_remainder_operator_interface_name;
-	runtime_number_vtable->interface_map[4].interface = (min_sharp_interface*)&(runtime_number_vtable->runtime_RemainderOperator);
-	runtime_number_vtable->interface_map[5].interface_name = runtime_equality_operator_interface_name;
-	runtime_number_vtable->interface_map[5].interface = (min_sharp_interface*)&(runtime_number_vtable->runtime_EqualityOperator);
-	runtime_number_vtable->interface_map[6].interface_name = runtime__relational_operator_interface_name;
-	runtime_number_vtable->interface_map[6].interface = (min_sharp_interface*)&(runtime_number_vtable->runtime_RelationalOperator);
+	fcr = system_services_instance->allocate_memory(system_services_instance, &runtime_number_vtable_instance, sizeof(runtime_number_vtable));
+	if (function_call_result_fail == fcr)
+	{
+		goto fail;
+	}
 
-	runtime_number_factory* runtime_number_factory;	
-	runtime_services->allocate_unmanaged_memory(runtime_services, &runtime_number_factory, sizeof(runtime_number_factory));
-	runtime_number_factory->release = runtime_number_factory_release;
-	runtime_number_factory->build_number = min_sharp_null;
-	runtime_number_factory->numbers_vtable = runtime_number_vtable;
+	runtime_number_vtable_instance->object_intrinsicts.get_interface = number_object_intrinsicts_get_interface;
+	runtime_number_vtable_instance->object_intrinsicts.implements_interface = number_object_intrinsicts_implements_interface;
+	runtime_number_vtable_instance->object_intrinsicts.garbage_collection_get_flags = number_object_intrinsicts_garbage_collection_get_flags;
+	runtime_number_vtable_instance->object_intrinsicts.garbage_collection_set_flags = number_object_intrinsicts_garbage_collection_set_flags;
+	runtime_number_vtable_instance->object_intrinsicts.iterate_referenced_objects = number_object_intrinsicts_iterate_referenced_objects;
+	runtime_number_vtable_instance->object_intrinsicts.get_object_type = number_object_intrinsicts_get_object_type;
 
+	runtime_number_vtable_instance->interface_map[0].interface_name = RUNTIME_ADDITIONOPERATOR_INTERFACE_NAME;
+	runtime_number_vtable_instance->interface_map[0].interface = (min_sharp_interface*)&(runtime_number_vtable_instance->runtime_AdditionOperator);
+	runtime_number_vtable_instance->interface_map[1].interface_name = RUNTIME_SUBSTRACTION_OPERATOR_INTERFACE_NAME;
+	runtime_number_vtable_instance->interface_map[1].interface = (min_sharp_interface*)&(runtime_number_vtable_instance->runtime_SubstractionOperator);
+	runtime_number_vtable_instance->interface_map[2].interface_name = RUNTIME_MULTIPLICATION_OPERATOR_INTERFACE_NAME;
+	runtime_number_vtable_instance->interface_map[2].interface = (min_sharp_interface*)&(runtime_number_vtable_instance->runtime_MultiplicationOperator);
+	runtime_number_vtable_instance->interface_map[3].interface_name = RUNTIME_DIVISION_OPERATOR_INTERFACE_NAME;
+	runtime_number_vtable_instance->interface_map[3].interface = (min_sharp_interface*)&(runtime_number_vtable_instance->runtime_DivisionOperator);
+	runtime_number_vtable_instance->interface_map[4].interface_name = RUNTIME_REMAINDER_OPERATOR_INTERFACE_NAME;
+	runtime_number_vtable_instance->interface_map[4].interface = (min_sharp_interface*)&(runtime_number_vtable_instance->runtime_RemainderOperator);
+	runtime_number_vtable_instance->interface_map[5].interface_name = RUNTIME_EQUALITY_OPERATOR_INTERFACE_NAME;
+	runtime_number_vtable_instance->interface_map[5].interface = (min_sharp_interface*)&(runtime_number_vtable_instance->runtime_EqualityOperator);
+	runtime_number_vtable_instance->interface_map[6].interface_name = RUNTIME_RELATIONAL_OPERATOR_INTERFACE_NAME;
+	runtime_number_vtable_instance->interface_map[6].interface = (min_sharp_interface*)&(runtime_number_vtable_instance->runtime_RelationalOperator);
+
+	fcr = runtime_services_instance->register_number_initializer(runtime_services_instance, sizeof(min_sharp_number), number_initializer, runtime_number_vtable_instance);
+	if (function_call_result_fail == fcr)
+	{
+		goto fail;
+	}
+
+	return function_call_result_success;
+
+fail:
 	return function_call_result_fail;
 }
+

@@ -281,7 +281,7 @@ static function_call_result build_managed_memory_services(managed_memory_service
 {
 	function_call_result fcr;
 
-	fcr = managed_memory_services_factory(managed_memory_services_instance, system_services_instance);
+	fcr = managed_memory_services_factory(system_services_instance, managed_memory_services_instance);
 	test_assertion(fcr == function_call_result_success, "managed_memory_services_factory call");
 	test_assertion(min_sharp_null != managed_memory_services_instance, "managed_memory_services_instance not null");
 

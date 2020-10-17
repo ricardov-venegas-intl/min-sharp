@@ -6,72 +6,72 @@
 typedef struct
 {
 	min_sharp_interface_intrinsicts* min_sharp_interface_intrinsicts;
-	min_sharp_function_2_arguments_type Add;
+	min_sharp_function_1_arguments_type Add;
 } Runtime_AdditionOperator;
-const internal_string runtime_additionoperator_interface_name = "Runtime.AdditionOperator";
+#define RUNTIME_ADDITIONOPERATOR_INTERFACE_NAME "Runtime.AdditionOperator"
 
 typedef struct
 {
 	min_sharp_interface_intrinsicts* min_sharp_interface_intrinsicts;
 	unsigned_int_16 number_of_members;
-	min_sharp_function_2_arguments_type Substract;
+	min_sharp_function_1_arguments_type Substract;
 } Runtime_SubstractionOperator;
 
-const internal_string runtime_substraction_operator_interface_name = "Runtime.SubstractionOperator";
+#define RUNTIME_SUBSTRACTION_OPERATOR_INTERFACE_NAME "Runtime.SubstractionOperator"
 
 typedef struct
 {
 	min_sharp_interface_intrinsicts* min_sharp_interface_intrinsicts;
 	unsigned_int_16 number_of_members;
-	min_sharp_function_2_arguments_type Multiply;
+	min_sharp_function_1_arguments_type Multiply;
 } Runtime_MultiplicationOperator;
 
-const internal_string runtime_multiplication_operator_interface_name = "Runtime.MultiplicationOperator";
+#define RUNTIME_MULTIPLICATION_OPERATOR_INTERFACE_NAME "Runtime.MultiplicationOperator";
 
 typedef struct
 {
 	min_sharp_interface_intrinsicts* min_sharp_interface_intrinsicts;
 	unsigned_int_16 number_of_members;
-	min_sharp_function_2_arguments_type Divide;
+	min_sharp_function_1_arguments_type Divide;
 } Runtime_DivisionOperator;
 
-const internal_string runtime_division_operator_interface_name = "Runtime.DivisionOperator";
+#define RUNTIME_DIVISION_OPERATOR_INTERFACE_NAME "Runtime.DivisionOperator";
 
 typedef struct
 {
 	min_sharp_interface_intrinsicts* min_sharp_interface_intrinsicts;
 	unsigned_int_16 number_of_members;
-	min_sharp_function_2_arguments_type Remainder;
+	min_sharp_function_1_arguments_type Remainder;
 } Runtime_RemainderOperator;
 
-const internal_string runtime_remainder_operator_interface_name = "Runtime.RemainderOperator";
+#define RUNTIME_REMAINDER_OPERATOR_INTERFACE_NAME "Runtime.RemainderOperator";
 
 typedef struct
 {
 	min_sharp_interface_intrinsicts* min_sharp_interface_intrinsicts;
 	unsigned_int_16 number_of_members;
-	min_sharp_function_2_arguments_type IsEquals;
+	min_sharp_function_1_arguments_type IsEquals;
 } Runtime_EqualityOperator;
 
-const internal_string runtime_equality_operator_interface_name = "Runtime.EqualityOperator";
+#define RUNTIME_EQUALITY_OPERATOR_INTERFACE_NAME "Runtime.EqualityOperator";
 
 typedef struct
 {
 	min_sharp_interface_intrinsicts* min_sharp_interface_intrinsicts;
 	unsigned_int_16 number_of_members;
-	min_sharp_function_2_arguments_type IsGreaterThan;
-	min_sharp_function_2_arguments_type IsLowerThan;
+	min_sharp_function_1_arguments_type IsGreaterThan;
+	min_sharp_function_1_arguments_type IsLowerThan;
 } Runtime_RelationalOperator;
 
-const internal_string runtime__relational_operator_interface_name = "Runtime.RelationalOperator";
+#define RUNTIME_RELATIONAL_OPERATOR_INTERFACE_NAME  "Runtime.RelationalOperator";
 
 typedef struct
 {
 	min_sharp_interface_intrinsicts* min_sharp_interface_intrinsicts;
 	unsigned_int_16 number_of_members;
-	min_sharp_function_2_arguments_type Or;
-	min_sharp_function_2_arguments_type And;
-	min_sharp_function_1_arguments_type Not;
+	min_sharp_function_1_arguments_type Or;
+	min_sharp_function_1_arguments_type And;
+	min_sharp_function_0_arguments_type Not;
 } Runtime_BooleanOperator;
 
 
