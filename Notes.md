@@ -1,5 +1,10 @@
 # Notes and log
 
+## 2020-10-17
+
+* Roadblock on implementing number as a vtable. Each number has its function that has its own captures.
+* Need to think how to solve that. How can I implement captures with vtables.
+
 ## 2020-07-21
 
 * I will keep it simple and use the regular function pointer.
