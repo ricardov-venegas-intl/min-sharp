@@ -64,7 +64,7 @@ typedef struct runtime_services_struct
 	// Primitives
 	function_call_result (*build_number)(
 		runtime_services* this_instance, 
-		min_sharp_object** returned_exception, 
+		min_sharp_object** returned_exception,
 		min_sharp_object** returned_result);
 
 	// Initialization

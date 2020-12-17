@@ -6,5 +6,4 @@
 #include "../services/internal/system_services.h"
 
 // Formard declarations.
-
 function_call_result register_number_type(system_services* system_services_instance, runtime_services* runtime_services_instance);

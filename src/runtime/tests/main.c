@@ -12,4 +12,5 @@ int main()
 	system_list_tests();
 	managed_memory_services_tests();
 	//runtime_services_tests();
+	runtime_number_tests();
 }

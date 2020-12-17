@@ -14,11 +14,14 @@ __declspec(noreturn) extern void abort_with_message(char* message);
 }
 
 #define VALIDATE_ARGUMENT_NOTNULL(runtime, argument_object, argument_name) { \
-	if (min_sharp_null == argument_object)\
+	if (min_sharp_null == argument_object) \
 	{\
 		function_call_result fcr; \
 		fcr = runtime->system_argument_null_exception(runtime, returned_exception, argument_name);\
-		if (function_call_result_success != fcr) { abort_with_message("runtime->system_argument_null_exception FAILED");  };\
+		if (function_call_result_success != fcr) \
+		{ \
+			abort_with_message("runtime->system_argument_null_exception FAILED");\
+		};\
 		goto fail;\
 	}\
 }
@@ -41,4 +44,11 @@ __declspec(noreturn) extern void abort_with_message(char* message);
 	}\
 }
 
-#define VALIDATE_RETURNED_EXCEPTION() { if ((min_sharp_null == returned_exception) || (min_sharp_null == *returned_exception)) {abort_with_message("VALIDATE_RETURNED_EXCEPTION FAILED"); } }
+#define VALIDATE_RETURNED_EXCEPTION() \
+{ \
+  if ((min_sharp_null == returned_exception) \
+	  || (min_sharp_null == *returned_exception)) \
+  { \
+	  abort_with_message("VALIDATE_RETURNED_EXCEPTION FAILED"); \
+  } \
+}

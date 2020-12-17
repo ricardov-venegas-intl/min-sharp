@@ -197,7 +197,11 @@ fail:
 }
 
 
-static function_call_result build_number(runtime_services* this_instance, min_sharp_object** returned_exception, min_sharp_object** returned_result)
+static function_call_result build_number(
+	runtime_services* this_instance, 
+	min_sharp_object** returned_exception, 
+	min_sharp_object** returned_result, 
+	float_64 value)
 {
 	CRITICAL_ASSERT(min_sharp_null != this_instance);
 	CRITICAL_ASSERT(min_sharp_null != returned_result);
@@ -225,6 +229,7 @@ static function_call_result build_number(runtime_services* this_instance, min_sh
 fail:
 	return function_call_result_fail;
 }
+
 
 static function_call_result register_number_initializer(
 	runtime_services* this_instance, 
@@ -288,6 +293,7 @@ function_call_result runtime_services_factory(
 	data->number_initializer = min_sharp_null;
 	data->number_initializer_data = min_sharp_null;
 	data->number_object_size = 0;
+	data->managed_memory_services_instance = managed_memory_services_instance;
 
 	runtime_services* new_instance;
 	fcr = system_services_instance->allocate_memory(system_services_instance, &new_instance, sizeof(new_instance));
@@ -295,6 +301,9 @@ function_call_result runtime_services_factory(
 	{
 		goto fail;
 	}
+
+	new_instance->data = data;
+
 	new_instance->release = release;
 	new_instance->are_strings_equal_case_insentitive = are_strings_equal_case_insentitive;
 	new_instance->allocate_unmanaged_memory = allocate_unmanaged_memory;
@@ -307,8 +316,10 @@ function_call_result runtime_services_factory(
 	new_instance->allocate_object = allocate_object;
 	new_instance->collect_garbage = collect_garbage;
 
-	*result = new_instance;
+	new_instance->register_number_initializer = register_number_initializer;
+	new_instance->build_number = build_number;
 
+	*result = new_instance;
 	return function_call_result_success;
 
 fail:

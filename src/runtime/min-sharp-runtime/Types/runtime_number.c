@@ -10,8 +10,6 @@ typedef struct interface_map_struct
 } interface_map;
 
 #define number_of_interfaces 7
-
-
 typedef struct runtime_number_vtable_struct
 {
 	min_sharp_object_intrinsicts object_intrinsicts;
@@ -183,7 +181,12 @@ static function_call_result runtime_number_Runtime_AdditionOperator_add_fn(
 		returned_exception,
 		(min_sharp_object**)&result_number);
 
+	// Perform Operation
+	min_sharp_number* this_number = (min_sharp_number*)this_object_instance;
+	min_sharp_number* right_operand_number = (min_sharp_number*)right_operand;
+	result_number->value = this_number->value + right_operand_number->value;
 
+	*returned_result = (min_sharp_object*) result_number;
 	return function_call_result_success;
 
 fail:

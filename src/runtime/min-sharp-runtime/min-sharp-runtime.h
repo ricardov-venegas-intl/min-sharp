@@ -5,6 +5,7 @@
 //
 
 // # Standard types
+typedef double float_64;
 typedef long int_64;
 typedef int int_32;
 typedef short int_16;
@@ -88,4 +89,4 @@ typedef struct min_sharp_function_struct min_sharp_function;
 
 
 // Global Initializer
-void intialize_runtime(runtime_services** runtime_services_instance);
+void initialize_runtime(runtime_services** runtime_services_instance);
