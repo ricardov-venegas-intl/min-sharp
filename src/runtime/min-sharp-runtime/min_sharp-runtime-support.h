@@ -13,7 +13,7 @@ __declspec(noreturn) extern void abort_with_message(char* message);
 	}\
 }
 
-#define VALIDATE_ARGUMENT_NOTNULL(argument_object, argument_name) { \
+#define VALIDATE_ARGUMENT_NOTNULL(runtime, argument_object, argument_name) { \
 	if (min_sharp_null == argument_object)\
 	{\
 		function_call_result fcr; \
@@ -23,7 +23,7 @@ __declspec(noreturn) extern void abort_with_message(char* message);
 	}\
 }
 
-#define VALIDATE_ARGUMENT_TYPE(argument_object, argument_type, argument_name) { \
+#define VALIDATE_ARGUMENT_TYPE(runtime, argument_object, argument_type, argument_name) { \
 	min_sharp_object_type argument_object_type; \
 	function_call_result fcr;\
 	fcr = argument_object->object_intrinsicts->get_object_type(argument_object, &argument_object_type);\

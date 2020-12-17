@@ -158,22 +158,30 @@ function_call_result number_object_intrinsicts_get_object_type(min_sharp_object*
 
 
 static function_call_result runtime_number_Runtime_AdditionOperator_add_fn(
-	min_sharp_function* this_function,
-	runtime_services* runtime,
+	runtime_services* runtime_instance,
+	min_sharp_object* this_object_instance,
+	min_sharp_function* this_function_instance,
 	min_sharp_object** returned_exception,
 	min_sharp_object** returned_result,
-	min_sharp_object* rightOperand)
+	min_sharp_object* right_operand
+	)
 {
-	CRITICAL_ASSERT(min_sharp_null != runtime);
+	CRITICAL_ASSERT(min_sharp_null != runtime_instance);
 	CRITICAL_ASSERT(min_sharp_null != returned_exception);
 
-	VALIDATE_ARGUMENT_NOTNULL(this_function, "this_function");
-	VALIDATE_ARGUMENT_NOTNULL(returned_result, "returned_result");
-	VALIDATE_ARGUMENT_NOTNULL(rightOperand, "rightOperand");
-	VALIDATE_ARGUMENT_NOTNULL(rightOperand->object_intrinsicts, "rightOperand.object_intrinsicts");
-	VALIDATE_ARGUMENT_NOTNULL(rightOperand->object_intrinsicts->get_object_type, "rightOperand.object_intrinsicts.GetObjectType");
+	VALIDATE_ARGUMENT_NOTNULL(runtime_instance, this_function_instance, "this_function");
+	VALIDATE_ARGUMENT_NOTNULL(runtime_instance, returned_result, "returned_result");
+	VALIDATE_ARGUMENT_NOTNULL(runtime_instance, right_operand, "rightOperand");
+	VALIDATE_ARGUMENT_NOTNULL(runtime_instance, right_operand->object_intrinsicts, "rightOperand.object_intrinsicts");
+	VALIDATE_ARGUMENT_NOTNULL(runtime_instance, right_operand->object_intrinsicts->get_object_type, "rightOperand.object_intrinsicts.GetObjectType");
 
-	VALIDATE_ARGUMENT_TYPE(rightOperand, min_sharp_object_type_primitive_number, "rightOperand type");
+	VALIDATE_ARGUMENT_TYPE(runtime_instance, right_operand, min_sharp_object_type_primitive_number, "rightOperand type");
+
+	min_sharp_number* result_number;
+	runtime_instance ->build_number(
+		runtime_instance,
+		returned_exception,
+		(min_sharp_object**)&result_number);
 
 
 	return function_call_result_success;

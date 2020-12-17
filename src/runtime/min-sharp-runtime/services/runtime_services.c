@@ -14,7 +14,10 @@ typedef struct runtime_services_data_struct {
 } runtime_services_data;
 
 // unmanaged_memory
-static function_call_result allocate_unmanaged_memory(runtime_services* runtime, void** result, int size)
+static function_call_result allocate_unmanaged_memory(
+	runtime_services* runtime, 
+	void** result, 
+	int size)
 {
 	function_call_result fcr;
 
@@ -25,7 +28,12 @@ static function_call_result allocate_unmanaged_memory(runtime_services* runtime,
 		goto fail;
 	}
 
-	fcr = runtime->data->system_services_instance->allocate_memory(runtime->data->system_services_instance, result, size);
+	system_services* system_services_instance;
+	system_services_instance = runtime->data->system_services_instance;
+	fcr = system_services_instance->allocate_memory(
+		runtime->data->system_services_instance, 
+		result, 
+		size);
 	if (function_call_result_fail == fcr)
 	{
 		goto fail;
@@ -38,7 +46,9 @@ fail:
 
 }
 
-static function_call_result free_unmanaged_memory(runtime_services* runtime, void* memory)
+static function_call_result free_unmanaged_memory(
+	runtime_services* runtime, 
+	void* memory)
 {
 	CRITICAL_ASSERT(min_sharp_null != runtime);
 
@@ -47,7 +57,12 @@ static function_call_result free_unmanaged_memory(runtime_services* runtime, voi
 		goto fail;
 	}
 
-	function_call_result fcr = runtime->data->system_services_instance->free_memory(runtime->data->system_services_instance, memory);
+	system_services* system_services_instance;
+	system_services_instance = runtime->data->system_services_instance;
+
+	function_call_result fcr = system_services_instance->free_memory(
+		runtime->data->system_services_instance, 
+		memory);
 	if (function_call_result_fail == fcr)
 	{
 		goto fail;
