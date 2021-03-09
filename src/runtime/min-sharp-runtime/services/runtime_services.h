@@ -52,7 +52,12 @@ typedef struct runtime_services_struct
 		runtime_services* this_instance, 
 		min_sharp_object** returnedException, 
 		internal_string argument_name);
-	
+	function_call_result(*system_exception)(
+		runtime_services* this_instance,
+		min_sharp_object** returnedException,
+		internal_string exception_code,
+		internal_string exception_message);
+
 	// strings
 	function_call_result (*are_strings_equal_case_insentitive)(
 		runtime_services* this_instance, 
@@ -60,6 +65,13 @@ typedef struct runtime_services_struct
 		internal_string string1, 
 		internal_string string2, 
 		unsigned_int_32 max_string_size);
+
+	// Function Implementation
+	function_call_result(*build_static_function)(
+		runtime_services* this_instance,
+		min_sharp_object** returned_exception,
+		min_sharp_object** returned_result,
+		void * function_implementation);
 
 	// Primitives
 	function_call_result (*build_number)(

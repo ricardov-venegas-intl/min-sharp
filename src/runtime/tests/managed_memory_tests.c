@@ -42,81 +42,6 @@ typedef struct
 	min_sharp_object *member2;
 } sample_interface2;
 
-typedef struct interface_iterator_data_struct
-{
-	sample_interface_prototype* sample_interface_prototype;
-	unsigned_int_16 current;
-	system_services* system_services_instance;
-} interface_iterator_data;
-
-function_call_result member_iterator_HasNext(runtime_iterator* this_instance, min_sharp_boolean* hasNext)
-{
-	interface_iterator_data* data = (interface_iterator_data*)this_instance->runtime_iterator_data;
-
-	*hasNext = (data->current <= (data->sample_interface_prototype->number_of_members));
-	return function_call_result_success;
-}
-
-function_call_result member_iterator_Next(runtime_iterator* this_instance, void** next)
-{
-	interface_iterator_data* data = (interface_iterator_data*)this_instance->runtime_iterator_data;
-
-	*next = &(data->sample_interface_prototype->members[data->current]);
-	data->current++;
-	return function_call_result_success;
-}
-
-function_call_result member_iterator_Release(runtime_iterator* this_instance)
-{
-	interface_iterator_data* data = (interface_iterator_data*)this_instance->runtime_iterator_data;
-	system_services* system_services_instance = data->system_services_instance;
-
-	system_services_instance->free_memory(system_services_instance, data);
-	system_services_instance->free_memory(system_services_instance, this_instance);
-	return function_call_result_success;
-}
-
-function_call_result member_iterator_factory(system_services* system_services_instance, sample_interface_prototype* target, runtime_iterator** new_iterator)
-{
-	function_call_result fcr;
-	interface_iterator_data* data;
-	runtime_iterator *iterator;
-
-	fcr = system_services_instance->allocate_memory(system_services_instance, &data, sizeof(data));
-	if (function_call_result_fail == fcr)
-	{
-		goto fail;
-	}
-	data->current = 0;
-	data->sample_interface_prototype = target;
-	data->system_services_instance = system_services_instance;
-
-	system_services_instance->allocate_memory(system_services_instance, &iterator, sizeof(runtime_iterator));
-	if (function_call_result_fail == fcr)
-	{
-		goto fail;
-	}
-	iterator->HasNext = member_iterator_HasNext;
-	iterator->Next = member_iterator_Next;
-	iterator->Release = member_iterator_Release;
-	iterator->runtime_iterator_data = (void*)data;
-
-	*new_iterator = iterator;
-
-	return function_call_result_success;
-
-fail:
-	return function_call_result_fail;
-}
-
-function_call_result GetMemberIterator(min_sharp_interface* this_instance, runtime_iterator** iterator)
-{
-	function_call_result fcr;
-
-	sample_interface_prototype* interface_prototype = (sample_interface_prototype*) this_instance;
-	fcr = member_iterator_factory(interface_prototype->system_services_instance, interface_prototype, iterator);
-	return fcr;
-}
 
 typedef struct
 {
@@ -128,21 +53,6 @@ typedef struct
 	sample_interface1 interface1;
 	sample_interface2 interface2;
 } test_object;
-
-typedef struct object_iterator_data_struct
-{
-	test_object* target_object;
-	unsigned_int_16 current;
-	system_services* system_services_instance;
-} object_iterator_data;
-
-function_call_result object_iterator_HasNext(runtime_iterator* this_instance, min_sharp_boolean* hasNext)
-{
-	object_iterator_data* data = (object_iterator_data*)this_instance->runtime_iterator_data;
-
-	*hasNext = (data->current <= 2);
-	return function_call_result_success;
-}
 
 
 function_call_result IterateReferencedObjects(min_sharp_object* this_instance, runtime_iterator_function iteration_function, void* context)
@@ -248,7 +158,7 @@ function_call_result test_object_Initializer(system_services* system_services_in
 	{
 		goto fail;
 	}
-	shared_interface_intrinsicts->GetInterfaceName = min_sharp_null;
+	shared_interface_intrinsicts->ReleaseInterface = min_sharp_null;
 
 	result_object->number_of_interfaces = 3;
 	result_object->system_services_instance = system_services_instance;

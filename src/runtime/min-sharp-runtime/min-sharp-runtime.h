@@ -43,23 +43,13 @@ typedef struct runtime_iterator_struct runtime_iterator;
 typedef struct min_sharp_interface_struct min_sharp_interface;
 typedef struct runtime_services_struct runtime_services;
 
-// Iterator
-typedef struct runtime_iterator_data_struct runtime_iterator_data;
-typedef struct runtime_iterator_struct
-{
-	function_call_result(*HasNext)(runtime_iterator* this_instance, min_sharp_boolean* hasNext);
-	function_call_result(*Next)(runtime_iterator* this_instance, void** next);
-	function_call_result(*Release)(runtime_iterator* this_instance);
-	runtime_iterator_data* runtime_iterator_data;
-} runtime_iterator;
-
 typedef function_call_result(*runtime_iterator_function)(void* target, void* context);
 
 
 // Esential interfaces
 typedef struct min_sharp_interface_intrinsicts_struct
 {
-	function_call_result(*GetInterfaceName)(min_sharp_interface* this_instance, internal_string *interfaceName);
+	function_call_result(*ReleaseInterface)(min_sharp_interface* this_instance);
 } min_sharp_interface_intrinsicts;
 
 typedef struct min_sharp_object_intrinsicts_struct

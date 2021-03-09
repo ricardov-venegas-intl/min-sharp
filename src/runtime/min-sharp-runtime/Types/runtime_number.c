@@ -1,7 +1,7 @@
 #include "runtime_number.h"
 #include "min_sharp-runtime-support.h"
 #include "../services/runtime_services.h"
-
+#include "../services/internal/managed_memory_services.h"
 
 typedef struct interface_map_struct
 {
@@ -32,7 +32,7 @@ typedef struct min_sharp_number_struct
 	double value;
 } min_sharp_number;
 
-function_call_result number_object_intrinsicts_get_interface(min_sharp_object* this_instance, runtime_services* runtime, min_sharp_interface** result, internal_string interface_name)
+static function_call_result number_object_intrinsicts_get_interface(min_sharp_object* this_instance, runtime_services* runtime, min_sharp_interface** result, internal_string interface_name)
 {
 	function_call_result fcr;
 	CRITICAL_ASSERT(min_sharp_null != runtime);
@@ -76,7 +76,7 @@ fail:
 	return function_call_result_fail;
 }
 
-function_call_result number_object_intrinsicts_implements_interface(min_sharp_object* this_instance, runtime_services* runtime, min_sharp_boolean* result, internal_string interface_name)
+static function_call_result number_object_intrinsicts_implements_interface(min_sharp_object* this_instance, runtime_services* runtime, min_sharp_boolean* result, internal_string interface_name)
 {
 	function_call_result fcr;
 	CRITICAL_ASSERT(min_sharp_null != runtime);
@@ -123,7 +123,7 @@ fail:
 	return function_call_result_fail;
 }
 
-function_call_result number_object_intrinsicts_garbage_collection_get_flags(min_sharp_object* this_instance, object_flags* object_flag)
+static function_call_result number_object_intrinsicts_garbage_collection_get_flags(min_sharp_object* this_instance, object_flags* object_flag)
 {
 	CRITICAL_ASSERT(min_sharp_null != this_instance);
 	min_sharp_number* number_object = (min_sharp_number*)this_instance;
@@ -131,7 +131,7 @@ function_call_result number_object_intrinsicts_garbage_collection_get_flags(min_
 	return function_call_result_success;
 }
 
-function_call_result number_object_intrinsicts_garbage_collection_set_flags(min_sharp_object* this_instance, object_flags object_flag)
+static function_call_result number_object_intrinsicts_garbage_collection_set_flags(min_sharp_object* this_instance, object_flags object_flag)
 {
 	CRITICAL_ASSERT(min_sharp_null != this_instance);
 	min_sharp_number* number_object = (min_sharp_number*)this_instance;
@@ -139,14 +139,14 @@ function_call_result number_object_intrinsicts_garbage_collection_set_flags(min_
 	return function_call_result_success;
 }
 
-function_call_result number_object_intrinsicts_iterate_referenced_objects(min_sharp_object* this_instance, runtime_iterator_function iteration_function, void* context)
+static function_call_result number_object_intrinsicts_iterate_referenced_objects(min_sharp_object* this_instance, runtime_iterator_function iteration_function, void* context)
 {
 	CRITICAL_ASSERT(min_sharp_null != this_instance);
 	CRITICAL_ASSERT(min_sharp_null != iteration_function);
 	return function_call_result_success;
 }
 
-function_call_result number_object_intrinsicts_get_object_type(min_sharp_object* this_instance, min_sharp_object_type* object_type_result)
+static function_call_result number_object_intrinsicts_get_object_type(min_sharp_object* this_instance, min_sharp_object_type* object_type_result)
 {
 	CRITICAL_ASSERT(min_sharp_null != this_instance);
 
@@ -194,6 +194,12 @@ fail:
 	return function_call_result_fail;
 }
 
+static function_call_result number_release_interface(min_sharp_object* new_object, void* initializer_data)
+{
+	// DO nothing
+	return function_call_result_success;
+}
+
 static function_call_result number_initializer(min_sharp_object* new_object, void *initializer_data)
 {
 	CRITICAL_ASSERT(min_sharp_null != new_object);
@@ -220,6 +226,13 @@ function_call_result register_number_type(system_services* system_services_insta
 		goto fail;
 	}
 
+	// Fill thr vtable
+	runtime_number_vtable_instance->runtime_AdditionOperator.Add.function_implementation = runtime_number_Runtime_AdditionOperator_add_fn;
+	runtime_number_vtable_instance->runtime_AdditionOperator.Add.object_intrinsicts = min_sharp_null;
+	runtime_number_vtable_instance->runtime_AdditionOperator.Add.object_flag = runtime_managed_object;
+	runtime_number_vtable_instance->runtime_AdditionOperator.min_sharp_interface_intrinsicts->ReleaseInterface = number_release_interface;
+
+	// Fill the interface map
 	runtime_number_vtable_instance->object_intrinsicts.get_interface = number_object_intrinsicts_get_interface;
 	runtime_number_vtable_instance->object_intrinsicts.implements_interface = number_object_intrinsicts_implements_interface;
 	runtime_number_vtable_instance->object_intrinsicts.garbage_collection_get_flags = number_object_intrinsicts_garbage_collection_get_flags;
@@ -227,7 +240,7 @@ function_call_result register_number_type(system_services* system_services_insta
 	runtime_number_vtable_instance->object_intrinsicts.iterate_referenced_objects = number_object_intrinsicts_iterate_referenced_objects;
 	runtime_number_vtable_instance->object_intrinsicts.get_object_type = number_object_intrinsicts_get_object_type;
 
-	runtime_number_vtable_instance->interface_map[0].interface_name = RUNTIME_ADDITIONOPERATOR_INTERFACE_NAME;
+	runtime_number_vtable_instance->interface_map[0].interface_name = RUNTIME_ADDITION_OPERATOR_INTERFACE_NAME;
 	runtime_number_vtable_instance->interface_map[0].interface = (min_sharp_interface*)&(runtime_number_vtable_instance->runtime_AdditionOperator);
 	runtime_number_vtable_instance->interface_map[1].interface_name = RUNTIME_SUBSTRACTION_OPERATOR_INTERFACE_NAME;
 	runtime_number_vtable_instance->interface_map[1].interface = (min_sharp_interface*)&(runtime_number_vtable_instance->runtime_SubstractionOperator);

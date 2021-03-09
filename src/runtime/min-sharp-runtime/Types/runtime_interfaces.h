@@ -8,7 +8,7 @@ typedef struct
 	min_sharp_interface_intrinsicts* min_sharp_interface_intrinsicts;
 	min_sharp_function_1_arguments_type Add;
 } Runtime_AdditionOperator;
-#define RUNTIME_ADDITIONOPERATOR_INTERFACE_NAME "Runtime.AdditionOperator"
+#define RUNTIME_ADDITION_OPERATOR_INTERFACE_NAME "Runtime.AdditionOperator"
 
 typedef struct
 {

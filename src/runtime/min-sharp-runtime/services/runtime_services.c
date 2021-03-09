@@ -5,12 +5,14 @@
 #include "Types/runtime_number.h"
 #include <string.h>
 
+
 typedef struct runtime_services_data_struct {
 	system_services* system_services_instance;
 	managed_memory_services *managed_memory_services_instance;
 	type_initializer number_initializer;
 	int number_object_size;
 	void* number_initializer_data;
+	min_sharp_object_intrinsicts* static_object_intrinsicts;
 } runtime_services_data;
 
 // unmanaged_memory
@@ -211,25 +213,36 @@ static function_call_result build_number(
 	min_sharp_object* new_number;
 	managed_memory_services* managed_memory_services_instance = this_instance->data->managed_memory_services_instance;
 
-	fcr = managed_memory_services_instance->allocate_object(managed_memory_services_instance, (min_sharp_object**)&new_number, sizeof(this_instance->data->number_object_size));
+	fcr = managed_memory_services_instance->allocate_object(
+		managed_memory_services_instance, 
+		(min_sharp_object**)&new_number, 
+		sizeof(this_instance->data->number_object_size));
 	if (function_call_result_fail == fcr)
 	{
 		goto fail;
 	}
 
-	fcr = this_instance->data->number_initializer(new_number, this_instance->data->number_initializer_data);
+	fcr = this_instance->data->number_initializer(
+		new_number, 
+		this_instance->data->number_initializer_data);
 	if (function_call_result_fail == fcr)
 	{
 		goto fail;
 	}
 
 	*returned_result = (min_sharp_object*)new_number;
+	*returned_exception = min_sharp_null;
+
 	return function_call_result_success;
 
 fail:
+	this_instance->system_exception(
+		this_instance, 
+		returned_exception, 
+		"Runtime.Error", 
+		"Error Building Number");
 	return function_call_result_fail;
 }
-
 
 static function_call_result register_number_initializer(
 	runtime_services* this_instance, 
@@ -244,6 +257,46 @@ static function_call_result register_number_initializer(
 	this_instance->data->number_object_size = number_object_size;
 	this_instance->data->number_initializer_data = number_initializer_data;
 	return function_call_result_success;
+}
+
+static function_call_result build_static_function(
+	runtime_services* this_instance,
+	min_sharp_object** returned_exception,
+	min_sharp_object** returned_result,
+	void* function_implementation)
+{
+	CRITICAL_ASSERT(min_sharp_null != this_instance);
+	CRITICAL_ASSERT(min_sharp_null != returned_result);
+	CRITICAL_ASSERT(min_sharp_null != returned_exception);
+	CRITICAL_ASSERT(min_sharp_null != function_implementation);
+
+	function_call_result fcr;
+	min_sharp_object* new_function_object;
+	managed_memory_services* managed_memory_services_instance = this_instance->data->managed_memory_services_instance;
+
+	fcr = managed_memory_services_instance->allocate_object(
+		managed_memory_services_instance,
+		(min_sharp_object**)&new_function_object,
+		sizeof(this_instance->data->number_object_size));
+	if (function_call_result_fail == fcr)
+	{
+		goto fail;
+	}
+
+	new_function_object->object_intrinsicts ->
+
+	*returned_result = (min_sharp_object*)new_function_object;
+	*returned_exception = min_sharp_null;
+
+	return function_call_result_success;
+
+fail:
+	this_instance->system_exception(
+		this_instance,
+		returned_exception,
+		"Runtime.Error",
+		"Error Building Number");
+	return function_call_result_fail;
 }
 
 static function_call_result release(runtime_services* this_instance)
@@ -271,7 +324,6 @@ static function_call_result release(runtime_services* this_instance)
 fail:
 	return function_call_result_fail;
 }
-
 
 function_call_result runtime_services_factory(
 	system_services* system_services_instance, 
@@ -325,3 +377,5 @@ function_call_result runtime_services_factory(
 fail:
 	return function_call_result_fail;
 }
+
+
