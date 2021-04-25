@@ -149,6 +149,7 @@ static function_call_result number_object_intrinsicts_iterate_referenced_objects
 static function_call_result number_object_intrinsicts_get_object_type(min_sharp_object* this_instance, min_sharp_object_type* object_type_result)
 {
 	CRITICAL_ASSERT(min_sharp_null != this_instance);
+	CRITICAL_ASSERT(min_sharp_null != object_type_result);
 
 	*object_type_result = min_sharp_object_type_primitive_number;
 	return function_call_result_success;
@@ -175,16 +176,18 @@ static function_call_result runtime_number_Runtime_AdditionOperator_add_fn(
 
 	VALIDATE_ARGUMENT_TYPE(runtime_instance, right_operand, min_sharp_object_type_primitive_number, "rightOperand type");
 
+	// Calculate result
+	min_sharp_number* this_number = (min_sharp_number*)this_object_instance;
+	min_sharp_number* right_operand_number = (min_sharp_number*)right_operand;
+	float_64 result_value = this_number->value + right_operand_number->value;
+
+	// Create Number
 	min_sharp_number* result_number;
 	runtime_instance ->build_number(
 		runtime_instance,
 		returned_exception,
-		(min_sharp_object**)&result_number);
-
-	// Perform Operation
-	min_sharp_number* this_number = (min_sharp_number*)this_object_instance;
-	min_sharp_number* right_operand_number = (min_sharp_number*)right_operand;
-	result_number->value = this_number->value + right_operand_number->value;
+		(min_sharp_object**)&result_number,
+		result_value);
 
 	*returned_result = (min_sharp_object*) result_number;
 	return function_call_result_success;
@@ -196,7 +199,7 @@ fail:
 
 static function_call_result number_release_interface(min_sharp_object* new_object, void* initializer_data)
 {
-	// DO nothing
+	// Do nothing
 	return function_call_result_success;
 }
 
@@ -219,6 +222,7 @@ function_call_result register_number_type(system_services* system_services_insta
 
 	runtime_number_vtable *runtime_number_vtable_instance;
 	function_call_result fcr;
+	min_sharp_object *exception;
 
 	fcr = system_services_instance->allocate_memory(system_services_instance, &runtime_number_vtable_instance, sizeof(runtime_number_vtable));
 	if (function_call_result_fail == fcr)
@@ -227,10 +231,13 @@ function_call_result register_number_type(system_services* system_services_insta
 	}
 
 	// Fill thr vtable
-	runtime_number_vtable_instance->runtime_AdditionOperator.Add.function_implementation = runtime_number_Runtime_AdditionOperator_add_fn;
-	runtime_number_vtable_instance->runtime_AdditionOperator.Add.object_intrinsicts = min_sharp_null;
-	runtime_number_vtable_instance->runtime_AdditionOperator.Add.object_flag = runtime_managed_object;
-	runtime_number_vtable_instance->runtime_AdditionOperator.min_sharp_interface_intrinsicts->ReleaseInterface = number_release_interface;
+	fcr = runtime_services_instance->build_function(
+		runtime_services_instance,
+		&exception,
+		(min_sharp_object**) &(runtime_number_vtable_instance->runtime_AdditionOperator.Add),
+		min_sharp_null,
+		runtime_number_Runtime_AdditionOperator_add_fn
+	);
 
 	// Fill the interface map
 	runtime_number_vtable_instance->object_intrinsicts.get_interface = number_object_intrinsicts_get_interface;

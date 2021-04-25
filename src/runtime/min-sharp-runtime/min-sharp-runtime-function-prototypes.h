@@ -117,13 +117,9 @@ typedef struct min_sharp_function_struct
 		min_sharp_function_7_arguments function_7_arguments;
 		min_sharp_function_8_arguments function_8_arguments;
 	} function_implementation;
+	min_sharp_object* function_captures;
 } min_sharp_function;
 
-typedef struct min_sharp_function_with_capture_struct
-{
-	min_sharp_function min_sharp_function_instance;
-	min_sharp_object *function_captures;
-} min_sharp_function_with_capture;
 
 // Auxiliary definitions for strong typed interfaces
 typedef struct min_sharp_function_0_arguments_type_struct
@@ -131,6 +127,7 @@ typedef struct min_sharp_function_0_arguments_type_struct
 	min_sharp_object_intrinsicts* object_intrinsicts;
 	object_flags object_flag;
 	min_sharp_function_0_arguments function_implementation;
+	min_sharp_object* function_captures;
 } min_sharp_function_0_arguments_type;
 
 typedef struct min_sharp_function_1_arguments_type_struct
@@ -138,6 +135,7 @@ typedef struct min_sharp_function_1_arguments_type_struct
 	min_sharp_object_intrinsicts* object_intrinsicts;
 	object_flags object_flag;
 	min_sharp_function_1_arguments function_implementation;
+	min_sharp_object* function_captures;
 } min_sharp_function_1_arguments_type;
 
 typedef struct min_sharp_function_2_arguments_type_struct
@@ -145,6 +143,7 @@ typedef struct min_sharp_function_2_arguments_type_struct
 	min_sharp_object_intrinsicts* object_intrinsicts;
 	object_flags object_flag;
 	min_sharp_function_2_arguments function_implementation;
+	min_sharp_object* function_captures;
 } min_sharp_function_2_arguments_type;
 
 typedef struct min_sharp_function_3_arguments_type_struct
@@ -152,6 +151,7 @@ typedef struct min_sharp_function_3_arguments_type_struct
 	min_sharp_object_intrinsicts* object_intrinsicts;
 	object_flags object_flag;
 	min_sharp_function_3_arguments function_implementation;
+	min_sharp_object* function_captures;
 } min_sharp_function_3_arguments_type;
 
 typedef struct min_sharp_function_4_arguments_type_struct
@@ -159,6 +159,7 @@ typedef struct min_sharp_function_4_arguments_type_struct
 	min_sharp_object_intrinsicts* object_intrinsicts;
 	object_flags object_flag;
 	min_sharp_function_4_arguments function_implementation;
+	min_sharp_object* function_captures;
 } min_sharp_function_4_arguments_type;
 
 typedef struct min_sharp_function_5_arguments_type_struct
@@ -166,6 +167,7 @@ typedef struct min_sharp_function_5_arguments_type_struct
 	min_sharp_object_intrinsicts* object_intrinsicts;
 	object_flags object_flag;
 	min_sharp_function_5_arguments function_implementation;
+	min_sharp_object* function_captures;
 } min_sharp_function_5_arguments_type;
 
 typedef struct min_sharp_function_6_arguments_type_struct
@@ -173,6 +175,7 @@ typedef struct min_sharp_function_6_arguments_type_struct
 	min_sharp_object_intrinsicts* object_intrinsicts;
 	object_flags object_flag;
 	min_sharp_function_6_arguments function_implementation;
+	min_sharp_object* function_captures;
 } min_sharp_function_6_arguments_type;
 
 typedef struct min_sharp_function_7_arguments_type_struct
@@ -180,6 +183,7 @@ typedef struct min_sharp_function_7_arguments_type_struct
 	min_sharp_object_intrinsicts* object_intrinsicts;
 	object_flags object_flag;
 	min_sharp_function_7_arguments function_implementation;
+	min_sharp_object* function_captures;
 } min_sharp_function_7_arguments_type;
 
 typedef struct min_sharp_function_8_arguments_type_struct
@@ -187,5 +191,6 @@ typedef struct min_sharp_function_8_arguments_type_struct
 	min_sharp_object_intrinsicts* object_intrinsicts;
 	object_flags object_flag;
 	min_sharp_function_8_arguments function_implementation;
+	min_sharp_object* function_captures;
 } min_sharp_function_8_arguments_type;
 

@@ -6,6 +6,14 @@
 #include <string.h>
 
 
+
+typedef struct key_value_pair_node_struct key_value_pair_node;
+typedef struct key_value_pair_node_struct {
+	int key;
+	void* value;
+	key_value_pair_node* next;
+} key_value_pair_node;
+
 typedef struct runtime_services_data_struct {
 	system_services* system_services_instance;
 	managed_memory_services *managed_memory_services_instance;
@@ -13,6 +21,7 @@ typedef struct runtime_services_data_struct {
 	int number_object_size;
 	void* number_initializer_data;
 	min_sharp_object_intrinsicts* static_object_intrinsicts;
+	key_value_pair_node* global_data_head;
 } runtime_services_data;
 
 // unmanaged_memory
@@ -176,6 +185,8 @@ static function_call_result allocate_object(runtime_services* this_instance, min
 		goto fail;
 	}
 
+	return function_call_result_success;
+
 fail:
 	return function_call_result_fail;
 }
@@ -259,45 +270,103 @@ static function_call_result register_number_initializer(
 	return function_call_result_success;
 }
 
-static function_call_result build_static_function(
-	runtime_services* this_instance,
+static 	function_call_result build_function(
+	runtime_services* runtime_services_instance,
 	min_sharp_object** returned_exception,
 	min_sharp_object** returned_result,
+	min_sharp_object* function_captures,
 	void* function_implementation)
 {
-	CRITICAL_ASSERT(min_sharp_null != this_instance);
+	CRITICAL_ASSERT(min_sharp_null != runtime_services_instance);
 	CRITICAL_ASSERT(min_sharp_null != returned_result);
 	CRITICAL_ASSERT(min_sharp_null != returned_exception);
 	CRITICAL_ASSERT(min_sharp_null != function_implementation);
 
-	function_call_result fcr;
-	min_sharp_object* new_function_object;
-	managed_memory_services* managed_memory_services_instance = this_instance->data->managed_memory_services_instance;
-
-	fcr = managed_memory_services_instance->allocate_object(
-		managed_memory_services_instance,
-		(min_sharp_object**)&new_function_object,
-		sizeof(this_instance->data->number_object_size));
-	if (function_call_result_fail == fcr)
-	{
-		goto fail;
-	}
-
-	new_function_object->object_intrinsicts ->
-
-	*returned_result = (min_sharp_object*)new_function_object;
-	*returned_exception = min_sharp_null;
-
-	return function_call_result_success;
+	return  function_factory(
+		runtime_services_instance,
+		returned_exception,
+		returned_result,
+		function_captures,
+		function_implementation);
 
 fail:
-	this_instance->system_exception(
-		this_instance,
+	runtime_services_instance->system_exception(
+		runtime_services_instance,
 		returned_exception,
 		"Runtime.Error",
 		"Error Building Number");
 	return function_call_result_fail;
 }
+
+static function_call_result set_global_data(runtime_services* runtime_services_instance, int data_id, void* data)
+{
+	CRITICAL_ASSERT(min_sharp_null != runtime_services_instance);
+
+	function_call_result fcr;
+	
+	// Search for the id, and update if found;
+	key_value_pair_node* previous = min_sharp_null;
+	key_value_pair_node* current = runtime_services_instance->data->global_data_head;
+	while (min_sharp_null != current)
+	{
+		if (data_id == current->key)
+		{
+			current ->value = data;
+			return function_call_result_success;
+		}
+		previous = current;
+		current = current->next;
+	}
+
+	// Id Not found?, then allocate new object
+	key_value_pair_node* data_node;
+	fcr = runtime_services_instance->allocate_unmanaged_memory(
+		runtime_services_instance,
+		&data_node,
+		sizeof(key_value_pair_node));
+	if (function_call_result_fail == fcr)
+	{
+		goto fail;
+	}
+
+	// initialize
+	data_node->key = data_id;
+	data_node->value = data;
+	data_node->next = min_sharp_null;
+
+	// Append to list
+	if (min_sharp_null == previous)
+	{
+		runtime_services_instance->data->global_data_head = data;
+	}
+	else
+	{
+		previous->next = data_node;
+	}
+	
+	return function_call_result_success;
+
+fail:
+	return function_call_result_fail;
+}
+
+static function_call_result get_global_data(runtime_services* runtime_services_instance, int data_id, void** data)
+{
+	CRITICAL_ASSERT(min_sharp_null != runtime_services_instance);
+
+	key_value_pair_node* current = runtime_services_instance->data->global_data_head;
+	while (min_sharp_null != current)
+	{
+		if (data_id == current->key)
+		{
+			*data = current->value;
+			return function_call_result_success;
+		}
+	}
+
+	return function_call_result_fail;
+}
+
 
 static function_call_result release(runtime_services* this_instance)
 {
@@ -336,17 +405,22 @@ function_call_result runtime_services_factory(
 	CRITICAL_ASSERT(min_sharp_null != system_services_instance);
 	CRITICAL_ASSERT(min_sharp_null != result);
 
+	// Allocate data object
 	fcr = system_services_instance->allocate_memory(system_services_instance, &data, sizeof(data));
 	if (function_call_result_fail == fcr)
 	{
 		goto fail;
 	}
+
+	//Initialize data object
 	data->system_services_instance = system_services_instance;
 	data->number_initializer = min_sharp_null;
 	data->number_initializer_data = min_sharp_null;
 	data->number_object_size = 0;
 	data->managed_memory_services_instance = managed_memory_services_instance;
+	data->global_data_head = min_sharp_null;
 
+	// Allocate runtime services instance
 	runtime_services* new_instance;
 	fcr = system_services_instance->allocate_memory(system_services_instance, &new_instance, sizeof(new_instance));
 	if (function_call_result_fail == fcr)
@@ -354,9 +428,12 @@ function_call_result runtime_services_factory(
 		goto fail;
 	}
 
+	//Initialize data phase 1
 	new_instance->data = data;
 
 	new_instance->release = release;
+	new_instance->get_global_data = get_global_data;
+	new_instance->set_global_data = set_global_data;
 	new_instance->are_strings_equal_case_insentitive = are_strings_equal_case_insentitive;
 	new_instance->allocate_unmanaged_memory = allocate_unmanaged_memory;
 	new_instance->free_unmanaged_memory = free_unmanaged_memory;
@@ -370,6 +447,8 @@ function_call_result runtime_services_factory(
 
 	new_instance->register_number_initializer = register_number_initializer;
 	new_instance->build_number = build_number;
+
+	new_instance->build_function = build_function;
 
 	*result = new_instance;
 	return function_call_result_success;

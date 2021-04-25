@@ -20,7 +20,7 @@ void test_runtime_number_build()
 
 	min_sharp_number *new_number;
 	min_sharp_object *exception;
-	fcr = runtime_services_instance->build_number(runtime_services_instance, &exception, (min_sharp_object **) &new_number);
+	fcr = runtime_services_instance->build_number(runtime_services_instance, &exception, (min_sharp_object **) &new_number, 0.0);
 	test_assertion(fcr == function_call_result_success, "runtime_services_instance->build_number call");
 	test_assertion(new_number->value == 0.0, "new_number->value == 0.0");
 
@@ -43,7 +43,8 @@ void test_runtime_number_add_zero_plus_zero()
 	fcr = runtime_services_instance->build_number(
 		runtime_services_instance, 
 		&exception, 
-		(min_sharp_object**)&left_number);
+		(min_sharp_object**)&left_number,
+		0.0);
 	test_assertion(fcr == function_call_result_success, "runtime_services_instance->build_number call");
 	test_assertion(left_number->value == 0.0, "exception->value == 0.0");
 	test_assertion(min_sharp_null == exception, "min_sharp_null == exception");
@@ -53,7 +54,8 @@ void test_runtime_number_add_zero_plus_zero()
 	fcr = runtime_services_instance->build_number(
 		runtime_services_instance, 
 		&exception, 
-		(min_sharp_object**)&right_number);
+		(min_sharp_object**)&right_number,
+		0.0);
 	test_assertion(fcr == function_call_result_success, "runtime_services_instance->build_number call");
 	test_assertion(right_number->value == 0.0, "right_number->value == 0.0");
 	test_assertion(min_sharp_null == exception, "min_sharp_null == exception");
@@ -63,19 +65,19 @@ void test_runtime_number_add_zero_plus_zero()
 	// Perform Add Operation
 	Runtime_AdditionOperator* additionOperatorInterface;
 	fcr = left_number->object_intrinsicts->get_interface(
-		left_number, 
+		(min_sharp_object *)left_number,
 		runtime_services_instance, 
-		&additionOperatorInterface, 
+		(min_sharp_interface**)&additionOperatorInterface, 
 		RUNTIME_ADDITION_OPERATOR_INTERFACE_NAME);
 	test_assertion(fcr == function_call_result_success, "new_number1->object_intrinsicts->get_interface call");
 
-	fcr = additionOperatorInterface->Add.function_implementation(
+	fcr = additionOperatorInterface->Add->function_implementation(
 		runtime_services_instance,
-		left_number,
-		&(additionOperatorInterface->Add),
+		(min_sharp_object*)left_number,
+		(min_sharp_function *) &(additionOperatorInterface->Add),
 		&exception,
-		&result_number,
-		right_number);
+		(min_sharp_object**) &result_number,
+		(min_sharp_object*) right_number);
 	test_assertion(fcr == function_call_result_success, "additionOperatorInterface->Add.function_implementation call");
 	test_assertion(min_sharp_null == exception, "min_sharp_null == exception");
 	test_assertion(min_sharp_null != result_number, "min_sharp_null != new_number3");

@@ -46,12 +46,6 @@ typedef struct runtime_services_struct runtime_services;
 typedef function_call_result(*runtime_iterator_function)(void* target, void* context);
 
 
-// Esential interfaces
-typedef struct min_sharp_interface_intrinsicts_struct
-{
-	function_call_result(*ReleaseInterface)(min_sharp_interface* this_instance);
-} min_sharp_interface_intrinsicts;
-
 typedef struct min_sharp_object_intrinsicts_struct
 {
 	function_call_result(*get_interface)(min_sharp_object* this_instance, runtime_services* runtime, min_sharp_interface** result, internal_string interfaceName);
@@ -62,11 +56,6 @@ typedef struct min_sharp_object_intrinsicts_struct
 	function_call_result(*get_object_type)(min_sharp_object* this_instance, min_sharp_object_type* object_type_result);
 } min_sharp_object_intrinsicts;
 
-typedef struct min_sharp_interface_struct
-{
-	min_sharp_interface_intrinsicts* min_sharp_interface_intrinsicts;
-	// other members here;
-} min_sharp_interface;
 
 typedef struct min_sharp_object_struct
 {

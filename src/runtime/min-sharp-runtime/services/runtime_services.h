@@ -18,6 +18,7 @@ typedef function_call_result(*type_initializer)(
 	void *initializer_data);
 
 
+// Object definition
 typedef struct runtime_services_struct
 {
 	// unmanaged_memory
@@ -66,25 +67,31 @@ typedef struct runtime_services_struct
 		internal_string string2, 
 		unsigned_int_32 max_string_size);
 
-	// Function Implementation
-	function_call_result(*build_static_function)(
-		runtime_services* this_instance,
-		min_sharp_object** returned_exception,
-		min_sharp_object** returned_result,
-		void * function_implementation);
 
 	// Primitives
+	function_call_result(*build_function)(
+		runtime_services* runtime_services_instance,
+		min_sharp_object** returned_exception,
+		min_sharp_object** returned_result,
+		min_sharp_object* function_captures,
+		void* function_implementation);
+
 	function_call_result (*build_number)(
 		runtime_services* this_instance, 
 		min_sharp_object** returned_exception,
-		min_sharp_object** returned_result);
+		min_sharp_object** returned_result,
+		float_64 value);
 
-	// Initialization
+	// Initialization of new primitive entities
 	function_call_result(*register_number_initializer)(
 		runtime_services* this_instance, 
 		int number_object_size, 
 		type_initializer number_initializer, 
 		void* number_initializer_data);
+
+	// Global data management
+	function_call_result(*set_global_data)(runtime_services* runtime_services_instance, int data_id, void* data);
+	function_call_result(*get_global_data)(runtime_services* runtime_services_instance, int data_id, void** data);
 
 	// Lifetime management
 	function_call_result(*release)(

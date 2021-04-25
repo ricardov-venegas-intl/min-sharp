@@ -36,7 +36,7 @@ __declspec(noreturn) extern void abort_with_message(char* message);
 		if (function_call_result_success != fcr) { abort_with_message("runtime->system_argument_exception FAILED"); }\
 		goto fail;\
 	}\
-	if (argument_type == argument_object_type)\
+	if (argument_type != argument_object_type)\
 	{\
 		fcr = runtime->system_argument_exception(runtime, returned_exception, argument_name);\
 		if (function_call_result_success != fcr) { abort_with_message("runtime->system_argument_exception FAILED"); }\

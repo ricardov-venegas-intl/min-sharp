@@ -5,7 +5,6 @@
 typedef struct managed_memory_services_struct managed_memory_services;
 typedef struct managed_memory_services_data_struct managed_memory_services_data;
 
-const int runtime_managed_object = 7; //111
 
 typedef struct managed_memory_services_struct
 {

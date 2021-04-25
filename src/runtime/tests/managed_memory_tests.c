@@ -5,11 +5,9 @@
 
 static system_services* system_services_instance = min_sharp_null;
 
-static min_sharp_interface_intrinsicts test_min_sharp_interface_intrinsicts;
 
 typedef struct sample_interface_prototype_struct
 {
-	min_sharp_interface_intrinsicts* type_info;
 	system_services* system_services_instance;
 	unsigned_int_16 number_of_members;
 	min_sharp_object members[];
@@ -17,7 +15,6 @@ typedef struct sample_interface_prototype_struct
 
 typedef struct
 {
-	min_sharp_interface_intrinsicts* type_info;
 	system_services* system_services_instance;
 	unsigned_int_16 number_of_members;
 	min_sharp_object *member1;
@@ -25,7 +22,6 @@ typedef struct
 
 typedef struct
 {
-	min_sharp_interface_intrinsicts* type_info;
 	system_services* system_services_instance;
 	unsigned_int_16 number_of_members;
 	min_sharp_object *member1;
@@ -35,7 +31,6 @@ typedef struct
 
 typedef struct
 {
-	min_sharp_interface_intrinsicts* type_info;
 	system_services* system_services_instance;
 	unsigned_int_16 number_of_members;
 	min_sharp_object *member1;
@@ -152,30 +147,20 @@ function_call_result test_object_Initializer(system_services* system_services_in
 
 	result_object->object_intrinsicts = object_intrinsicts;
 
-	min_sharp_interface_intrinsicts*  shared_interface_intrinsicts;
-	fcr = system_services_instance->allocate_memory(system_services_instance, &shared_interface_intrinsicts, sizeof(min_sharp_interface_intrinsicts));
-	if (function_call_result_fail == fcr)
-	{
-		goto fail;
-	}
-	shared_interface_intrinsicts->ReleaseInterface = min_sharp_null;
 
 	result_object->number_of_interfaces = 3;
 	result_object->system_services_instance = system_services_instance;
 	result_object->interface1.system_services_instance = system_services_instance;
 	result_object->interface1.number_of_members = 1;
-	result_object->interface1.type_info = shared_interface_intrinsicts;
 	result_object->interface1.member1 = min_sharp_null;
 
 	result_object->interface2.system_services_instance = system_services_instance;
 	result_object->interface2.number_of_members = 2;
-	result_object->interface2.type_info = shared_interface_intrinsicts;
 	result_object->interface2.member1 = min_sharp_null;
 	result_object->interface2.member2 = min_sharp_null;
 
 	result_object->interface3.system_services_instance = system_services_instance;
 	result_object->interface3.number_of_members = 3;
-	result_object->interface3.type_info = shared_interface_intrinsicts;
 	result_object->interface3.member1 = min_sharp_null;
 	result_object->interface3.member2 = min_sharp_null;
 	result_object->interface3.member3 = min_sharp_null;

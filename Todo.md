@@ -3,10 +3,12 @@
 ## Current
 
 * Types
-* Runtime Services: release
-* Runtime Services: Factory
-* Runtime Services: internal builder
-* Move initialize_types_repository to a new class
+* Add more test for Number
+* Add tests for Function
+* Runtime Services: internal builder (Simplify number building using get-Global/Set_global)
+* Complete to implement number interfaces.
+* Implement Boolean
+* Implement string
 
 ## Pending
 
@@ -19,11 +21,14 @@
 * Define systax: Services, modules, data types, tests
 * Lexical Parser
 * Syntax Parser
-* Semantic Analisys: Type inferance
+* Semantic Analisys: Type inference
 * Optimize managed memory allocation by removing pointers
 
 ## Complete
 
+* Move initialize_types_repository to a new class
+* Runtime Services: release
+* Runtime Services: Factory
 * Managed Memory Services
 * Up date design for object hierachy
 * Runtime: Restructure minsharp object to be a collection of interfaces
