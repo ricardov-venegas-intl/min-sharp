@@ -2,10 +2,8 @@
 
 ## Current
 
-* Types
 * Add more test for Number
 * Add tests for Function
-* Runtime Services: internal builder (Simplify number building using get-Global/Set_global)
 * Complete to implement number interfaces.
 * Implement Boolean
 * Implement string
@@ -25,7 +23,7 @@
 * Optimize managed memory allocation by removing pointers
 
 ## Complete
-
+* Runtime Services: internal builder (Simplify number building using get-Global/Set_global)
 * Move initialize_types_repository to a new class
 * Runtime Services: release
 * Runtime Services: Factory

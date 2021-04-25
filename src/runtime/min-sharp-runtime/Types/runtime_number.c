@@ -3,6 +3,9 @@
 #include "../services/runtime_services.h"
 #include "../services/internal/managed_memory_services.h"
 
+
+static int const global_runtime_number_vtable_instance_id = 2013816853;
+
 typedef struct interface_map_struct
 {
 	internal_string interface_name;
@@ -25,11 +28,17 @@ typedef struct runtime_number_vtable_struct
 
 } runtime_number_vtable;
 
+typedef union vtable_or_object_intrinsicts_union
+{
+	min_sharp_object_intrinsicts object_intrinsicts;
+	runtime_number_vtable vtable;
+} vtable_or_object_intrinsicts;
+
 typedef struct min_sharp_number_struct
 {
-	min_sharp_object_intrinsicts* object_intrinsicts;
+	vtable_or_object_intrinsicts* object_intrinsicts;
 	object_flags object_flag;
-	double value;
+	float_64 value;
 } min_sharp_number;
 
 static function_call_result number_object_intrinsicts_get_interface(min_sharp_object* this_instance, runtime_services* runtime, min_sharp_interface** result, internal_string interface_name)
@@ -40,7 +49,10 @@ static function_call_result number_object_intrinsicts_get_interface(min_sharp_ob
 	CRITICAL_ASSERT(min_sharp_null != result);
 	CRITICAL_ASSERT(min_sharp_null != interface_name);
 
-	runtime_number_vtable* vtable = (runtime_number_vtable*)this_instance->object_intrinsicts;
+	// object_intrinsictsis the first field on the runtime_number_vtable.
+	// the interfaces are defined afterward, followed by the interface map.
+	vtable_or_object_intrinsicts* vtable_or_object_intrinsicts_instance = ((vtable_or_object_intrinsicts*)this_instance->object_intrinsicts);
+	runtime_number_vtable* vtable = vtable_or_object_intrinsicts_instance;
 
 	for (int i = 0; i < number_of_interfaces; i++)
 	{
@@ -203,18 +215,58 @@ static function_call_result number_release_interface(min_sharp_object* new_objec
 	return function_call_result_success;
 }
 
-static function_call_result number_initializer(min_sharp_object* new_object, void *initializer_data)
-{
-	CRITICAL_ASSERT(min_sharp_null != new_object);
-	CRITICAL_ASSERT(min_sharp_null != initializer_data);
 
-	runtime_number_vtable *vtable = (runtime_number_vtable*)initializer_data;
-	min_sharp_number* new_number = (min_sharp_number*)new_object;
+function_call_result number_factory(
+	runtime_services* runtime_services_instance,
+	min_sharp_object** returned_exception,
+	min_sharp_object** returned_result,
+	float_64 value)
+{
+	CRITICAL_ASSERT(min_sharp_null != runtime_services_instance);
+	CRITICAL_ASSERT(min_sharp_null != returned_result);
+	CRITICAL_ASSERT(min_sharp_null != returned_exception);
+
+	function_call_result fcr;
+	min_sharp_number *new_number;
+
+	// Allocate
+	fcr = runtime_services_instance->allocate_object(
+		runtime_services_instance,
+		(min_sharp_object**)&new_number,
+		sizeof(min_sharp_number));
+	if (function_call_result_fail == fcr)
+	{
+		goto fail;
+	}
+
+	// Initialize members
+	vtable_or_object_intrinsicts* vtable_or_object_intrinsicts_instance;
+
+	runtime_services_instance->get_global_data(
+		runtime_services_instance, 
+		global_runtime_number_vtable_instance_id, 
+		&vtable_or_object_intrinsicts_instance);
+
+	runtime_number_vtable* runtime_number_vtable_instance;
+
+	new_number->object_intrinsicts = &(vtable_or_object_intrinsicts_instance->object_intrinsicts);
 	new_number->object_flag = 0;
-	new_number->object_intrinsicts = &(vtable->object_intrinsicts);
-	new_number->value = 0.0;
+	new_number->value = value;
+
+	*returned_result = (min_sharp_object*)new_number;
+	*returned_exception = min_sharp_null;
+
 	return function_call_result_success;
+
+fail:
+	runtime_services_instance->system_exception(
+		runtime_services_instance,
+		returned_exception,
+		"Runtime.Error",
+		"Error Building Number");
+	return function_call_result_fail;
 }
+
 
 function_call_result register_number_type(system_services* system_services_instance, runtime_services* runtime_services_instance) {
 	CRITICAL_ASSERT(min_sharp_null != system_services_instance);
@@ -262,11 +314,10 @@ function_call_result register_number_type(system_services* system_services_insta
 	runtime_number_vtable_instance->interface_map[6].interface_name = RUNTIME_RELATIONAL_OPERATOR_INTERFACE_NAME;
 	runtime_number_vtable_instance->interface_map[6].interface = (min_sharp_interface*)&(runtime_number_vtable_instance->runtime_RelationalOperator);
 
-	fcr = runtime_services_instance->register_number_initializer(runtime_services_instance, sizeof(min_sharp_number), number_initializer, runtime_number_vtable_instance);
-	if (function_call_result_fail == fcr)
-	{
-		goto fail;
-	}
+	// Save the vtable
+	vtable_or_object_intrinsicts* vtable_or_object_intrinsicts_instance = runtime_number_vtable_instance;
+	runtime_services_instance->set_global_data(runtime_services_instance, global_runtime_number_vtable_instance_id, vtable_or_object_intrinsicts_instance);
+
 
 	return function_call_result_success;
 

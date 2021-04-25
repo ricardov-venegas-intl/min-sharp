@@ -43,10 +43,8 @@ void initialize_runtime(runtime_services** runtime_services_instance)
 	}
 
 	// Types self registration
-	register_number_type(system_services_instance, new_runtime_services_instance);
-
-
 	register_function_type(system_services_instance, new_runtime_services_instance);
+	register_number_type(system_services_instance, new_runtime_services_instance);
 
 	*runtime_services_instance = new_runtime_services_instance;
 	return;

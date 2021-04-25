@@ -82,12 +82,17 @@ typedef struct runtime_services_struct
 		min_sharp_object** returned_result,
 		float_64 value);
 
-	// Initialization of new primitive entities
-	function_call_result(*register_number_initializer)(
-		runtime_services* this_instance, 
-		int number_object_size, 
-		type_initializer number_initializer, 
-		void* number_initializer_data);
+	function_call_result(*build_boolean)(
+		runtime_services* this_instance,
+		min_sharp_object** returned_exception,
+		min_sharp_object** returned_result,
+		min_sharp_boolean value);
+
+	function_call_result(*build_string)(
+		runtime_services* this_instance,
+		min_sharp_object** returned_exception,
+		min_sharp_object** returned_result,
+		internal_string value);
 
 	// Global data management
 	function_call_result(*set_global_data)(runtime_services* runtime_services_instance, int data_id, void* data);
