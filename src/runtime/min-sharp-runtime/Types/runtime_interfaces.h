@@ -21,28 +21,28 @@ typedef struct
 	min_sharp_function_1_arguments_type *Multiply;
 } Runtime_MultiplicationOperator;
 
-#define RUNTIME_MULTIPLICATION_OPERATOR_INTERFACE_NAME "Runtime.MultiplicationOperator";
+#define RUNTIME_MULTIPLICATION_OPERATOR_INTERFACE_NAME "Runtime.MultiplicationOperator"
 
 typedef struct
 {
 	min_sharp_function_1_arguments_type *Divide;
 } Runtime_DivisionOperator;
 
-#define RUNTIME_DIVISION_OPERATOR_INTERFACE_NAME "Runtime.DivisionOperator";
+#define RUNTIME_DIVISION_OPERATOR_INTERFACE_NAME "Runtime.DivisionOperator"
 
 typedef struct
 {
 	min_sharp_function_1_arguments_type *Remainder;
 } Runtime_RemainderOperator;
 
-#define RUNTIME_REMAINDER_OPERATOR_INTERFACE_NAME "Runtime.RemainderOperator";
+#define RUNTIME_REMAINDER_OPERATOR_INTERFACE_NAME "Runtime.RemainderOperator"
 
 typedef struct
 {
 	min_sharp_function_1_arguments_type *IsEquals;
 } Runtime_EqualityOperator;
 
-#define RUNTIME_EQUALITY_OPERATOR_INTERFACE_NAME "Runtime.EqualityOperator";
+#define RUNTIME_EQUALITY_OPERATOR_INTERFACE_NAME "Runtime.EqualityOperator"
 
 typedef struct
 {
@@ -50,7 +50,7 @@ typedef struct
 	min_sharp_function_1_arguments_type *IsLowerThan;
 } Runtime_RelationalOperator;
 
-#define RUNTIME_RELATIONAL_OPERATOR_INTERFACE_NAME  "Runtime.RelationalOperator";
+#define RUNTIME_RELATIONAL_OPERATOR_INTERFACE_NAME  "Runtime.RelationalOperator"
 
 typedef struct
 {

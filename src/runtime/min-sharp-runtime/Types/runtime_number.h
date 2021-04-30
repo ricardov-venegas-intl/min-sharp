@@ -14,5 +14,5 @@ function_call_result number_factory(
 	runtime_services* runtime_services_instance,
 	min_sharp_object** returned_exception,
 	min_sharp_object** returned_result,
-	float_64 value);
+	internal_string value);
 

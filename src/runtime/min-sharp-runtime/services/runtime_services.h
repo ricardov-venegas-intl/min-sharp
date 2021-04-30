@@ -13,9 +13,6 @@ typedef struct system_services_struct
 typedef struct managed_memory_services_struct 
 	managed_memory_services;
 
-typedef function_call_result(*type_initializer)(
-	min_sharp_object* new_object, 
-	void *initializer_data);
 
 
 // Object definition
@@ -80,7 +77,7 @@ typedef struct runtime_services_struct
 		runtime_services* this_instance, 
 		min_sharp_object** returned_exception,
 		min_sharp_object** returned_result,
-		float_64 value);
+		internal_string value);
 
 	function_call_result(*build_boolean)(
 		runtime_services* this_instance,

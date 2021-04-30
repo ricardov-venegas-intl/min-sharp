@@ -14,7 +14,7 @@ void test_runtime_services_factory()
 	start_test("system_list_factory_test");
 	fcr = system_services_factory(&system_services_instance);
 	test_assertion(fcr == function_call_result_success, "system_services_factory call");
-	test_assertion(min_sharp_null != runtime_services_instance, "system_services_instance not null");
+	test_assertion(min_sharp_null != system_services_instance, "system_services_instance not null");
 
 	fcr = managed_memory_services_factory(system_services_instance, &managed_memory_services_instance);
 	test_assertion(fcr == function_call_result_success, "managed_memory_services_factory call");
@@ -24,6 +24,7 @@ void test_runtime_services_factory()
 	test_assertion(fcr == function_call_result_success, "runtime_services_factory call");
 	test_assertion(min_sharp_null != runtime_services_instance, "runtime_services_instance not null");
 
+	runtime_services_instance->release(runtime_services_instance);
 	end_test();
 }
 
