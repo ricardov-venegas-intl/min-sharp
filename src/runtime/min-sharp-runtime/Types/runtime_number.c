@@ -545,8 +545,10 @@ function_call_result register_number_type(
 		goto fail;
 	}
 
-	// Fill the vtable Add
+	// Fill signature
 	runtime_number_vtable_instance->vtable_signature = global_runtime_number_vtable_instance_id;
+
+	// Fill the vtable Add
 	fcr = runtime_services_instance->build_function(
 		runtime_services_instance,
 		&exception,

@@ -257,8 +257,11 @@ static function_call_result build_boolean(
 	CRITICAL_ASSERT(min_sharp_null != returned_result);
 	CRITICAL_ASSERT(min_sharp_null != returned_exception);
 	
-	// Not Implemented.
-	goto fail;
+	return boolean_factory(
+		this_instance,
+		returned_exception,
+		returned_result,
+		value);
 
 	return function_call_result_success;
 

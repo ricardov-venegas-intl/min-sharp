@@ -5,6 +5,9 @@
 typedef struct managed_memory_services_struct managed_memory_services;
 typedef struct managed_memory_services_data_struct managed_memory_services_data;
 
+// returned by object_intrinsicts garbage_collection get_flags for system mantaened objects (eg. true, false)
+#define garbage_collection_flags_system (7); //111
+
 
 typedef struct managed_memory_services_struct
 {

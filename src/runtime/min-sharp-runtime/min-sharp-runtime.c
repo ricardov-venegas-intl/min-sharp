@@ -34,7 +34,7 @@ void initialize_runtime(runtime_services** runtime_services_instance)
 	}
 
 	// Create runtime services instance
-	fcr= runtime_services_factory(system_services_instance,
+	fcr = runtime_services_factory(system_services_instance,
 			managed_memory_services_instance,
 			&new_runtime_services_instance);
 	if (function_call_result_fail == fcr)
@@ -43,8 +43,23 @@ void initialize_runtime(runtime_services** runtime_services_instance)
 	}
 
 	// Types self registration
-	register_function_type(system_services_instance, new_runtime_services_instance);
-	register_number_type(system_services_instance, new_runtime_services_instance);
+	fcr = register_function_type(system_services_instance, new_runtime_services_instance);
+	if (function_call_result_fail == fcr)
+	{
+		goto fail;
+	}
+
+	fcr = register_number_type(system_services_instance, new_runtime_services_instance);
+	if (function_call_result_fail == fcr)
+	{
+		goto fail;
+	}
+
+	fcr = register_boolean_type(system_services_instance, new_runtime_services_instance);
+	if (function_call_result_fail == fcr)
+	{
+		goto fail;
+	}
 
 	*runtime_services_instance = new_runtime_services_instance;
 	return;

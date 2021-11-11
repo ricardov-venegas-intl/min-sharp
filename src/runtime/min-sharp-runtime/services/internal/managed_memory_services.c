@@ -1,8 +1,8 @@
 #include "managed_memory_services.h"
 
-const unsigned_int_8 garbage_collection_flags_clear = 0; //00
-const unsigned_int_8 garbage_collection_flags_reached = 1; //01
-const unsigned_int_8 garbage_collection_flags_scanned = 3; //11
+const unsigned_int_8 garbage_collection_flags_clear = 0; // 00
+const unsigned_int_8 garbage_collection_flags_reached = 1; // 01
+const unsigned_int_8 garbage_collection_flags_scanned = 3; // 11
 
 const unsigned_int_8 allocation_flags_regular_object = 1;
 const unsigned_int_8 allocation_flags_primitive_object = 2; // String, Boolean, Number, Function Code

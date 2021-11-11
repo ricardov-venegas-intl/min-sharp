@@ -59,6 +59,7 @@ typedef struct
 	min_sharp_function_0_arguments_type *Not;
 } Runtime_BooleanOperator;
 
+#define RUNTIME_BOOLEAN_OPERATOR_INTERFACE_NAME  "Runtime.BooleanOperator"
 
 typedef struct
 {
