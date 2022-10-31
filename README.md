@@ -11,6 +11,13 @@ Objectives:
 * Have fun.
 * Keep it as simple as possible.
 * Play with LLVM :)
+* Runtime in Rust?
+
+Priciples:
+
+* As simple as possible.
+* Let the compiler infer as much as possible.
+* Reduce boiler plate code compared with C#.
 
 What not to do and expect:
 
@@ -22,7 +29,7 @@ What not to do and expect:
 Process.
 
 * Write the compiler in min-sharp.
-* Manually translate it to C.
+* Manually translate it to Rust.
 
 Architectural/Features Ideas
 
