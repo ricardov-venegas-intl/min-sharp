@@ -66,6 +66,7 @@ statement
     variable_declaration
     expression
     while_statement
+    do_statement
     foreach_statement
     if_statement
     switch_statement
@@ -76,6 +77,9 @@ statement
 
 while_statement
     while (expression) statement_block
+
+do_statement
+    do statement_block while (expression)
 
 switch_statement
     switch { case_list optional_default }
@@ -214,17 +218,17 @@ postfix_increment_decrement
     new_object_expression
 
 function_call_expression
-    grouping_expression(expressionl_ist)
-    new identifier (expresion_list)
+    grouping_expression(expression_ist)
+    new identifier (expression_list)
     grouping_expression[expression_list]
     grouping_expression ?. function_call_expression
     grouping_expression . function_call_expression
 
 grouping_expression
     ( expression )
-    literal_or_dentifier
+    literal_or_identifier
 
-literal_or_dentifier
+literal_or_identifier
     identifier
     numeric_literal
     boolean_literal
@@ -241,7 +245,12 @@ property_assignment_list:
     identifier : expression
 
 expression_list:
-    expresion, expression_list
-    expression_list
+    expression, expression_list
+    expression
 
-type_macro_definition
+string_literal
+    quote string_expresion_list quote
+
+string_expresion_list
+    string_content { expresion } string_expresion_list
+    string_content
