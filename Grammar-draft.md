@@ -74,6 +74,7 @@ statement
     break_statement
     return_statement
     throw_statement
+    try_statement
 
 while_statement
     while (expression) statement_block
@@ -92,12 +93,22 @@ case_expression_list
     case expression : case_expression_list
 
 throw_statement
+    throw
     throw literal_string
     throw (literal_string, literal_string)
 
 optional_default
     default: statement_block
     EMPTY
+
+try_statement
+    try statement_block catch_list
+
+catch_list
+    catch statement_block
+    catch string_literal statement_block
+    catch statement_block catch_list
+    catch string_literal statement_block catch_list
 
 break_statement
     break
