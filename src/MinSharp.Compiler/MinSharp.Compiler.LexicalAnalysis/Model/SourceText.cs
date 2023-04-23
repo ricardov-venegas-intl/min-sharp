@@ -13,7 +13,7 @@
         /// <summary>
         /// Source Code text
         /// </summary>
-        public string Text { get; init; }
+        public string Text { get; init; } = string.Empty;
 
     }
 }

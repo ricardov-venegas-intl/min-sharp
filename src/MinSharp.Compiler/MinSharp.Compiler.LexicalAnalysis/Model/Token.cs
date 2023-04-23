@@ -8,12 +8,12 @@
         /// <summary>
         /// Token Type.
         /// </summary>
-        public TokenType TokenType { get; set; } = TokenType.Error;
+        public TokenType TokenType { get; set; } = TokenType.Error_Undefined;
 
         /// <summary>
         /// Token Value.
         /// </summary>
-        public SourceTextSpan Value { get; init; }
+        public SourceTextSpan Value { get; init; } = SourceTextSpan.Empty;
 
         /// <summary>
         /// Line number where the token is located.

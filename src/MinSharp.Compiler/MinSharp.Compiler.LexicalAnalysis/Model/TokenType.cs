@@ -2,7 +2,7 @@
 {
     public enum TokenType
     {
-        Error = 0,
+        Error_Undefined = 0,
         WhiteSpace = 1,
         NewLine = 2,
         SingleLineComment = 3,
@@ -48,7 +48,18 @@
 
         OperatorNullConditional = 121,
         OperatorNullCoalescing = 122,
-        OperatorAssignment =123,
+
+        OperatorAssignment = 200,
+        OperatorAssignmentMultiply = 201,
+        OperatorAssignmentDivide = 202,
+        OperatorAssignmentReminder = 203,
+        OperatorAssignmentAddition = 204,
+        OperatorAssignmentSubstraction = 205,
+        OperatorAssignmentBitwiseAnd = 206,
+        OperatorAssignmentBitwiseOr = 207,
+        OperatorAssignmentBitwiseXor = 208,
+
+        OperatorLambda = 300,
 
         KeywordNamespace = 1000,
         KeywordType = 1001,
@@ -69,9 +80,12 @@
 
         Identifier = 2000,
 
-        StringContent = 3000,
+        StringLiteral = 3000,
         NumberLiteral = 4000,
         DateLiteral = 4001,
 
+
+        ErrorUnclossedStringLiteral = 10000,
+        ErrorInvalidEscapeSequence = 10001
     }
 }

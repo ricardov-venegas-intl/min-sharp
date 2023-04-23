@@ -6,6 +6,17 @@
     /// </summary>
     public class SourceTextSpan
     {
+        /// <summary>
+        /// Represents an empty source code text span.
+        /// </summary>
+        public static SourceTextSpan Empty = 
+            new SourceTextSpan 
+            { 
+                Length = 0,
+                StartPosition = 0,
+                SourceText = SourceText.Empty,
+            };
+
         private string? text= null;
 
         /// <summary>
