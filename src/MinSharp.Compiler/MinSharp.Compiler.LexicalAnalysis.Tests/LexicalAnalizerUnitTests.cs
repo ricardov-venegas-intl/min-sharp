@@ -17,6 +17,7 @@ namespace MinSharp.Compiler.LexicalAnalysis.Tests
         [DataRow("\r\n", TokenType.NewLine, true)]
         [DataRow("// Lorem Ipsum", TokenType.SingleLineComment, true)]
         [DataRow("/* Lorem \r\n Ipsum */", TokenType.MultiLineComment, true)]
+        [DataRow("/* Lorem \r\n Ipsum ", TokenType.ErrorCommentNotClosed, true)]
         [DataRow("{", TokenType.OpenBrace, false)]
         [DataRow("}", TokenType.CloseBrace, false)]
         [DataRow(",", TokenType.Coma, false)]
@@ -90,6 +91,15 @@ namespace MinSharp.Compiler.LexicalAnalysis.Tests
         [DataRow("\"Hello's\"", TokenType.StringLiteral, false)]
         [DataRow("\"Hello", TokenType.ErrorUnclossedStringLiteral, false)]
         [DataRow("\"Hello\\", TokenType.ErrorUnclossedStringLiteral, false)]
+        [DataRow("1234", TokenType.NumberLiteral, false)]
+        [DataRow("1234.00", TokenType.NumberLiteral, false)]
+        [DataRow("1_234_000.00", TokenType.NumberLiteral, false)]
+        [DataRow("1.3e-27", TokenType.NumberLiteral, false)]
+        [DataRow("0.000001", TokenType.NumberLiteral, false)]
+        [DataRow("1234.00e", TokenType.ErrorInvalidNumberLiteral, false)]
+        [DataRow("1234.00e+", TokenType.ErrorInvalidNumberLiteral, false)]
+        [DataRow("1234.00e-", TokenType.ErrorInvalidNumberLiteral, false)]
+        [DataRow("`", TokenType.UnrecognizedCharacter, false)]
         public void SingleTokenTest(string sourceCode, TokenType expectedTokenType, bool isCommentOrWhiteSpace)
         {
             // Arrange    

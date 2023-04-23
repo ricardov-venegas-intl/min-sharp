@@ -121,8 +121,29 @@ namespace MinSharp.Compiler.LexicalAnalysis
                 {
                     yield return BuildStringLiteralToken(sourceCodeCursor);
                 }
-                else {
-                    throw new InvalidOperationException();
+                else if(char.IsDigit(sourceCodeCursor.CurrentChar) == true)
+                {
+                    yield return BuildNumberLiteralToken(sourceCodeCursor);
+                }
+                else 
+                {
+                    var startPosition = sourceCodeCursor.CurrentCharacterIndex;
+                    var columnNumber = sourceCodeCursor.CurrentColumnIndex;
+                    var lineNumber = sourceCodeCursor.CurrentLineIndex;
+                    sourceCodeCursor.MoveNext();
+                    yield return new Token
+                    {
+                        TokenType = TokenType.UnrecognizedCharacter,
+                        Value = new SourceTextSpan
+                        {
+                            SourceText = sourceCodeCursor.SourceText,
+                            StartPosition = startPosition,
+                            Length = 1
+                        },
+                        ColumnNumber = columnNumber,
+                        LineNumber = lineNumber,
+                        IsCommentOrWhiteSpace = false
+                    };
                 }
 
             }
@@ -243,8 +264,6 @@ namespace MinSharp.Compiler.LexicalAnalysis
 
         private Token BuildStringLiteralToken(SourceCodeCursor sourceCodeCursor)
         {
-            var validEscapeSequence = "\\trnbf0\"";
-
             int tokenStartPosition = sourceCodeCursor.CurrentCharacterIndex;
             int tokenStartColumn = sourceCodeCursor.CurrentColumnIndex;
             int tokenStartLine = sourceCodeCursor.CurrentLineIndex;
@@ -324,29 +343,155 @@ namespace MinSharp.Compiler.LexicalAnalysis
                 IsCommentOrWhiteSpace = false
             };
         }
+        private Token BuildNumberLiteralToken(SourceCodeCursor sourceCodeCursor)
+        {
+            int tokenStartPosition = sourceCodeCursor.CurrentCharacterIndex;
+            int tokenStartColumn = sourceCodeCursor.CurrentColumnIndex;
+            int tokenStartLine = sourceCodeCursor.CurrentLineIndex;
 
 
+            while (char.IsDigit(sourceCodeCursor.CurrentChar) == true || sourceCodeCursor.CurrentChar == '_')
+            {
+                if (sourceCodeCursor.MoveNext() == false)
+                    break;
+            }
+            if (sourceCodeCursor.HasCurrentCharacter && sourceCodeCursor.CurrentChar == '.')
+            {
+                sourceCodeCursor.MoveNext();
+                while (sourceCodeCursor.HasCurrentCharacter 
+                        && (char.IsDigit(sourceCodeCursor.CurrentChar) == true 
+                            || sourceCodeCursor.CurrentChar == '_'))
+                {
+                    sourceCodeCursor.MoveNext();
+                }
+            }
+            if (sourceCodeCursor.HasCurrentCharacter 
+                && (sourceCodeCursor.CurrentChar == 'e' || sourceCodeCursor.CurrentChar == 'E'))
+            {
+                if (sourceCodeCursor.MoveNext() == false)
+                {
+                    return new Token
+                    {
+                        TokenType = TokenType.ErrorInvalidNumberLiteral,
+                        Value = new SourceTextSpan
+                        {
+                            SourceText = sourceCodeCursor.SourceText,
+                            StartPosition = tokenStartPosition,
+                            Length = sourceCodeCursor.CurrentCharacterIndex - tokenStartPosition
+                        },
+                        ColumnNumber = tokenStartColumn,
+                        LineNumber = tokenStartLine,
+                        IsCommentOrWhiteSpace = false
+                    };
+                }
+                if (sourceCodeCursor.CurrentChar == '+' || sourceCodeCursor.CurrentChar == '-')
+                {
+                    if (sourceCodeCursor.MoveNext() == false)
+                    {
+                        return new Token
+                        {
+                            TokenType = TokenType.ErrorInvalidNumberLiteral,
+                            Value = new SourceTextSpan
+                            {
+                                SourceText = sourceCodeCursor.SourceText,
+                                StartPosition = tokenStartPosition,
+                                Length = sourceCodeCursor.CurrentCharacterIndex - tokenStartPosition
+                            },
+                            ColumnNumber = tokenStartColumn,
+                            LineNumber = tokenStartLine,
+                            IsCommentOrWhiteSpace = false
+                        };
+                    }
+                }
+                if (char.IsDigit(sourceCodeCursor.CurrentChar) == false)
+                {
+                    return new Token
+                    {
+                        TokenType = TokenType.ErrorInvalidNumberLiteral,
+                        Value = new SourceTextSpan
+                        {
+                            SourceText = sourceCodeCursor.SourceText,
+                            StartPosition = tokenStartPosition,
+                            Length = sourceCodeCursor.CurrentCharacterIndex - tokenStartPosition
+                        },
+                        ColumnNumber = tokenStartColumn,
+                        LineNumber = tokenStartLine,
+                        IsCommentOrWhiteSpace = false
+                    };
+                }
+                while (sourceCodeCursor.HasCurrentCharacter 
+                    && (char.IsDigit(sourceCodeCursor.CurrentChar) == true || sourceCodeCursor.CurrentChar == '_'))
+                {
+                    if (sourceCodeCursor.MoveNext() == false)
+                    {
+                        break;
+                    }
+                }
+            }
+            sourceCodeCursor.MoveNext();
+                
+            return new Token
+            {
+                TokenType = TokenType.NumberLiteral,
+                Value = new SourceTextSpan
+                {
+                    SourceText = sourceCodeCursor.SourceText,
+                    StartPosition = tokenStartPosition,
+                    Length = sourceCodeCursor.CurrentCharacterIndex - tokenStartPosition
+                },
+                ColumnNumber = tokenStartColumn,
+                LineNumber = tokenStartLine,
+                IsCommentOrWhiteSpace = false
+            };
+
+        }
 
         private Token BuildMultipleLinesCommentToken(SourceCodeCursor sourceCodeCursor)
         {
-            return BuildToken(
-                sourceCodeCursor,
-                TokenType.MultiLineComment,
-                (sourceCodeCursor) =>
+
+            int tokenStartPosition = sourceCodeCursor.CurrentCharacterIndex;
+            int tokenStartColumn = sourceCodeCursor.CurrentColumnIndex;
+            int tokenStartLine = sourceCodeCursor.CurrentLineIndex;
+
+            char previousChar = sourceCodeCursor.CurrentChar;
+            sourceCodeCursor.MoveNext();
+            while (previousChar != '*' || sourceCodeCursor.CurrentChar != '/')
+            {
+                previousChar = sourceCodeCursor.CurrentChar;
+                if (sourceCodeCursor.MoveNext() == false)
                 {
-                    char previousChar = sourceCodeCursor.CurrentChar;
-                    sourceCodeCursor.MoveNext();
-                    while (previousChar != '*' || sourceCodeCursor.CurrentChar != '/')
+                    return new Token
                     {
-                        previousChar = sourceCodeCursor.CurrentChar;
-                        if (sourceCodeCursor.MoveNext() == false)
+                        TokenType = TokenType.ErrorCommentNotClosed,
+                        Value = new SourceTextSpan
                         {
-                            throw new Exception("Comment not closed");
-                        }
-                    }
-                    sourceCodeCursor.MoveNext();
+                            SourceText = sourceCodeCursor.SourceText,
+                            StartPosition = tokenStartPosition,
+                            Length = sourceCodeCursor.CurrentCharacterIndex - tokenStartPosition
+                        },
+                        ColumnNumber = tokenStartColumn,
+                        LineNumber = tokenStartLine,
+                        IsCommentOrWhiteSpace = true
+                    };
+                }
+            }
+
+            sourceCodeCursor.MoveNext();
+
+            return new Token
+            {
+                TokenType = TokenType.MultiLineComment,
+                Value = new SourceTextSpan
+                {
+                    SourceText = sourceCodeCursor.SourceText,
+                    StartPosition = tokenStartPosition,
+                    Length = sourceCodeCursor.CurrentCharacterIndex - tokenStartPosition
                 },
-                true);
+                ColumnNumber = tokenStartColumn,
+                LineNumber = tokenStartLine,
+                IsCommentOrWhiteSpace = true
+            };
+
         }
 
         private Token BuildToken(

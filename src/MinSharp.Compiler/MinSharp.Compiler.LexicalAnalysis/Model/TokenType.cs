@@ -86,6 +86,9 @@
 
 
         ErrorUnclossedStringLiteral = 10000,
-        ErrorInvalidEscapeSequence = 10001
+        ErrorInvalidEscapeSequence = 10001,
+        ErrorCommentNotClosed = 10002,
+        ErrorInvalidNumberLiteral = 10003,
+        UnrecognizedCharacter = 10004
     }
 }
