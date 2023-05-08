@@ -16,12 +16,20 @@ type_definition_list
 
 type_definition
     type_macro_definition
+    enum_definition
     datatype_definition
     interface_definition
     factory_definition
 
 type_macro_definition
     type identifier: type_list;
+
+enum_definition
+    enum { enum_values_list }
+
+enum_values_list
+    identifier
+    identifier, enum_values_list
 
 datatype_definition
     data { property_definition_list }
