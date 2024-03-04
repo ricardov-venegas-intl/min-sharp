@@ -1,4 +1,4 @@
-﻿namespace MinSharp.Compiler.LexicalAnalysis.Model
+﻿namespace MinSharp.Compiler.DataModels.LexicalAnalisys
 {
     public enum TokenType
     {
@@ -75,8 +75,10 @@
         KeywordThrow = 1011,
         KeywordBreak = 1012,
         KeywordVar = 1013,
-        KeywordTrue = 1013,
-        KeywordFalse = 1013,
+        KeywordTrue = 1014,
+        KeywordFalse = 1015,
+        KeywordEnum = 1016,
+        KeywordFor = 1017,
 
         Identifier = 2000,
 
@@ -85,10 +87,11 @@
         DateLiteral = 4001,
 
 
-        ErrorUnclossedStringLiteral = 10000,
+        ErrorUnclosedStringLiteral = 10000,
         ErrorInvalidEscapeSequence = 10001,
         ErrorCommentNotClosed = 10002,
         ErrorInvalidNumberLiteral = 10003,
-        UnrecognizedCharacter = 10004
+        UnrecognizedCharacter = 10004,
+        ErrorUnclosedDateLiteral = 10005,
     }
 }

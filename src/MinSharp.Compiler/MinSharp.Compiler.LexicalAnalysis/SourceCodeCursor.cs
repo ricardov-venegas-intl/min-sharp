@@ -1,9 +1,11 @@
-﻿using MinSharp.Compiler.LexicalAnalysis.Model;
+﻿
+using MinSharp.Compiler.DataModels;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MinSharp.Compiler.LexicalAnalysis
@@ -18,12 +20,12 @@ namespace MinSharp.Compiler.LexicalAnalysis
         /// <summary>
         /// Source Text.
         /// </summary>
-        public SourceText SourceText { get; init; } = SourceText.Empty;
+        public CompilationUnitSourceText SourceText { get; init; } = CompilationUnitSourceText.Empty;
 
         /// <summary>
         /// Current Character.
         /// </summary>
-        public char CurrentChar { get =>  SourceText.Text[currentCharacterIndex]; }
+        public char CurrentChar { get => SourceText.Text[currentCharacterIndex]; }
 
         /// <summary>
         /// Has More Characters To Process.
@@ -44,7 +46,7 @@ namespace MinSharp.Compiler.LexicalAnalysis
         /// Current Line Index
         /// </summary>
         public int CurrentLineIndex { get => currentLineIndex; set => currentLineIndex = value; }
-        
+
         /// <summary>
         /// Current Column Index
         /// </summary>
@@ -53,16 +55,16 @@ namespace MinSharp.Compiler.LexicalAnalysis
         /// <summary>
         /// Next Character.
         /// </summary>
-        public char NextCharacter 
-        { 
-            get 
+        public char NextCharacter
+        {
+            get
             {
-                if (currentCharacterIndex + 1 < SourceText.Text.Length) 
+                if (currentCharacterIndex + 1 < SourceText.Text.Length)
                 {
-                    return SourceText.Text[currentCharacterIndex + 1 ];
+                    return SourceText.Text[currentCharacterIndex + 1];
                 }
                 return '\0';
-            } 
+            }
         }
 
 
@@ -70,7 +72,7 @@ namespace MinSharp.Compiler.LexicalAnalysis
         /// Moves to the next character
         /// </summary>
         /// <returns>True if the are more chacacters to process.</returns>
-        public bool MoveNext(int numberOfCharactersToSkip =1)
+        public bool MoveNext(int numberOfCharactersToSkip = 1)
         {
             while (numberOfCharactersToSkip > 0 && HasCurrentCharacter)
             {
@@ -89,13 +91,17 @@ namespace MinSharp.Compiler.LexicalAnalysis
             return HasCurrentCharacter;
         }
 
-
+        /// <summary>
+        /// Validates if a string matches at the current location.
+        /// </summary>
+        /// <param name="stringToMatch">String to match.,</param>
+        /// <returns>True if the string matches at the current location.</returns>
         public bool IsMatchAtCurrentCharacter(string stringToMatch)
         {
-            for (int i =0;  i< stringToMatch.Length; i++)
+            for (int i = 0; i < stringToMatch.Length; i++)
             {
                 if (currentCharacterIndex + i >= SourceText.Text.Length
-                    || SourceText.Text[currentCharacterIndex + i ] != stringToMatch[i])
+                    || SourceText.Text[currentCharacterIndex + i] != stringToMatch[i])
                 {
                     return false;
                 }

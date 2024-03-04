@@ -1,14 +1,14 @@
-﻿namespace MinSharp.Compiler.LexicalAnalysis.Model
+﻿namespace MinSharp.Compiler.DataModels
 {
     /// <summary>
     /// Data structure to represent the source code text
     /// </summary>
-    public class SourceText
+    public class CompilationUnitSourceText
     {
         /// <summary>
         /// Represents an empty source code
         /// </summary>
-        public static SourceText Empty = new SourceText { Text = string.Empty };
+        public static CompilationUnitSourceText Empty = new CompilationUnitSourceText { Text = string.Empty };
 
         /// <summary>
         /// Source Code text

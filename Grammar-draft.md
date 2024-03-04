@@ -1,33 +1,33 @@
-unit_of_compilation: *
+unit_of_compilation:
     list_of_namespace_definition
 
-list_of_namespace_definition: *
+list_of_namespace_definition:
     namespace_definition
     namespace_definition namespace_definition
     EMPTY
 
-namespace_definition: *
+namespace_definition:
     namespace identifier {  type_definition_list }
 
-type_definition_list: *
+type_definition_list:
     type_definition
     type_definition type_definition_list
     EMPTY
 
-type_definition: *
+type_definition:
     type_macro_definition
     enum_definition
     datatype_definition
     interface_definition
     factory_definition
 
-type_macro_definition: *
+type_macro_definition:
     type identifier: type_list;
 
-enum_definition *
+enum_definition
     enum identifier { enum_values_list }
 
-enum_values_list *
+enum_values_list
     identifier
     identifier, enum_values_list
 
@@ -48,7 +48,7 @@ function_definition_list
     EMPTY
 
 function_definition
-    type identifier(function_parameters_list) ;
+    type_or_generic identifier(function_parameters_list)
 
 function_parameters_list
     function_parameter
@@ -56,14 +56,18 @@ function_parameters_list
     EMPTY
 
 function_parameter
-    type identifier
+    type_or_generic identifier
 
 factory_definition
     factory < type_list > identifier (function_parameters_list) { statement_list }
 
 type_list
-    type_name
-    type_name, type_list
+    type_or_generic
+    type_or_generic, type_list
+
+type_or_generic:
+    identifier
+    identifier < type_list >
 
 type_name_list
     identifier

@@ -1,89 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MinSharp.Compiler.LexicalAnalysis.Model;
+﻿using MinSharp.Compiler.DataModels;
+using MinSharp.Compiler.DataModels.LexicalAnalisys;
+using MinSharp.Compiler.Pipeline;
 
 namespace MinSharp.Compiler.LexicalAnalysis
 {
-    public class LexicalAnalizer
+    public class LexicalAnalizer : ICompilationUnitPipelineStep
     {
-        private static Dictionary<string, TokenType> stringToTokenTypeMap = new Dictionary<string, TokenType>
+        /// <inheritdoc/>
+        public bool Execute(CompilationUnitContext context)
         {
-            { "{", TokenType.OpenBrace},
-            { "}", TokenType.CloseBrace},
-            { ",", TokenType.Coma},
-            { ";", TokenType.SemiColon},
-            { ":", TokenType.Colon},
-            { "(", TokenType.OpenParentesis},
-            { ")", TokenType.CloseParentesis},
-            { "[", TokenType.OpenBraket},
-            { "]", TokenType.CloseBraket},
-            { "?", TokenType.QuestionMark},
-            { ".", TokenType.Dot},
-            { ">", TokenType.OperatorGreaterThan},
-            { "<", TokenType.OperatorLessThan},
-            { "==", TokenType.OperatorEquals},
-            { "!=", TokenType.OperatorNotEquals},
-            { ">=", TokenType.OperatorGreaterOrEqualsThan},
-            { "<=", TokenType.OperatorLessOrEqualsThan},
-            { "||", TokenType.OperatorLogicalOr},
-            { "&&", TokenType.OperatorLogicalAnd},
-            { "!", TokenType.OperatorLogicalNot},
-            { "|", TokenType.OperatorBitwiseOr},
-            { "&", TokenType.OperatorBitwiseAnd},
-            { "~", TokenType.OperatorBitwiseNot},
-            { "^", TokenType.OperatorBitwiseXor},
-            { "*", TokenType.OperatorMultiplication},
-            { "**", TokenType.OperatorExponentiation},
-            { "/", TokenType.OperatorDivision},
-            { "%", TokenType.OperatorRemainder},
-            { "+", TokenType.OperatorAddition},
-            { "-", TokenType.OperatorSubstraction},
-            { "++", TokenType.OperatorIncrement},
-            { "--", TokenType.OperatorDecrement},
-            { "?.", TokenType.OperatorNullConditional},
-            { "??", TokenType.OperatorNullCoalescing},
-            { "=", TokenType.OperatorAssignment},
-            { "*=", TokenType.OperatorAssignmentMultiply},
-            { "/=", TokenType.OperatorAssignmentDivide},
-            { "%=", TokenType.OperatorAssignmentReminder},
-            { "+=", TokenType.OperatorAssignmentAddition},
-            { "-=", TokenType.OperatorAssignmentSubstraction},
-            { "&=", TokenType.OperatorAssignmentBitwiseAnd},
-            { "|=", TokenType.OperatorAssignmentBitwiseOr},
-            { "^=", TokenType.OperatorAssignmentBitwiseXor},
-            { "namespace", TokenType.KeywordNamespace},
-            { "type", TokenType.KeywordType},
-            { "data", TokenType.KeywordData},
-            { "interface", TokenType.KeywordInterface},
-            { "factory", TokenType.KeywordFactory},
-            { "while", TokenType.KeywordWhile},
-            { "do", TokenType.KeywordDo},
-            { "if", TokenType.KeywordIf},
-            { "else", TokenType.KeywordElse},
-            { "switch", TokenType.KeywordSwitch},
-            { "return", TokenType.KeywordReturn},
-            { "throw", TokenType.KeywordThrow},
-            { "break", TokenType.KeywordBreak},
-            { "var", TokenType.KeywordVar},
-            { "true", TokenType.KeywordTrue},
-            { "false", TokenType.KeywordFalse},
-        };
-
-        private static string[] mappedTokenStrings = stringToTokenTypeMap.Keys.OrderByDescending(x => x.Length).ToArray();
+            var takens = this.Parse(context.SourceText);
+            context.TokenList.AddRange(takens);
+            return context.TokenList.Any(t => t.IsError) == false;
+        }
 
         /// <summary>
         /// Parse a source code text into an enumaration of tokens.
         /// </summary>
         /// <param name="code">source code to parse.</param>
         /// <returns>Enumeration of Codes</returns>
-        public IEnumerable<Token> Parse(string code)
+        private IEnumerable<Token> Parse(CompilationUnitSourceText sourceText)
         {
             var sourceCodeCursor = new SourceCodeCursor
             {
-                SourceText = new SourceText { Text = code }                
+                SourceText = sourceText
             };
 
             Token? token = null;
@@ -110,9 +50,9 @@ namespace MinSharp.Compiler.LexicalAnalysis
                 {
                     yield return token;
                 }
-                else if (sourceCodeCursor.CurrentChar == '_' 
+                else if (sourceCodeCursor.CurrentChar == '_'
                     || char.IsLetter(sourceCodeCursor.CurrentChar)
-                    || (sourceCodeCursor.CurrentChar == '@' && (sourceCodeCursor.NextCharacter== '_'
+                    || (sourceCodeCursor.CurrentChar == '@' && (sourceCodeCursor.NextCharacter == '_'
                     || char.IsLetterOrDigit(sourceCodeCursor.NextCharacter))))
                 {
                     yield return BuildIdentifierToken(sourceCodeCursor);
@@ -121,11 +61,15 @@ namespace MinSharp.Compiler.LexicalAnalysis
                 {
                     yield return BuildStringLiteralToken(sourceCodeCursor);
                 }
-                else if(char.IsDigit(sourceCodeCursor.CurrentChar) == true)
+                else if (sourceCodeCursor.CurrentChar == '\'')
+                {
+                    yield return BuildDateLiteralToken(sourceCodeCursor);
+                }
+                else if (char.IsDigit(sourceCodeCursor.CurrentChar) == true)
                 {
                     yield return BuildNumberLiteralToken(sourceCodeCursor);
                 }
-                else 
+                else
                 {
                     var startPosition = sourceCodeCursor.CurrentCharacterIndex;
                     var columnNumber = sourceCodeCursor.CurrentColumnIndex;
@@ -151,13 +95,13 @@ namespace MinSharp.Compiler.LexicalAnalysis
 
         private bool TryMatchTokenStrings(SourceCodeCursor sourceCodeCursor, out Token? result)
         {
-            foreach (var tokenString in mappedTokenStrings)
+            foreach (var tokenString in StringToTokenTypeMap.TokenStrings)
             {
                 if (sourceCodeCursor.IsMatchAtCurrentCharacter(tokenString))
                 {
                     result = new Token
                     {
-                        TokenType = stringToTokenTypeMap[tokenString],
+                        TokenType = StringToTokenTypeMap.Map[tokenString],
                         Value = new SourceTextSpan
                         {
                             SourceText = sourceCodeCursor.SourceText,
@@ -183,8 +127,8 @@ namespace MinSharp.Compiler.LexicalAnalysis
                 TokenType.WhiteSpace,
                 (sourceCodeCursor) =>
                 {
-                    while (char.IsWhiteSpace(sourceCodeCursor.CurrentChar) 
-                            && sourceCodeCursor.CurrentChar != '\r' 
+                    while (char.IsWhiteSpace(sourceCodeCursor.CurrentChar)
+                            && sourceCodeCursor.CurrentChar != '\r'
                             && sourceCodeCursor.CurrentChar != '\n')
                     {
                         if (sourceCodeCursor.MoveNext() == false)
@@ -207,7 +151,7 @@ namespace MinSharp.Compiler.LexicalAnalysis
                     {
                         sourceCodeCursor.MoveNext();
                     }
-                    while (sourceCodeCursor.CurrentChar == '_' 
+                    while (sourceCodeCursor.CurrentChar == '_'
                             || char.IsLetterOrDigit(sourceCodeCursor.CurrentChar))
                     {
                         if (sourceCodeCursor.MoveNext() == false)
@@ -222,9 +166,9 @@ namespace MinSharp.Compiler.LexicalAnalysis
         private Token BuildNewLineToken(SourceCodeCursor sourceCodeCursor)
         {
             return BuildToken(
-                sourceCodeCursor, 
-                TokenType.NewLine, 
-                (sourceCodeCursor) => 
+                sourceCodeCursor,
+                TokenType.NewLine,
+                (sourceCodeCursor) =>
                 {
                     if (sourceCodeCursor.CurrentChar == '\r')
                     {
@@ -273,7 +217,7 @@ namespace MinSharp.Compiler.LexicalAnalysis
             {
                 return new Token
                 {
-                    TokenType = TokenType.ErrorUnclossedStringLiteral,
+                    TokenType = TokenType.ErrorUnclosedStringLiteral,
                     Value = new SourceTextSpan
                     {
                         SourceText = sourceCodeCursor.SourceText,
@@ -294,7 +238,7 @@ namespace MinSharp.Compiler.LexicalAnalysis
                     {
                         return new Token
                         {
-                            TokenType = TokenType.ErrorUnclossedStringLiteral,
+                            TokenType = TokenType.ErrorUnclosedStringLiteral,
                             Value = new SourceTextSpan
                             {
                                 SourceText = sourceCodeCursor.SourceText,
@@ -312,7 +256,7 @@ namespace MinSharp.Compiler.LexicalAnalysis
                 {
                     return new Token
                     {
-                        TokenType = TokenType.ErrorUnclossedStringLiteral,
+                        TokenType = TokenType.ErrorUnclosedStringLiteral,
                         Value = new SourceTextSpan
                         {
                             SourceText = sourceCodeCursor.SourceText,
@@ -343,6 +287,7 @@ namespace MinSharp.Compiler.LexicalAnalysis
                 IsCommentOrWhiteSpace = false
             };
         }
+
         private Token BuildNumberLiteralToken(SourceCodeCursor sourceCodeCursor)
         {
             int tokenStartPosition = sourceCodeCursor.CurrentCharacterIndex;
@@ -358,14 +303,14 @@ namespace MinSharp.Compiler.LexicalAnalysis
             if (sourceCodeCursor.HasCurrentCharacter && sourceCodeCursor.CurrentChar == '.')
             {
                 sourceCodeCursor.MoveNext();
-                while (sourceCodeCursor.HasCurrentCharacter 
-                        && (char.IsDigit(sourceCodeCursor.CurrentChar) == true 
+                while (sourceCodeCursor.HasCurrentCharacter
+                        && (char.IsDigit(sourceCodeCursor.CurrentChar) == true
                             || sourceCodeCursor.CurrentChar == '_'))
                 {
                     sourceCodeCursor.MoveNext();
                 }
             }
-            if (sourceCodeCursor.HasCurrentCharacter 
+            if (sourceCodeCursor.HasCurrentCharacter
                 && (sourceCodeCursor.CurrentChar == 'e' || sourceCodeCursor.CurrentChar == 'E'))
             {
                 if (sourceCodeCursor.MoveNext() == false)
@@ -419,7 +364,7 @@ namespace MinSharp.Compiler.LexicalAnalysis
                         IsCommentOrWhiteSpace = false
                     };
                 }
-                while (sourceCodeCursor.HasCurrentCharacter 
+                while (sourceCodeCursor.HasCurrentCharacter
                     && (char.IsDigit(sourceCodeCursor.CurrentChar) == true || sourceCodeCursor.CurrentChar == '_'))
                 {
                     if (sourceCodeCursor.MoveNext() == false)
@@ -428,8 +373,7 @@ namespace MinSharp.Compiler.LexicalAnalysis
                     }
                 }
             }
-            sourceCodeCursor.MoveNext();
-                
+
             return new Token
             {
                 TokenType = TokenType.NumberLiteral,
@@ -494,10 +438,72 @@ namespace MinSharp.Compiler.LexicalAnalysis
 
         }
 
+
+        private Token BuildDateLiteralToken(SourceCodeCursor sourceCodeCursor)
+        {
+            int tokenStartPosition = sourceCodeCursor.CurrentCharacterIndex;
+            int tokenStartColumn = sourceCodeCursor.CurrentColumnIndex;
+            int tokenStartLine = sourceCodeCursor.CurrentLineIndex;
+
+            // Move to the next character
+            if (sourceCodeCursor.MoveNext() == false)
+            {
+                return new Token
+                {
+                    TokenType = TokenType.ErrorUnclosedStringLiteral,
+                    Value = new SourceTextSpan
+                    {
+                        SourceText = sourceCodeCursor.SourceText,
+                        StartPosition = tokenStartPosition,
+                        Length = sourceCodeCursor.CurrentCharacterIndex - tokenStartPosition
+                    },
+                    ColumnNumber = tokenStartColumn,
+                    LineNumber = tokenStartLine,
+                    IsCommentOrWhiteSpace = false
+                };
+            }
+
+            while (sourceCodeCursor.CurrentChar != '\'')
+            {
+                if (sourceCodeCursor.MoveNext() == false)
+                {
+                    return new Token
+                    {
+                        TokenType = TokenType.ErrorUnclosedDateLiteral,
+                        Value = new SourceTextSpan
+                        {
+                            SourceText = sourceCodeCursor.SourceText,
+                            StartPosition = tokenStartPosition,
+                            Length = sourceCodeCursor.CurrentCharacterIndex - tokenStartPosition
+                        },
+                        ColumnNumber = tokenStartColumn,
+                        LineNumber = tokenStartLine,
+                        IsCommentOrWhiteSpace = false
+                    };
+                }
+            }
+
+            sourceCodeCursor.MoveNext();
+
+            return new Token
+            {
+                TokenType = TokenType.DateLiteral,
+                Value = new SourceTextSpan
+                {
+                    SourceText = sourceCodeCursor.SourceText,
+                    StartPosition = tokenStartPosition,
+                    Length = sourceCodeCursor.CurrentCharacterIndex - tokenStartPosition
+                },
+                ColumnNumber = tokenStartColumn,
+                LineNumber = tokenStartLine,
+                IsCommentOrWhiteSpace = false
+            };
+        }
+
         private Token BuildToken(
-            SourceCodeCursor sourceCodeCursor, 
-            TokenType tokenType, 
-            Action<SourceCodeCursor> traverseToken, 
+            SourceCodeCursor sourceCodeCursor,
+            TokenType tokenType,
+            Action<SourceCodeCursor> traverseToken,
             bool isCommentOrWhiteSpace = false)
         {
             int tokenStartPosition = sourceCodeCursor.CurrentCharacterIndex;
@@ -513,9 +519,9 @@ namespace MinSharp.Compiler.LexicalAnalysis
                 {
                     SourceText = sourceCodeCursor.SourceText,
                     StartPosition = tokenStartPosition,
-                    Length = sourceCodeCursor.CurrentCharacterIndex - tokenStartPosition                    
+                    Length = sourceCodeCursor.CurrentCharacterIndex - tokenStartPosition
                 },
-                ColumnNumber = tokenStartColumn, 
+                ColumnNumber = tokenStartColumn,
                 LineNumber = tokenStartLine,
                 IsCommentOrWhiteSpace = isCommentOrWhiteSpace
             };

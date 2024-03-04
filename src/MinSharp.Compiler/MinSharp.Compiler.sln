@@ -3,11 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33414.496
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinSharp.Compiler", "MinSharp.Compiler\MinSharp.Compiler.csproj", "{2D77845A-F544-45D2-BCAB-1027DD598817}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinSharp.Compiler", "MinSharp.Compiler\MinSharp.Compiler.csproj", "{2D77845A-F544-45D2-BCAB-1027DD598817}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinSharp.Compiler.LexicalAnalysis", "MinSharp.Compiler.LexicalAnalysis\MinSharp.Compiler.LexicalAnalysis.csproj", "{55AA24BE-54D7-41FC-8087-2014866BEB84}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinSharp.Compiler.LexicalAnalysis", "MinSharp.Compiler.LexicalAnalysis\MinSharp.Compiler.LexicalAnalysis.csproj", "{55AA24BE-54D7-41FC-8087-2014866BEB84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinSharp.Compiler.LexicalAnalysis.Tests", "MinSharp.Compiler.LexicalAnalysis.Tests\MinSharp.Compiler.LexicalAnalysis.Tests.csproj", "{D9433F6E-95EE-44E3-A58F-D4550EFA22B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinSharp.Compiler.LexicalAnalysis.Tests", "MinSharp.Compiler.LexicalAnalysis.Tests\MinSharp.Compiler.LexicalAnalysis.Tests.csproj", "{D9433F6E-95EE-44E3-A58F-D4550EFA22B7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinSharp.Compiler.DataModels", "MinSharp.Compiler.DataModels\MinSharp.Compiler.DataModels.csproj", "{02ECE87B-DEB9-4850-9DF4-712A6E813311}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinSharp.Compiler.Pipeline", "MinSharp.Compiler.Pipeline\MinSharp.Compiler.Pipeline.csproj", "{AA807D4E-006F-4932-9CE6-6704359D8BFA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinSharp.Compiler.SyntaxParser", "MinSharp.Compiler.SyntaxParser\MinSharp.Compiler.SyntaxParser.csproj", "{33E884E0-8E17-4792-95A3-52E37D319696}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinSharp.Compiler.SyntaxParser.Tests", "MinSharp.Compiler.SyntaxParser.Tests\MinSharp.Compiler.SyntaxParser.Tests.csproj", "{428DE217-A987-4993-B5F3-DE866A8E68AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +35,22 @@ Global
 		{D9433F6E-95EE-44E3-A58F-D4550EFA22B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9433F6E-95EE-44E3-A58F-D4550EFA22B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9433F6E-95EE-44E3-A58F-D4550EFA22B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02ECE87B-DEB9-4850-9DF4-712A6E813311}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02ECE87B-DEB9-4850-9DF4-712A6E813311}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02ECE87B-DEB9-4850-9DF4-712A6E813311}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02ECE87B-DEB9-4850-9DF4-712A6E813311}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA807D4E-006F-4932-9CE6-6704359D8BFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA807D4E-006F-4932-9CE6-6704359D8BFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA807D4E-006F-4932-9CE6-6704359D8BFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA807D4E-006F-4932-9CE6-6704359D8BFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33E884E0-8E17-4792-95A3-52E37D319696}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33E884E0-8E17-4792-95A3-52E37D319696}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33E884E0-8E17-4792-95A3-52E37D319696}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33E884E0-8E17-4792-95A3-52E37D319696}.Release|Any CPU.Build.0 = Release|Any CPU
+		{428DE217-A987-4993-B5F3-DE866A8E68AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{428DE217-A987-4993-B5F3-DE866A8E68AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{428DE217-A987-4993-B5F3-DE866A8E68AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{428DE217-A987-4993-B5F3-DE866A8E68AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

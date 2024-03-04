@@ -1,8 +1,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using MinSharp.Compiler.LexicalAnalysis;
-using MinSharp.Compiler.LexicalAnalysis.Model;
-
+using MinSharp.Compiler.DataModels;
+using MinSharp.Compiler.DataModels.LexicalAnalisys;
+using MinSharp.Compiler.Pipeline;
 using System.Linq;
 
 namespace MinSharp.Compiler.LexicalAnalysis.Tests
@@ -74,6 +74,7 @@ namespace MinSharp.Compiler.LexicalAnalysis.Tests
         [DataRow("return", TokenType.KeywordReturn, false)]
         [DataRow("throw", TokenType.KeywordThrow, false)]
         [DataRow("break", TokenType.KeywordBreak, false)]
+        [DataRow("for", TokenType.KeywordFor, false)]
         [DataRow("var", TokenType.KeywordVar, false)]
         [DataRow("true", TokenType.KeywordTrue, false)]
         [DataRow("false", TokenType.KeywordFalse, false)]
@@ -89,8 +90,8 @@ namespace MinSharp.Compiler.LexicalAnalysis.Tests
         [DataRow("\"Hello\\n\"", TokenType.StringLiteral, false)]
         [DataRow("\"Hello\\\"\"", TokenType.StringLiteral, false)]
         [DataRow("\"Hello's\"", TokenType.StringLiteral, false)]
-        [DataRow("\"Hello", TokenType.ErrorUnclossedStringLiteral, false)]
-        [DataRow("\"Hello\\", TokenType.ErrorUnclossedStringLiteral, false)]
+        [DataRow("\"Hello", TokenType.ErrorUnclosedStringLiteral, false)]
+        [DataRow("\"Hello\\", TokenType.ErrorUnclosedStringLiteral, false)]
         [DataRow("1234", TokenType.NumberLiteral, false)]
         [DataRow("1234.00", TokenType.NumberLiteral, false)]
         [DataRow("1_234_000.00", TokenType.NumberLiteral, false)]
@@ -99,16 +100,29 @@ namespace MinSharp.Compiler.LexicalAnalysis.Tests
         [DataRow("1234.00e", TokenType.ErrorInvalidNumberLiteral, false)]
         [DataRow("1234.00e+", TokenType.ErrorInvalidNumberLiteral, false)]
         [DataRow("1234.00e-", TokenType.ErrorInvalidNumberLiteral, false)]
+        [DataRow("'2022-13-03'", TokenType.DateLiteral, false)]
+        [DataRow("'2022-13-03T23:55:55.0123'", TokenType.DateLiteral, false)]
+        [DataRow("'2022-13-03T23:55:55.0123+6'", TokenType.DateLiteral, false)]
+        [DataRow("'2022-13-03T23:55:55.0123+6.5'", TokenType.DateLiteral, false)]
+        [DataRow("'2022-13-03T23:55:55.0123Z'", TokenType.DateLiteral, false)]
+        [DataRow("'T23:55:55.0123Z'", TokenType.DateLiteral, false)]
+        [DataRow("'T23:55:55.0123Z", TokenType.ErrorUnclosedDateLiteral, false)]
         [DataRow("`", TokenType.UnrecognizedCharacter, false)]
         public void SingleTokenTest(string sourceCode, TokenType expectedTokenType, bool isCommentOrWhiteSpace)
         {
             // Arrange    
             var lexicalAnalizer = new LexicalAnalizer();
 
+            var compilerContext = new CompilationUnitContext(
+                new DataModels.CompilationUnitMetadata("sourcefile.ms"),
+                    new CompilationUnitSourceText { Text = sourceCode }
+                    );
             // Act
-            var tokensParsed = lexicalAnalizer.Parse(sourceCode).ToList();
+            var noErrorsFound = lexicalAnalizer.Execute(compilerContext);
+            var tokensParsed = compilerContext.TokenList;
 
             // Assert
+            Assert.AreEqual(tokensParsed[0].IsError == false, noErrorsFound);
             Assert.AreEqual(1, tokensParsed.Count);
             Assert.AreEqual(expectedTokenType, tokensParsed[0].TokenType);
             Assert.AreEqual(sourceCode, tokensParsed[0].Value.Text);
@@ -133,10 +147,17 @@ namespace MinSharp.Compiler.LexicalAnalysis.Tests
             // Arrange    
             var lexicalAnalizer = new LexicalAnalizer();
 
+            var compilerContext = new CompilationUnitContext(
+                new DataModels.CompilationUnitMetadata("sourcefile.ms"),
+                    new CompilationUnitSourceText { Text = sourceCode }
+                    );
+
             // Act
-            var tokensParsed = lexicalAnalizer.Parse(sourceCode).ToList();
+            var noErrorsFound = lexicalAnalizer.Execute(compilerContext);
+            var tokensParsed = compilerContext.TokenList;
 
             // Assert
+            Assert.IsTrue(noErrorsFound);
             Assert.AreEqual(1, tokensParsed.Count);
             Assert.AreEqual(TokenType.Identifier, tokensParsed[0].TokenType);
             Assert.AreEqual(expectedIdentifier, tokensParsed[0].Value.Text);
@@ -150,25 +171,77 @@ namespace MinSharp.Compiler.LexicalAnalysis.Tests
         [DataTestMethod]
         [DataRow(" \n", TokenType.WhiteSpace, TokenType.NewLine)]
         [DataRow("// Lorem Ipsum \n", TokenType.SingleLineComment, TokenType.NewLine)]
-        [DataRow("/* Lorem Ipsum */\n",  TokenType.MultiLineComment, TokenType.NewLine)]
-        [DataRow("/* Lorem \r\n Ipsum */\n", TokenType.MultiLineComment, TokenType.NewLine)]
+        [DataRow("/* Lorem Ipsum */\n", TokenType.MultiLineComment, TokenType.NewLine)]
+        [DataRow("/* Lorem Ipsum */\n", TokenType.MultiLineComment, TokenType.NewLine)]
+        [DataRow("1/* Lorem \r\n Ipsum \n", TokenType.NumberLiteral, TokenType.ErrorCommentNotClosed)]
+        [DataRow("1/* Lorem \r\n Ipsum", TokenType.NumberLiteral, TokenType.ErrorCommentNotClosed)]
         [DataRow(" \r\n ", TokenType.WhiteSpace, TokenType.NewLine, TokenType.WhiteSpace)]
         [DataRow("> >=", TokenType.OperatorGreaterThan, TokenType.WhiteSpace, TokenType.OperatorGreaterOrEqualsThan)]
+        [DataRow(">a", TokenType.OperatorGreaterThan, TokenType.Identifier)]
         [DataRow(">= >", TokenType.OperatorGreaterOrEqualsThan, TokenType.WhiteSpace, TokenType.OperatorGreaterThan)]
+        [DataRow(">=1", TokenType.OperatorGreaterOrEqualsThan, TokenType.NumberLiteral)]
+        [DataRow("==1", TokenType.OperatorEquals, TokenType.NumberLiteral)]
+        [DataRow("true!=false", TokenType.KeywordTrue, TokenType.OperatorNotEquals, TokenType.KeywordFalse)]
+        [DataRow("1\"\n", TokenType.NumberLiteral, TokenType.ErrorUnclosedStringLiteral)]
+        [DataRow("\"1\"1234.00e", TokenType.StringLiteral, TokenType.ErrorInvalidNumberLiteral)]
+        [DataRow("\"1\"1234.00e+//error", TokenType.StringLiteral, TokenType.ErrorInvalidNumberLiteral, TokenType.SingleLineComment)]
+        [DataRow("\"1\"1234.0099992//Hello", TokenType.StringLiteral, TokenType.NumberLiteral, TokenType.SingleLineComment)]
+        [DataRow("for 1234.0099992//Hello", TokenType.KeywordFor, TokenType.WhiteSpace, TokenType.NumberLiteral, TokenType.SingleLineComment)]
+        [DataRow("for(i=0;i<10;i++)", 
+            TokenType.KeywordFor,
+            TokenType.OpenParentesis,
+            TokenType.Identifier,
+            TokenType.OperatorAssignment,
+            TokenType.NumberLiteral,
+            TokenType.SemiColon,
+            TokenType.Identifier,
+            TokenType.OperatorLessThan,
+            TokenType.NumberLiteral,
+            TokenType.SemiColon,
+            TokenType.Identifier,
+            TokenType.OperatorIncrement,
+            TokenType.CloseParentesis)]
         public void MultipleTokensTest(string sourceCode, params TokenType[] expectedTokenTypes)
         {
             // Arrange    
             var lexicalAnalizer = new LexicalAnalizer();
 
+            var compilerContext = new CompilationUnitContext(
+                new DataModels.CompilationUnitMetadata("sourcefile.ms"),
+                    new CompilationUnitSourceText { Text = sourceCode }
+                    );
+
             // Act
-            var tokensParsed = lexicalAnalizer.Parse(sourceCode).ToList();
+            var noErrorsFound = lexicalAnalizer.Execute(compilerContext);
+            var tokensParsed = compilerContext.TokenList;
 
             // Assert
+            Assert.AreEqual(compilerContext.TokenList.All(t => t.IsError == false),  noErrorsFound);
             Assert.AreEqual(expectedTokenTypes.Length, tokensParsed.Count);
-            for (int i =0; i < expectedTokenTypes.Length; i++)
+            for (int i = 0; i < expectedTokenTypes.Length; i++)
             {
                 Assert.AreEqual(expectedTokenTypes[i], tokensParsed[i].TokenType);
             }
         }
+
+
+        [TestMethod]
+        public void EmptyFileTest()
+        {
+            // Arrange    
+            var lexicalAnalizer = new LexicalAnalizer();
+
+            var compilerContext = new CompilationUnitContext(
+                new DataModels.CompilationUnitMetadata("sourcefile.ms"),
+                    new CompilationUnitSourceText { Text = string.Empty }
+                    );
+
+            // Act
+            lexicalAnalizer.Execute(compilerContext);
+            var tokensParsed = compilerContext.TokenList;
+
+            // Assert
+            Assert.AreEqual(0, tokensParsed.Count);
+        }       
     }
 }
