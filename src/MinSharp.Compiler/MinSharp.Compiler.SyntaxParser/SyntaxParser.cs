@@ -7,22 +7,22 @@ namespace MinSharp.Compiler.SyntaxParser
 {
     public class SyntaxParser : ICompilationUnitPipelineStep
     {
-        private RecursiveDescentParser recursiveDescentParser;
 
         public SyntaxParser()
         {
-            this.recursiveDescentParser = new RecursiveDescentParser();
         }
 
         public bool Execute(CompilationUnitContext context)
         {
+            var recursiveDescentParser = new RecursiveDescentParser(context.TokenList);
+
             try
             {
-                var unitOfCompilationAstList = recursiveDescentParser.Parse(context.TokenList);
+                var unitOfCompilationAstList = recursiveDescentParser.Parse();
                 context.UnitOfCompilationAstList.Clear();
                 context.UnitOfCompilationAstList.AddRange(unitOfCompilationAstList);
             }
-            catch (Exception)
+            catch (SyntaxErrorException)
             {
                 return false;
             }

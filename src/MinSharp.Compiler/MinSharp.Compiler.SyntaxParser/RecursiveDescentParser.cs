@@ -10,9 +10,33 @@ namespace MinSharp.Compiler.SyntaxParser
 {
     internal class RecursiveDescentParser
     {
-        public List<UnitOfCompilation> Parse(List<Token> tokens)
+        TokenIteratorWithNoWhiteSpaces _tokenIterator;
+
+        public RecursiveDescentParser(List<Token> tokens) 
         {
-            throw new NotImplementedException();
+            _tokenIterator = new TokenIteratorWithNoWhiteSpaces(tokens);
+        }
+
+        public List<UnitOfCompilation> Parse()
+        {
+            List<UnitOfCompilation> result = new List<UnitOfCompilation>();
+            while ( _tokenIterator.MoveNext() )
+            {
+                try
+                {
+                    if (_tokenIterator.CurrentToken.TokenType != TokenType.KeywordNamespace)
+                    {
+                        throw new SyntaxErrorException(SyntaxErrorCode.ExpectedNamespaceKeyword, _tokenIterator.CurrentToken);
+                    }
+                    throw new NotImplementedException();
+                }
+                catch (SyntaxErrorException)
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            return result;
         }
     }
 }
