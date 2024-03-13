@@ -7,16 +7,18 @@
         NewLine = 2,
         SingleLineComment = 3,
         MultiLineComment = 4,
+        
+        EndOfFile=10,
 
-        OpenBrace = 50,
-        CloseBrace = 51,
+        OpenCurlyBracket = 50,
+        CloseCurlyBracket = 51,
         Coma = 52,
         SemiColon = 53,
         Colon = 54,
         OpenParentesis = 55,
         CloseParentesis = 56,
-        OpenBraket = 57,
-        CloseBraket = 58,
+        OpenSquareBraket = 57,
+        CloseSquareBraket = 58,
         QuestionMark = 59,
         Dot = 60,
 

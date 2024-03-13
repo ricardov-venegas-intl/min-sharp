@@ -1,10 +1,14 @@
-﻿namespace MinSharp.Compiler.DataModels.Ast
+﻿using MinSharp.Compiler.DataModels.LexicalAnalisys;
+
+namespace MinSharp.Compiler.DataModels.Ast
 {
     /// <summary>
     /// AST Node:  DataTypeDefintionName
     /// </summary>
-    public class Identifier
+    public class Identifier : AstNode
     {
+        public Token? IdentifierToken { get; set; }
+
         /// <summary>
         /// Name of the DataTypeDefintionName
         /// </summary>

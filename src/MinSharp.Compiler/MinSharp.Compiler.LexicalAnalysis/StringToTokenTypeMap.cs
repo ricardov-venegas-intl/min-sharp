@@ -14,15 +14,15 @@ namespace MinSharp.Compiler.LexicalAnalysis
         /// </summary>
         public static IReadOnlyDictionary<string, TokenType> Map = new Dictionary<string, TokenType>
         {
-            { "{", TokenType.OpenBrace},
-            { "}", TokenType.CloseBrace},
+            { "{", TokenType.OpenCurlyBracket},
+            { "}", TokenType.CloseCurlyBracket},
             { ",", TokenType.Coma},
             { ";", TokenType.SemiColon},
             { ":", TokenType.Colon},
             { "(", TokenType.OpenParentesis},
             { ")", TokenType.CloseParentesis},
-            { "[", TokenType.OpenBraket},
-            { "]", TokenType.CloseBraket},
+            { "[", TokenType.OpenSquareBraket},
+            { "]", TokenType.CloseSquareBraket},
             { "?", TokenType.QuestionMark},
             { ".", TokenType.Dot},
             { ">", TokenType.OperatorGreaterThan},

@@ -8,6 +8,9 @@ namespace MinSharp.Compiler.SyntaxParser
 {
     public enum SyntaxErrorCode
     {
-        ExpectedNamespaceKeyword
+        ExpectedNamespaceKeyword,
+        ExpectedIdentifier,
+        ExpectedOpenBracket,
+        ExpectedCloseCurlyBracket,
     }
 }

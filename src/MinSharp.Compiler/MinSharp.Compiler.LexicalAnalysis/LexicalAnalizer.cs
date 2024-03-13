@@ -9,8 +9,8 @@ namespace MinSharp.Compiler.LexicalAnalysis
         /// <inheritdoc/>
         public bool Execute(CompilationUnitContext context)
         {
-            var takens = this.Parse(context.SourceText);
-            context.TokenList.AddRange(takens);
+            var tokens = this.Parse(context.SourceText);
+            context.TokenList.AddRange(tokens);
             return context.TokenList.Any(t => t.IsError) == false;
         }
 

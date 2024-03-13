@@ -20,7 +20,7 @@ namespace MinSharp.Compiler.SyntaxParser
             {
                 var unitOfCompilationAstList = recursiveDescentParser.Parse();
                 context.UnitOfCompilationAstList.Clear();
-                context.UnitOfCompilationAstList.AddRange(unitOfCompilationAstList);
+                context.UnitOfCompilationAstList.Add(unitOfCompilationAstList);
             }
             catch (SyntaxErrorException)
             {
