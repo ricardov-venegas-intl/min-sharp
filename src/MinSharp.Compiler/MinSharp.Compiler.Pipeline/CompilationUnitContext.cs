@@ -1,5 +1,6 @@
 ﻿using MinSharp.Compiler.DataModels;
 using MinSharp.Compiler.DataModels.Ast;
+using MinSharp.Compiler.DataModels.Errors;
 using MinSharp.Compiler.DataModels.LexicalAnalisys;
 
 namespace MinSharp.Compiler.Pipeline
@@ -17,10 +18,29 @@ namespace MinSharp.Compiler.Pipeline
             SourceText = sourceText ?? throw new ArgumentNullException(nameof(sourceText));
         }
 
+        /// <summary>
+        /// Gets CompilationUnit
+        /// </summary>
         public CompilationUnitMetadata CompilationUnit { get; private init; }
-        public CompilationUnitSourceText SourceText { get; set; }
-        public List<Token> TokenList { get; private set; } = new List<Token>();
 
-        public List<UnitOfCompilation> UnitOfCompilationAstList { get; set; } = new List<UnitOfCompilation>();
+        /// <summary>
+        /// Gets teh source text
+        /// </summary>
+        public CompilationUnitSourceText SourceText { get; private init; }
+
+        /// <summary>
+        /// Gets the list of tokens.
+        /// </summary>
+        public List<Token> TokenList { get; private init; } = new List<Token>();
+
+        /// <summary>
+        /// Gets the list od errors.
+        /// </summary>
+        public List<CompilationError> Errors { get; private set; } = new List<CompilationError>();
+
+        /// <summary>
+        /// Gets the Unit Of Compilation Ast.
+        /// </summary>
+        public UnitOfCompilation? UnitOfCompilationAst { get; set; } = null;
     }
 }

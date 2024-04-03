@@ -1,4 +1,5 @@
 ﻿using MinSharp.Compiler.DataModels.Ast;
+using MinSharp.Compiler.DataModels.Errors;
 using MinSharp.Compiler.DataModels.LexicalAnalisys;
 
 namespace MinSharp.Compiler.SyntaxParser
@@ -6,10 +7,12 @@ namespace MinSharp.Compiler.SyntaxParser
     internal class RecursiveDescentParser
     {
         TokenIteratorWithNoWhiteSpaces _tokenIterator;
+        List<SyntaxError> _errors;
 
-        public RecursiveDescentParser(List<Token> tokens) 
+        public RecursiveDescentParser(List<Token> tokens, List<SyntaxError> errors) 
         {
             _tokenIterator = new TokenIteratorWithNoWhiteSpaces(tokens);
+            _errors = errors;
         }
 
         public UnitOfCompilation Parse()
@@ -33,35 +36,60 @@ namespace MinSharp.Compiler.SyntaxParser
         private NamespaceDefinition ParseNamespaceDefinition()
         {
             var result = new NamespaceDefinition();
-            
-            // Keyword namespace
-            if (_tokenIterator.CurrentToken.TokenType != TokenType.KeywordNamespace)
+
+            try
             {
-                throw new SyntaxErrorException(SyntaxErrorCode.ExpectedNamespaceKeyword, _tokenIterator.CurrentToken);
+                // Keyword namespace
+                if (_tokenIterator.CurrentToken.TokenType != TokenType.KeywordNamespace)
+                {
+                    result.IsSynteticNode = true;
+                    _errors.Add(
+                        new SyntaxError
+                        {
+                            CompilationErrorCode = CompilationErrorCode.SyntaxExpectedNamespaceKeyword,
+                            StartToken = _tokenIterator.CurrentToken
+                        });
+
+                    if (_tokenIterator.CurrentToken.TokenType != TokenType.Identifier)
+                    {
+                        _tokenIterator.MoveToNextTokenType(TokenType.OpenCurlyBracket);
+                    }
+                }
+                else
+                {
+                    result.NamespaceKeywordToken = _tokenIterator.CurrentToken;
+                    _tokenIterator.MoveNext();
+                }
+
+                // Doted identifier
+                result.DotedIdentifier = ParseDotedIdentifier();
+
+                // OPen curly bracket
+                if (_tokenIterator.CurrentToken.TokenType != TokenType.OpenCurlyBracket)
+                {
+                    throw new SyntaxErrorException(CompilationErrorCode.SyntaxExpectedOpenBracket, _tokenIterator.CurrentToken);
+                }
+                result.OpenCurlyBracketToken = _tokenIterator.CurrentToken;
+                _tokenIterator.MoveNext();
+
+                // Placeholder until real code
+                PlaceHolderForCodeInBlock();
+
+                // Close curly bracket
+                if (_tokenIterator.CurrentToken.TokenType != TokenType.CloseCurlyBracket)
+                {
+                    throw new SyntaxErrorException(CompilationErrorCode.SyntaxExpectedOpenBracket, _tokenIterator.CurrentToken);
+                }
+                result.CloseCurlyBracketToken = _tokenIterator.CurrentToken;
             }
-            result.NamespaceKeywordToken = _tokenIterator.CurrentToken;
-            _tokenIterator.MoveNext();
-
-            // Doted identifier
-            result.DotedIdentifier = ParseDotedIdentifier();
-
-            // OPen curly bracket
-            if (_tokenIterator.CurrentToken.TokenType != TokenType.OpenCurlyBracket)
+            catch (SyntaxErrorException ex)
             {
-                throw new SyntaxErrorException(SyntaxErrorCode.ExpectedOpenBracket, _tokenIterator.CurrentToken);
-            }
-            result.OpenCurlyBracketToken = _tokenIterator.CurrentToken;
-            _tokenIterator.MoveNext();
+                if (ex.SyntaxErrorCode == CompilationErrorCode.SyntaxExpectedNamespaceKeyword)
+                {
 
-            // Placeholder until real code
-            PlaceHolderForCodeInBlock();
-
-            // Close curly bracket
-            if (_tokenIterator.CurrentToken.TokenType != TokenType.CloseCurlyBracket)
-            {
-                throw new SyntaxErrorException(SyntaxErrorCode.ExpectedOpenBracket, _tokenIterator.CurrentToken);
+                }
+                throw;
             }
-            result.CloseCurlyBracketToken = _tokenIterator.CurrentToken;            
 
             return result;
         }
@@ -82,7 +110,7 @@ namespace MinSharp.Compiler.SyntaxParser
         {
             if (_tokenIterator.CurrentToken.TokenType != TokenType.Identifier)
             {
-                throw new SyntaxErrorException(SyntaxErrorCode.ExpectedIdentifier, _tokenIterator.CurrentToken);
+                throw new SyntaxErrorException(CompilationErrorCode.SyntaxExpectedIdentifier, _tokenIterator.CurrentToken);
             }
             parentDotedIndentifier.DotedIdentifiers.Add(
                 new Identifier
@@ -109,7 +137,7 @@ namespace MinSharp.Compiler.SyntaxParser
                 }
                 if (_tokenIterator.MoveNext() == false)
                 {
-                    throw new SyntaxErrorException(SyntaxErrorCode.ExpectedCloseCurlyBracket, _tokenIterator.CurrentToken);
+                    throw new SyntaxErrorException(CompilationErrorCode.SyntaxExpectedCloseCurlyBracket, _tokenIterator.CurrentToken);
                 }
             }
         }

@@ -7,7 +7,7 @@ list_of_namespace_definition:
     EMPTY
 
 namespace_definition:
-    namespace doted_identifier {  type_definition_list }
+    namespace doted_identifier: {  type_definition_list }
 
 type_definition_list:
     type_definition

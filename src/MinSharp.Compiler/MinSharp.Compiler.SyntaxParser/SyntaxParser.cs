@@ -14,13 +14,13 @@ namespace MinSharp.Compiler.SyntaxParser
 
         public bool Execute(CompilationUnitContext context)
         {
-            var recursiveDescentParser = new RecursiveDescentParser(context.TokenList);
+            var syntaxErrorList = new List<SyntaxError>();
+            var recursiveDescentParser = new RecursiveDescentParser(context.TokenList, syntaxErrorList);
 
             try
             {
-                var unitOfCompilationAstList = recursiveDescentParser.Parse();
-                context.UnitOfCompilationAstList.Clear();
-                context.UnitOfCompilationAstList.Add(unitOfCompilationAstList);
+                var unitOfCompilationAst = recursiveDescentParser.Parse();
+                context.UnitOfCompilationAst = unitOfCompilationAst;
             }
             catch (SyntaxErrorException)
             {

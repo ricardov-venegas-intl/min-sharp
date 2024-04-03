@@ -27,9 +27,8 @@ namespace MinSharp.Compiler.SyntaxParser.Tests
             var errorsFound =  syntaxParser.Execute(compilerContext);
 
             // Assert
-            Assert.IsNotNull(compilerContext.UnitOfCompilationAstList);
-            Assert.AreEqual(1, compilerContext.UnitOfCompilationAstList.Count);
-            Assert.AreEqual(0, compilerContext.UnitOfCompilationAstList[0].NamespaceDefinitions.Count);
+            Assert.IsNotNull(compilerContext.UnitOfCompilationAst);
+            Assert.AreEqual(0, compilerContext.UnitOfCompilationAst.NamespaceDefinitions.Count);
         }
 
         [DataTestMethod]
@@ -50,8 +49,8 @@ namespace MinSharp.Compiler.SyntaxParser.Tests
             var errorsFound = syntaxParser.Execute(compilerContext);
 
             // Assert
-            Assert.IsNotNull(compilerContext.UnitOfCompilationAstList);
-            Assert.AreEqual(1, compilerContext.UnitOfCompilationAstList.Count);
+            Assert.IsNotNull(compilerContext.UnitOfCompilationAst);
+            Assert.AreEqual(0, compilerContext.Errors.Count);
         }
 
         [DataTestMethod]
@@ -72,8 +71,30 @@ namespace MinSharp.Compiler.SyntaxParser.Tests
             var errorsFound = syntaxParser.Execute(compilerContext);
 
             // Assert
-            Assert.IsNotNull(compilerContext.UnitOfCompilationAstList);
-            Assert.AreEqual(1, compilerContext.UnitOfCompilationAstList.Count);
+            Assert.IsNotNull(compilerContext.UnitOfCompilationAst);
+            Assert.AreEqual(0, compilerContext.Errors.Count);
+        }
+
+        [DataTestMethod]
+        public void NamespaceMissing()
+        {
+            // Arrange
+            var lexicalAnalizer = new LexicalAnalizer();
+
+            var compilerContext = new CompilationUnitContext(
+                new DataModels.CompilationUnitMetadata("sourcefile.ms"),
+                    new CompilationUnitSourceText { Text = "blah {}" }
+                    );
+
+            var syntaxParser = new SyntaxParser();
+            lexicalAnalizer.Execute(compilerContext);
+
+            // Act
+            var errorsFound = syntaxParser.Execute(compilerContext);
+
+            // Assert
+            Assert.IsNotNull(compilerContext.UnitOfCompilationAst);
+            Assert.AreEqual(0, compilerContext.Errors.Count);
         }
     }
 }
