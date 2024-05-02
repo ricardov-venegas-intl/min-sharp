@@ -1,4 +1,5 @@
 ﻿using MinSharp.Compiler.DataModels;
+using MinSharp.Compiler.DataModels.Errors;
 using MinSharp.Compiler.DataModels.LexicalAnalisys;
 using MinSharp.Compiler.Pipeline;
 using System.Collections.Generic;
@@ -17,16 +18,20 @@ namespace MinSharp.Compiler.SyntaxParser
             var syntaxErrorList = new List<SyntaxError>();
             var recursiveDescentParser = new RecursiveDescentParser(context.TokenList, syntaxErrorList);
 
-            try
-            {
-                var unitOfCompilationAst = recursiveDescentParser.Parse();
-                context.UnitOfCompilationAst = unitOfCompilationAst;
-            }
-            catch (SyntaxErrorException)
-            {
-                return false;
-            }
-            return true;
+            // Parse
+            var unitOfCompilationAst = recursiveDescentParser.Parse();
+
+            // Update context
+            context.UnitOfCompilationAst = unitOfCompilationAst;
+            context.Errors.AddRange(
+                syntaxErrorList.Select(e =>
+                    new CompilationError(
+                        context.CompilationUnit,
+                        e.StartToken.ColumnNumber,
+                        e.StartToken.LineNumber,
+                        e.CompilationErrorCode)));
+
+            return syntaxErrorList.Count == 0;
         }
     }
 }

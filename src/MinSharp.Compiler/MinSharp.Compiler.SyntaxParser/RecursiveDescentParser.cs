@@ -37,61 +37,91 @@ namespace MinSharp.Compiler.SyntaxParser
         {
             var result = new NamespaceDefinition();
 
-            try
+            ParseNamespaceDefinitionNamespaceKeyword(result);
+
+            ParseNamespaceDefinitionIdentifier(result);
+
+            bool openCurlyBracketFound = true;
+            // Open curly bracket
+            if (_tokenIterator.CurrentToken.TokenType != TokenType.OpenCurlyBracket)
             {
-                // Keyword namespace
-                if (_tokenIterator.CurrentToken.TokenType != TokenType.KeywordNamespace)
+                result.IsSynteticNode = true;
+                _errors.Add(
+                    new SyntaxError
+                    {
+                        CompilationErrorCode = CompilationErrorCode.SyntaxExpectedOpenCurlyBracket,
+                        StartToken = _tokenIterator.CurrentToken
+                    });
+                openCurlyBracketFound = false;
+            }
+            result.OpenCurlyBracketToken = _tokenIterator.CurrentToken;
+            _tokenIterator.MoveNext();
+
+            // Placeholder until real code
+            PlaceHolderForCodeInBlock();
+
+            // Close curly bracket
+            if (_tokenIterator.CurrentToken.TokenType != TokenType.CloseCurlyBracket)
+            {
+                result.IsSynteticNode = true;
+                if (openCurlyBracketFound == true)
                 {
-                    result.IsSynteticNode = true;
                     _errors.Add(
                         new SyntaxError
                         {
-                            CompilationErrorCode = CompilationErrorCode.SyntaxExpectedNamespaceKeyword,
+                            CompilationErrorCode = CompilationErrorCode.SyntaxExpectedCloseCurlyBracket,
                             StartToken = _tokenIterator.CurrentToken
                         });
-
-                    if (_tokenIterator.CurrentToken.TokenType != TokenType.Identifier)
-                    {
-                        _tokenIterator.MoveToNextTokenType(TokenType.OpenCurlyBracket);
-                    }
                 }
-                else
-                {
-                    result.NamespaceKeywordToken = _tokenIterator.CurrentToken;
-                    _tokenIterator.MoveNext();
-                }
-
-                // Doted identifier
-                result.DotedIdentifier = ParseDotedIdentifier();
-
-                // OPen curly bracket
-                if (_tokenIterator.CurrentToken.TokenType != TokenType.OpenCurlyBracket)
-                {
-                    throw new SyntaxErrorException(CompilationErrorCode.SyntaxExpectedOpenBracket, _tokenIterator.CurrentToken);
-                }
-                result.OpenCurlyBracketToken = _tokenIterator.CurrentToken;
-                _tokenIterator.MoveNext();
-
-                // Placeholder until real code
-                PlaceHolderForCodeInBlock();
-
-                // Close curly bracket
-                if (_tokenIterator.CurrentToken.TokenType != TokenType.CloseCurlyBracket)
-                {
-                    throw new SyntaxErrorException(CompilationErrorCode.SyntaxExpectedOpenBracket, _tokenIterator.CurrentToken);
-                }
-                result.CloseCurlyBracketToken = _tokenIterator.CurrentToken;
             }
-            catch (SyntaxErrorException ex)
-            {
-                if (ex.SyntaxErrorCode == CompilationErrorCode.SyntaxExpectedNamespaceKeyword)
-                {
-
-                }
-                throw;
-            }
+            result.CloseCurlyBracketToken = _tokenIterator.CurrentToken;
 
             return result;
+        }
+
+        private void ParseNamespaceDefinitionIdentifier(NamespaceDefinition result)
+        {
+            if (_tokenIterator.CurrentToken.TokenType == TokenType.Identifier)
+            {
+                // Doted identifier
+                result.DotedIdentifier = ParseDotedIdentifier();
+            }
+            else
+            {
+                result.IsSynteticNode = true;
+                _errors.Add(
+                    new SyntaxError
+                    {
+                        CompilationErrorCode = CompilationErrorCode.SyntaxExpectedIdentifier,
+                        StartToken = _tokenIterator.CurrentToken
+                    });
+            }
+        }
+
+        private void ParseNamespaceDefinitionNamespaceKeyword(NamespaceDefinition result)
+        {
+            // Keyword namespace
+            if (_tokenIterator.CurrentToken.TokenType != TokenType.KeywordNamespace)
+            {
+                result.IsSynteticNode = true;
+                _errors.Add(
+                    new SyntaxError
+                    {
+                        CompilationErrorCode = CompilationErrorCode.SyntaxExpectedNamespaceKeyword,
+                        StartToken = _tokenIterator.CurrentToken
+                    });
+
+                if (_tokenIterator.CurrentToken.TokenType != TokenType.Identifier)
+                {
+                    result.DotedIdentifier = null;
+                    _tokenIterator.MoveToNextTokenType(TokenType.OpenCurlyBracket);
+                }
+            }
+            else
+            {
+                result.NamespaceKeywordToken = _tokenIterator.CurrentToken;
+                _tokenIterator.MoveNext();
+            }
         }
 
         private DotedIdentifier ParseDotedIdentifier()

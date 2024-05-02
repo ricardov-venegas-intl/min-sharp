@@ -12,7 +12,7 @@
 
         SyntaxExpectedNamespaceKeyword,
         SyntaxExpectedIdentifier,
-        SyntaxExpectedOpenBracket,
+        SyntaxExpectedOpenCurlyBracket,
         SyntaxExpectedCloseCurlyBracket,
     }
 }
