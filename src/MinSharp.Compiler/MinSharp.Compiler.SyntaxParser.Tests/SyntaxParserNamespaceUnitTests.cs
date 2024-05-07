@@ -4,6 +4,7 @@ using MinSharp.Compiler.DataModels.Errors;
 using MinSharp.Compiler.LexicalAnalysis;
 using MinSharp.Compiler.Pipeline;
 using MinSharp.Compiler.SyntaxParser;
+using MinSharp.Compiler.SyntaxParser.SyntaxElementParsers;
 
 namespace MinSharp.Compiler.SyntaxParser.Tests
 {
@@ -21,7 +22,7 @@ namespace MinSharp.Compiler.SyntaxParser.Tests
                     new CompilationUnitSourceText { Text = string.Empty }
                     );
 
-            var syntaxParser = new SyntaxParser();
+            var syntaxParser = BuildSyntaxParser();
             lexicalAnalizer.Execute(compilerContext);
 
             // Act
@@ -44,7 +45,7 @@ namespace MinSharp.Compiler.SyntaxParser.Tests
                     new CompilationUnitSourceText { Text = "namespace blah {}" }
                     );
 
-            var syntaxParser = new SyntaxParser();
+            var syntaxParser = BuildSyntaxParser();
             lexicalAnalizer.Execute(compilerContext);
 
             // Act
@@ -67,7 +68,7 @@ namespace MinSharp.Compiler.SyntaxParser.Tests
                     new CompilationUnitSourceText { Text = "namespace blah.lorem.ipsum {}" }
                     );
 
-            var syntaxParser = new SyntaxParser();
+            var syntaxParser = BuildSyntaxParser();
             lexicalAnalizer.Execute(compilerContext);
 
             // Act
@@ -90,7 +91,7 @@ namespace MinSharp.Compiler.SyntaxParser.Tests
                     new CompilationUnitSourceText { Text = "blah {}" }
                     );
 
-            var syntaxParser = new SyntaxParser();
+            var syntaxParser = BuildSyntaxParser();
             lexicalAnalizer.Execute(compilerContext);
 
             // Act
@@ -114,7 +115,7 @@ namespace MinSharp.Compiler.SyntaxParser.Tests
                     new CompilationUnitSourceText { Text = "namespace {}" }
                     );
 
-            var syntaxParser = new SyntaxParser();
+            var syntaxParser = BuildSyntaxParser();
             lexicalAnalizer.Execute(compilerContext);
 
             // Act
@@ -138,7 +139,7 @@ namespace MinSharp.Compiler.SyntaxParser.Tests
                     new CompilationUnitSourceText { Text = "namespace blah;" }
                     );
 
-            var syntaxParser = new SyntaxParser();
+            var syntaxParser = BuildSyntaxParser();
             lexicalAnalizer.Execute(compilerContext);
 
             // Act
@@ -149,6 +150,15 @@ namespace MinSharp.Compiler.SyntaxParser.Tests
             Assert.IsNotNull(compilerContext.UnitOfCompilationAst);
             Assert.AreEqual(1, compilerContext.Errors.Count);
             Assert.AreEqual(CompilationErrorCode.SyntaxExpectedOpenCurlyBracket, compilerContext.Errors[0].ErrorCode);
+        }
+
+        private ICompilationUnitPipelineStep BuildSyntaxParser()
+        {
+            var dotedIdentifierParser = new DotedIdentifierParser();
+            var namespaceDefinitionParser = new NamespaceDefinitionParser(dotedIdentifierParser);
+            var recursiveDescentParser = new RecursiveDescentParser(namespaceDefinitionParser);
+            var result = new SyntaxParser(recursiveDescentParser);
+            return result;
         }
     }
 }

@@ -8,30 +8,34 @@ namespace MinSharp.Compiler.SyntaxParser
 {
     public class SyntaxParser : ICompilationUnitPipelineStep
     {
+        RecursiveDescentParser _recursiveDescentParser;
 
-        public SyntaxParser()
+        public SyntaxParser(RecursiveDescentParser recursiveDescentParser)
         {
+            _recursiveDescentParser = recursiveDescentParser;
         }
 
         public bool Execute(CompilationUnitContext context)
         {
-            var syntaxErrorList = new List<SyntaxError>();
-            var recursiveDescentParser = new RecursiveDescentParser(context.TokenList, syntaxErrorList);
-
+            // Create context
+            var syntaxParserContext = new SyntaxParserContext();
+            syntaxParserContext.Errors = new List<SyntaxError>();
+            syntaxParserContext.TokenIterator = new TokenIteratorWithNoWhiteSpaces(context.TokenList);
+            
             // Parse
-            var unitOfCompilationAst = recursiveDescentParser.Parse();
+            var unitOfCompilationAst = _recursiveDescentParser.Parse(syntaxParserContext);
 
             // Update context
             context.UnitOfCompilationAst = unitOfCompilationAst;
             context.Errors.AddRange(
-                syntaxErrorList.Select(e =>
+                syntaxParserContext.Errors.Select(e =>
                     new CompilationError(
                         context.CompilationUnit,
                         e.StartToken.ColumnNumber,
                         e.StartToken.LineNumber,
                         e.CompilationErrorCode)));
 
-            return syntaxErrorList.Count == 0;
+            return syntaxParserContext.Errors.Count == 0;
         }
     }
 }

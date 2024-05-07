@@ -2,7 +2,7 @@
 
 namespace MinSharp.Compiler.SyntaxParser
 {
-    internal class TokenIteratorWithNoWhiteSpaces
+    public class TokenIteratorWithNoWhiteSpaces
     {
         Token _endOfFileToken;
 

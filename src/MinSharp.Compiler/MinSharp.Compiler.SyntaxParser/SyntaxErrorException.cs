@@ -6,7 +6,7 @@ namespace MinSharp.Compiler.SyntaxParser
     /// <summary>
     /// Syntax Error Exception
     /// </summary>
-    internal class SyntaxErrorException : Exception
+    public class SyntaxErrorException : Exception
     {
         /// <summary>
         /// Gets the Error Start Token
