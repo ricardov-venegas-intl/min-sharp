@@ -1,10 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MinSharp.Compiler.DataModels;
 using MinSharp.Compiler.DataModels.Errors;
 using MinSharp.Compiler.LexicalAnalysis;
 using MinSharp.Compiler.Pipeline;
 using MinSharp.Compiler.SyntaxParser;
 using MinSharp.Compiler.SyntaxParser.SyntaxElementParsers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MinSharp.Compiler.SyntaxParser.Tests
 {
@@ -154,10 +156,12 @@ namespace MinSharp.Compiler.SyntaxParser.Tests
 
         private ICompilationUnitPipelineStep BuildSyntaxParser()
         {
-            var dotedIdentifierParser = new DotedIdentifierParser();
-            var namespaceDefinitionParser = new NamespaceDefinitionParser(dotedIdentifierParser);
-            var recursiveDescentParser = new RecursiveDescentParser(namespaceDefinitionParser);
-            var result = new SyntaxParser(recursiveDescentParser);
+            
+            var serviceCollection = new ServiceCollection();
+            SyntaxParserServiceCollectionSetup.AddServices(serviceCollection);
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+
+            var result = serviceProvider.GetService<SyntaxParser>();
             return result;
         }
     }
