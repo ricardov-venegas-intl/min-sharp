@@ -4,7 +4,7 @@ using MinSharp.Compiler.DataModels.LexicalAnalisys;
 
 namespace MinSharp.Compiler.SyntaxParser.SyntaxElementParsers
 {
-    public class DotedIdentifierParser
+    public class DotedIdentifierParser : IComponentParser<DotedIdentifier>
     {
         public DotedIdentifier Parse(SyntaxParserContext syntaxParserContext)
         {

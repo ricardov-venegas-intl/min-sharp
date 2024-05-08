@@ -4,9 +4,6 @@ using MinSharp.Compiler.DataModels;
 using MinSharp.Compiler.DataModels.Errors;
 using MinSharp.Compiler.LexicalAnalysis;
 using MinSharp.Compiler.Pipeline;
-using MinSharp.Compiler.SyntaxParser;
-using MinSharp.Compiler.SyntaxParser.SyntaxElementParsers;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace MinSharp.Compiler.SyntaxParser.Tests
 {
@@ -33,7 +30,8 @@ namespace MinSharp.Compiler.SyntaxParser.Tests
             // Assert
             Assert.IsTrue( errorsNotFound );
             Assert.IsNotNull(compilerContext.UnitOfCompilationAst);
-            Assert.AreEqual(0, compilerContext.UnitOfCompilationAst.NamespaceDefinitions.Count);
+            Assert.AreEqual(0, compilerContext.UnitOfCompilationAst.NamespaceDefinitionsList.NamespaceDefinitions.Where(nd => nd.IsSynteticNode == false).Count());
+            Assert.AreEqual(0, compilerContext.UnitOfCompilationAst.NamespaceDefinitionsList.NamespaceDefinitions.Where(nd => nd.IsSynteticNode == true).Count());
         }
 
         [DataTestMethod]
@@ -56,6 +54,8 @@ namespace MinSharp.Compiler.SyntaxParser.Tests
             // Assert
             Assert.IsTrue(errorsNotFound);
             Assert.IsNotNull(compilerContext.UnitOfCompilationAst);
+            Assert.AreEqual(1, compilerContext.UnitOfCompilationAst.NamespaceDefinitionsList.NamespaceDefinitions.Where(nd => nd.IsSynteticNode == false).Count());
+            Assert.AreEqual(0, compilerContext.UnitOfCompilationAst.NamespaceDefinitionsList.NamespaceDefinitions.Where(nd => nd.IsSynteticNode == true).Count());
             Assert.AreEqual(0, compilerContext.Errors.Count);
         }
 
@@ -79,6 +79,8 @@ namespace MinSharp.Compiler.SyntaxParser.Tests
             // Assert
             Assert.IsTrue(errorsNotFound);
             Assert.IsNotNull(compilerContext.UnitOfCompilationAst);
+            Assert.AreEqual(1, compilerContext.UnitOfCompilationAst.NamespaceDefinitionsList.NamespaceDefinitions.Where(nd => nd.IsSynteticNode == false).Count());
+            Assert.AreEqual(0, compilerContext.UnitOfCompilationAst.NamespaceDefinitionsList.NamespaceDefinitions.Where(nd => nd.IsSynteticNode == true).Count());
             Assert.AreEqual(0, compilerContext.Errors.Count);
         }
 
@@ -103,6 +105,8 @@ namespace MinSharp.Compiler.SyntaxParser.Tests
             Assert.IsFalse(errorsNotFound);
             Assert.IsNotNull(compilerContext.UnitOfCompilationAst);
             Assert.AreEqual(1, compilerContext.Errors.Count);
+            Assert.AreEqual(0, compilerContext.UnitOfCompilationAst.NamespaceDefinitionsList.NamespaceDefinitions.Where(nd => nd.IsSynteticNode == false).Count());
+            Assert.AreEqual(1, compilerContext.UnitOfCompilationAst.NamespaceDefinitionsList.NamespaceDefinitions.Where(nd => nd.IsSynteticNode == true).Count());
             Assert.AreEqual(CompilationErrorCode.SyntaxExpectedNamespaceKeyword, compilerContext.Errors[0].ErrorCode);
         }
 
@@ -127,6 +131,8 @@ namespace MinSharp.Compiler.SyntaxParser.Tests
             Assert.IsFalse(errorsNotFound);
             Assert.IsNotNull(compilerContext.UnitOfCompilationAst);
             Assert.AreEqual(1, compilerContext.Errors.Count);
+            Assert.AreEqual(0, compilerContext.UnitOfCompilationAst.NamespaceDefinitionsList.NamespaceDefinitions.Where(nd => nd.IsSynteticNode == false).Count());
+            Assert.AreEqual(1, compilerContext.UnitOfCompilationAst.NamespaceDefinitionsList.NamespaceDefinitions.Where(nd => nd.IsSynteticNode == true).Count());
             Assert.AreEqual(CompilationErrorCode.SyntaxExpectedIdentifier, compilerContext.Errors[0].ErrorCode);
         }
 
@@ -151,6 +157,7 @@ namespace MinSharp.Compiler.SyntaxParser.Tests
             Assert.IsFalse(errorsNotFound);
             Assert.IsNotNull(compilerContext.UnitOfCompilationAst);
             Assert.AreEqual(1, compilerContext.Errors.Count);
+            Assert.AreEqual(1, compilerContext.UnitOfCompilationAst.NamespaceDefinitionsList.NamespaceDefinitions.Count);
             Assert.AreEqual(CompilationErrorCode.SyntaxExpectedOpenCurlyBracket, compilerContext.Errors[0].ErrorCode);
         }
 

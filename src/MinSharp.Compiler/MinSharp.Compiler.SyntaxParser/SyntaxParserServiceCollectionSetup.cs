@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using MinSharp.Compiler.SyntaxParser.SyntaxElementParsers;
 
 namespace MinSharp.Compiler.SyntaxParser
@@ -15,7 +9,8 @@ namespace MinSharp.Compiler.SyntaxParser
         {
             serviceCollection.AddTransient<DotedIdentifierParser>();
             serviceCollection.AddTransient<NamespaceDefinitionParser>();
-            serviceCollection.AddTransient<RecursiveDescentParser>();
+            serviceCollection.AddTransient<NamespaceDefinitionListParser>();
+            serviceCollection.AddTransient<UnitOfCompilationParser>();
             serviceCollection.AddTransient<SyntaxParser>();
 
             return serviceCollection;

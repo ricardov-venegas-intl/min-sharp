@@ -2,15 +2,16 @@
 using MinSharp.Compiler.DataModels.Errors;
 using MinSharp.Compiler.DataModels.LexicalAnalisys;
 using MinSharp.Compiler.Pipeline;
+using MinSharp.Compiler.SyntaxParser.SyntaxElementParsers;
 using System.Collections.Generic;
 
 namespace MinSharp.Compiler.SyntaxParser
 {
     public class SyntaxParser : ICompilationUnitPipelineStep
     {
-        RecursiveDescentParser _recursiveDescentParser;
+        UnitOfCompilationParser _recursiveDescentParser;
 
-        public SyntaxParser(RecursiveDescentParser recursiveDescentParser)
+        public SyntaxParser(UnitOfCompilationParser recursiveDescentParser)
         {
             _recursiveDescentParser = recursiveDescentParser;
         }

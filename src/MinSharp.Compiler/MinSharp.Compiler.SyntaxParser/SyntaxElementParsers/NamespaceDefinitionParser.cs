@@ -5,7 +5,7 @@ using NamespaceDefinition = MinSharp.Compiler.DataModels.Ast.NamespaceDefinition
 
 namespace MinSharp.Compiler.SyntaxParser.SyntaxElementParsers
 {
-    public class NamespaceDefinitionParser
+    public class NamespaceDefinitionParser : IComponentParser<NamespaceDefinition>
     {
         DotedIdentifierParser _dotedIdentifierParser;
 
