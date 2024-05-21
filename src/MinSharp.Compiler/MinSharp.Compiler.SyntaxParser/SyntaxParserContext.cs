@@ -5,5 +5,7 @@
         public List<SyntaxError> Errors { get; set; }
 
         public TokenIteratorWithNoWhiteSpaces TokenIterator { get; set; }
+        
+        public int CurrentParserStackDepth { get; set; }
     }
 }

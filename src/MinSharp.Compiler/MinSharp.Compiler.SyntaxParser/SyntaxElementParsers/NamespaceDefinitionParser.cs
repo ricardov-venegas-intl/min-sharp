@@ -1,6 +1,7 @@
 ﻿using MinSharp.Compiler.DataModels.Ast;
 using MinSharp.Compiler.DataModels.Errors;
 using MinSharp.Compiler.DataModels.LexicalAnalisys;
+using MinSharp.Compiler.SyntaxParser.Utils;
 using NamespaceDefinition = MinSharp.Compiler.DataModels.Ast.NamespaceDefinition;
 
 namespace MinSharp.Compiler.SyntaxParser.SyntaxElementParsers
@@ -16,12 +17,41 @@ namespace MinSharp.Compiler.SyntaxParser.SyntaxElementParsers
 
         public NamespaceDefinition Parse(SyntaxParserContext syntaxParserContext)
         {
+
             var result = new NamespaceDefinition();
 
             ParseNamespaceDefinitionNamespaceKeyword(syntaxParserContext, result);
-
             ParseNamespaceDefinitionIdentifier(syntaxParserContext, result);
+            bool openCurlyBracketFound = ParseCurlyBracket(syntaxParserContext, result);
 
+            // Placeholder until real code
+            PlaceHolderForCodeInBlock(syntaxParserContext);
+
+            ParseCloseCurlyBracket(syntaxParserContext, result, openCurlyBracketFound);
+            return result;
+
+        }
+
+        private static void ParseCloseCurlyBracket(SyntaxParserContext syntaxParserContext, NamespaceDefinition result, bool openCurlyBracketFound)
+        {
+            if (syntaxParserContext.TokenIterator.CurrentToken.TokenType != TokenType.CloseCurlyBracket)
+            {
+                result.IsSynteticNode = true;
+                if (openCurlyBracketFound == true)
+                {
+                    syntaxParserContext.Errors.Add(
+                        new SyntaxError
+                        {
+                            CompilationErrorCode = CompilationErrorCode.SyntaxExpectedCloseCurlyBracket,
+                            StartToken = syntaxParserContext.TokenIterator.CurrentToken
+                        });
+                }
+            }
+            result.CloseCurlyBracketToken = syntaxParserContext.TokenIterator.CurrentToken;
+        }
+
+        private static bool ParseCurlyBracket(SyntaxParserContext syntaxParserContext, NamespaceDefinition result)
+        {
             bool openCurlyBracketFound = true;
             // Open curly bracket
             if (syntaxParserContext.TokenIterator.CurrentToken.TokenType != TokenType.OpenCurlyBracket)
@@ -37,35 +67,22 @@ namespace MinSharp.Compiler.SyntaxParser.SyntaxElementParsers
             }
             result.OpenCurlyBracketToken = syntaxParserContext.TokenIterator.CurrentToken;
             syntaxParserContext.TokenIterator.MoveNext();
-
-            // Placeholder until real code
-            PlaceHolderForCodeInBlock(syntaxParserContext);
-
-            // Close curly bracket
-            if (syntaxParserContext.TokenIterator.CurrentToken.TokenType != TokenType.CloseCurlyBracket)
-            {
-                result.IsSynteticNode = true;
-                if (openCurlyBracketFound == true)
-                {
-                    syntaxParserContext.Errors.Add(
-                        new SyntaxError
-                        {
-                            CompilationErrorCode = CompilationErrorCode.SyntaxExpectedCloseCurlyBracket,
-                            StartToken = syntaxParserContext.TokenIterator.CurrentToken
-                        });
-                }
-            }
-            result.CloseCurlyBracketToken = syntaxParserContext.TokenIterator.CurrentToken;
-
-            return result;
+            return openCurlyBracketFound;
         }
 
         private void ParseNamespaceDefinitionIdentifier(SyntaxParserContext syntaxParserContext, NamespaceDefinition result)
         {
             if (syntaxParserContext.TokenIterator.CurrentToken.TokenType == TokenType.Identifier)
             {
-                // Doted identifier
-                result.DotedIdentifier = _dotedIdentifierParser.Parse(syntaxParserContext);
+                try
+                {
+                    result.DotedIdentifier = ParserStackCheck.InvokeParser(_dotedIdentifierParser, syntaxParserContext);
+                }
+                catch (Exception)
+                {
+                    result.IsSynteticNode = true;
+                    syntaxParserContext.TokenIterator.MoveToNextTokenType(TokenType.OpenCurlyBracket);
+                }
             }
             else
             {
@@ -76,6 +93,7 @@ namespace MinSharp.Compiler.SyntaxParser.SyntaxElementParsers
                         CompilationErrorCode = CompilationErrorCode.SyntaxExpectedIdentifier,
                         StartToken = syntaxParserContext.TokenIterator.CurrentToken
                     });
+                syntaxParserContext.TokenIterator.MoveToNextTokenType(TokenType.OpenCurlyBracket);
             }
         }
 

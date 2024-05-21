@@ -22,7 +22,8 @@ namespace MinSharp.Compiler.SyntaxParser
             var syntaxParserContext = new SyntaxParserContext();
             syntaxParserContext.Errors = new List<SyntaxError>();
             syntaxParserContext.TokenIterator = new TokenIteratorWithNoWhiteSpaces(context.TokenList);
-            
+            syntaxParserContext.CurrentParserStackDepth = 0;
+
             // Parse
             var unitOfCompilationAst = _recursiveDescentParser.Parse(syntaxParserContext);
 

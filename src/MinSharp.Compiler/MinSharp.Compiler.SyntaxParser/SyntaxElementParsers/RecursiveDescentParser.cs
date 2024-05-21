@@ -1,4 +1,5 @@
 ﻿using MinSharp.Compiler.DataModels.Ast;
+using MinSharp.Compiler.SyntaxParser.Utils;
 
 namespace MinSharp.Compiler.SyntaxParser.SyntaxElementParsers
 {
@@ -15,7 +16,7 @@ namespace MinSharp.Compiler.SyntaxParser.SyntaxElementParsers
         {
             UnitOfCompilation result = new UnitOfCompilation();
 
-            result.NamespaceDefinitionsList = _namespaceDefinitionListParser.Parse(syntaxParserContext);
+            result.NamespaceDefinitionsList = ParserStackCheck.InvokeParser(_namespaceDefinitionListParser, syntaxParserContext);
 
             return result;
         }

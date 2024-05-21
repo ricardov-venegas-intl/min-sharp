@@ -72,6 +72,28 @@ namespace MinSharp.Compiler.SyntaxParser
             return true;
         }
 
+        public bool MoveToNextTokenType(IEnumerable<TokenType> tokenTypes)
+        {
+            if ((_currentToken + 1) >= _tokens.Count)
+            {
+                _currentToken++;
+                return false;
+            }
+            while ((_currentToken + 1) < _tokens.Count
+                && tokenTypes.All(t => _tokens[_currentToken].TokenType != t)
+                )
+            {
+                _currentToken++;
+            }
+
+            if ((_currentToken + 1) >= _tokens.Count)
+            {
+                _currentToken++;
+                return false;
+            }
+            return true;
+        }
+
         public Token CurrentToken 
         { 
             get 

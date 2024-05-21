@@ -111,6 +111,34 @@ namespace MinSharp.Compiler.SyntaxParser.Tests
         }
 
         [DataTestMethod]
+        public void InvalidIdentifierDottedPartMissing()
+        {
+            // Arrange
+            var lexicalAnalizer = new LexicalAnalizer();
+
+            var compilerContext = new CompilationUnitContext(
+                new DataModels.CompilationUnitMetadata("sourcefile.ms"),
+                    new CompilationUnitSourceText { Text = "namespace blah. {}" }
+                    );
+
+            var syntaxParser = BuildSyntaxParser();
+            lexicalAnalizer.Execute(compilerContext);
+
+            // Act
+            var errorsNotFound = syntaxParser.Execute(compilerContext);
+
+            // Assert
+            Assert.IsFalse(errorsNotFound);
+            Assert.IsNotNull(compilerContext.UnitOfCompilationAst);
+            Assert.AreEqual(1, compilerContext.Errors.Count);
+            Assert.AreEqual(0, compilerContext.UnitOfCompilationAst.NamespaceDefinitionsList.NamespaceDefinitions.Where(nd => nd.IsSynteticNode == false).Count());
+            Assert.AreEqual(1, compilerContext.UnitOfCompilationAst.NamespaceDefinitionsList.NamespaceDefinitions.Where(nd => nd.IsSynteticNode == true).Count());
+            Assert.AreEqual(CompilationErrorCode.SyntaxExpectedIdentifier, compilerContext.Errors[0].ErrorCode);
+        }
+
+     
+
+        [DataTestMethod]
         public void IdentifierKeywordMissing()
         {
             // Arrange

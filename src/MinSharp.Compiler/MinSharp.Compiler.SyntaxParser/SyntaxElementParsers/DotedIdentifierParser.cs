@@ -1,6 +1,7 @@
 ﻿using MinSharp.Compiler.DataModels.Ast;
 using MinSharp.Compiler.DataModels.Errors;
 using MinSharp.Compiler.DataModels.LexicalAnalisys;
+using MinSharp.Compiler.SyntaxParser.Utils;
 
 namespace MinSharp.Compiler.SyntaxParser.SyntaxElementParsers
 {
@@ -9,11 +10,26 @@ namespace MinSharp.Compiler.SyntaxParser.SyntaxElementParsers
         public DotedIdentifier Parse(SyntaxParserContext syntaxParserContext)
         {
             var result = new DotedIdentifier();
-            ParserDotedIdentifierIdentifier(syntaxParserContext, result);
-            while (syntaxParserContext.TokenIterator.CurrentToken.TokenType == TokenType.Dot)
+
+            try
             {
-                syntaxParserContext.TokenIterator.MoveNext();
                 ParserDotedIdentifierIdentifier(syntaxParserContext, result);
+                while (syntaxParserContext.TokenIterator.CurrentToken.TokenType == TokenType.Dot)
+                {
+                    syntaxParserContext.TokenIterator.MoveNext();
+                    ParserDotedIdentifierIdentifier(syntaxParserContext, result);
+                }
+            }
+            catch (SyntaxErrorException ex)
+            {
+                result.IsSynteticNode = true;
+                syntaxParserContext.Errors.Add(
+                  new SyntaxError
+                  {
+                      CompilationErrorCode = ex.SyntaxErrorCode,
+                      StartToken = ex.ErrorStartToken
+                  });
+                throw;
             }
             return result;
         }
