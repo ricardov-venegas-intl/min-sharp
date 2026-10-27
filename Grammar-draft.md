@@ -7,7 +7,7 @@ list_of_namespace_definition:
     EMPTY
 
 namespace_definition:
-    namespace doted_identifier: {  type_definition_list }
+    namespace qualified_identifier: {  type_definition_list }
 
 type_definition_list:
     type_definition
@@ -69,9 +69,9 @@ type_or_generic:
     identifier
     identifier < type_list >
 
-doted_identifier
+qualified_identifier
     identifier
-    identifier.doted_identifier
+    identifier.qualified_identifier
 
 statement_list
     statement

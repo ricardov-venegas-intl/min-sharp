@@ -5,7 +5,7 @@ using MinSharp.Compiler.SyntaxParser.Utils;
 
 namespace MinSharp.Compiler.SyntaxParser.SyntaxElementParsers
 {
-    public class DotedIdentifierParser : IComponentParser<DotedIdentifier>
+    public class FullyQualifiedIdentifierParser : IComponentParser<DotedIdentifier>
     {
         public DotedIdentifier Parse(SyntaxParserContext syntaxParserContext)
         {

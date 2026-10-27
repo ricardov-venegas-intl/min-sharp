@@ -8,11 +8,13 @@ namespace MinSharp.Compiler.SyntaxParser.SyntaxElementParsers
 {
     public class NamespaceDefinitionParser : IComponentParser<NamespaceDefinition>
     {
-        DotedIdentifierParser _dotedIdentifierParser;
+        FullyQualifiedIdentifierParser _fullyQualifiedIdentifierParser;
+        TypeDefinitionListParser _typeDefinitionListParser;
 
-        public NamespaceDefinitionParser(DotedIdentifierParser dotedIdentifierParser)
+        public NamespaceDefinitionParser(FullyQualifiedIdentifierParser dotedIdentifierParser, TypeDefinitionListParser typeDefinitionListParser)
         {
-            _dotedIdentifierParser = dotedIdentifierParser;
+            _fullyQualifiedIdentifierParser = dotedIdentifierParser;
+            _typeDefinitionListParser = typeDefinitionListParser;
         }
 
         public NamespaceDefinition Parse(SyntaxParserContext syntaxParserContext)
@@ -25,7 +27,7 @@ namespace MinSharp.Compiler.SyntaxParser.SyntaxElementParsers
             bool openCurlyBracketFound = ParseCurlyBracket(syntaxParserContext, result);
 
             // Placeholder until real code
-            PlaceHolderForCodeInBlock(syntaxParserContext);
+            ParseTypeDefintionList(syntaxParserContext, result);            
 
             ParseCloseCurlyBracket(syntaxParserContext, result, openCurlyBracketFound);
             return result;
@@ -76,7 +78,7 @@ namespace MinSharp.Compiler.SyntaxParser.SyntaxElementParsers
             {
                 try
                 {
-                    result.DotedIdentifier = ParserStackCheck.InvokeParser(_dotedIdentifierParser, syntaxParserContext);
+                    result.DotedIdentifier = ParserStackCheck.InvokeParser(_fullyQualifiedIdentifierParser, syntaxParserContext);
                 }
                 catch (Exception)
                 {
@@ -123,24 +125,16 @@ namespace MinSharp.Compiler.SyntaxParser.SyntaxElementParsers
             }
         }
 
-        private void PlaceHolderForCodeInBlock(SyntaxParserContext syntaxParserContext)
+        private void ParseTypeDefintionList(SyntaxParserContext syntaxParserContext, NamespaceDefinition result)
         {
-            var nestedLevel = 0;
-            while (syntaxParserContext.TokenIterator.CurrentToken.TokenType != TokenType.CloseCurlyBracket && nestedLevel > 0)
+            try
             {
-                if (syntaxParserContext.TokenIterator.CurrentToken.TokenType == TokenType.OpenCurlyBracket)
-                {
-                    nestedLevel++;
-                }
-
-                if (syntaxParserContext.TokenIterator.CurrentToken.TokenType == TokenType.CloseCurlyBracket)
-                {
-                    nestedLevel--;
-                }
-                if (syntaxParserContext.TokenIterator.MoveNext() == false)
-                {
-                    throw new SyntaxErrorException(CompilationErrorCode.SyntaxExpectedCloseCurlyBracket, syntaxParserContext.TokenIterator.CurrentToken);
-                }
+                result.TypeDefinitionsList = ParserStackCheck.InvokeParser(_typeDefinitionListParser, syntaxParserContext);
+            }
+            catch (Exception)
+            {
+                // TODO: check if error recovery is needed.
+                syntaxParserContext.TokenIterator.MoveToNextTokenType(TokenType.CloseCurlyBracket);
             }
         }
     }

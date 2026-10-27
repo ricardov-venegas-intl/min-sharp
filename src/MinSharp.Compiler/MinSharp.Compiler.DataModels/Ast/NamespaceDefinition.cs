@@ -31,6 +31,6 @@ namespace MinSharp.Compiler.DataModels.Ast
         /// <summary>
         /// Gets or set the list of types defined inside the namespace.
         /// </summary>
-        public List<TypeDefinition>? TypeDefinitions { get; private set; } = new List<TypeDefinition>();
+        public TypeDefintionList? TypeDefinitionsList { get; set; }
     }
 }

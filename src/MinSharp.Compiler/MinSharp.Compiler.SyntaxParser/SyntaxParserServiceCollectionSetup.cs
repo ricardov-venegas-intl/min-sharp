@@ -7,11 +7,12 @@ namespace MinSharp.Compiler.SyntaxParser
     {
         public static IServiceCollection AddServices(IServiceCollection serviceCollection)
         {
-            serviceCollection.AddTransient<DotedIdentifierParser>();
+            serviceCollection.AddTransient<TypeDefinitionListParser>();
+            serviceCollection.AddTransient<FullyQualifiedIdentifierParser>();
             serviceCollection.AddTransient<NamespaceDefinitionParser>();
             serviceCollection.AddTransient<NamespaceDefinitionListParser>();
             serviceCollection.AddTransient<UnitOfCompilationParser>();
-            serviceCollection.AddTransient<SyntaxParser>();
+            serviceCollection.AddTransient<SyntaxParser>();            
 
             return serviceCollection;
         }
